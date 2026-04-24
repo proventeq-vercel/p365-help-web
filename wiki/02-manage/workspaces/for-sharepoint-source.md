@@ -49,27 +49,15 @@ After selecting the appropriate option, clicking the \"Next\" button will procee
 
 Sample CSV Format :
 
-+---------------------------------------------------------------------------------------------------------------+------+---+---+---+
-|   ----------------------------------------------------------------------------------------------------------- |      |   |   |   |
-|   Type   Domain                       SitePath                                       DriveName   FolderPath   |      |   |   |   |
-|   ------ ---------------------------- ---------------------------------------------- ----------- ------------ |      |   |   |   |
-|   Site   proventeqe5.sharepoint.com   /sites/Demo_Marketing                                                   |      |   |   |   |
-|                                                                                                               |      |   |   |   |
-|   Site   proventeqe5.sharepoint.com   /sites/Demo_Training                                                    |      |   |   |   |
-|                                                                                                               |      |   |   |   |
-|   Site   proventeqe5.sharepoint.com   /sites/Demo_Insurance                                                   |      |   |   |   |
-|                                                                                                               |      |   |   |   |
-|   Site   proventeqe5.sharepoint.com   /teams/Demo_HR                                                          |      |   |   |   |
-|                                                                                                               |      |   |   |   |
-|   Site   proventeqe5.sharepoint.com   /personal/adelev_proventeqe5_onmicrosoft_com                            |      |   |   |   |
-|                                                                                                               |      |   |   |   |
-|   Site   proventeqe5.sharepoint.com   /personal/duser_proventeqe5_onmicrosoft_com                             |      |   |   |   |
-|                                                                                                               |      |   |   |   |
-|   Site   proventeqe5.sharepoint.com   /personal/leeg_proventeqe5_onmicrosoft_com                              |      |   |   |   |
-|   ----------------------------------------------------------------------------------------------------------- |      |   |   |   |
-+===============================================================================================================+======+===+===+===+
-|                                                                                                               |      |   |   |   |
-+---------------------------------------------------------------------------------------------------------------+------+---+---+---+
+| Type | Domain | SitePath | DriveName | FolderPath |
+| --- | --- | --- | --- | --- |
+| Site | proventeqe5.sharepoint.com | /sites/Demo_Marketing |  |  |
+| Site | proventeqe5.sharepoint.com | /sites/Demo_Training |  |  |
+| Site | proventeqe5.sharepoint.com | /sites/Demo_Insurance |  |  |
+| Site | proventeqe5.sharepoint.com | /teams/Demo_HR |  |  |
+| Site | proventeqe5.sharepoint.com | /personal/adelev_proventeqe5_onmicrosoft_com |  |  |
+| Site | proventeqe5.sharepoint.com | /personal/duser_proventeqe5_onmicrosoft_com |  |  |
+| Site | proventeqe5.sharepoint.com | /personal/leeg_proventeqe5_onmicrosoft_com |  |  |
 
 After providing the necessary information on the Sites wizard screen, clicking the Next button opens the second screen, **Schedule**.
 
@@ -155,10 +143,7 @@ After all required information has been selected, clicking the Create Workspace 
 
 Certain workspace features may be restricted based on the role of the logged-in user. Refer to the table below for details.
 
-  --------------------------------------------------------------------------------
-  Role                    Can create workspace   Can Edit existing workspace
-  ----------------------- ---------------------- ---------------------------------
-  Workspace User          No                     No
-
-  Workspace Admin         Yes                    Yes (Except Scope of workspace)
-  --------------------------------------------------------------------------------
+| Role | Can create workspace | Can edit existing workspace |
+| --- | --- | --- |
+| Workspace User | No | No |
+| Workspace Admin | Yes | Yes (Except Scope of workspace) |

@@ -288,6 +288,15 @@ function encodePathSegments(relativePath: string) {
     .join(path.posix.sep);
 }
 
+function maybeConvertToWebp(relativePath: string) {
+  const extension = path.posix.extname(relativePath).toLowerCase();
+  if (![".png", ".jpg", ".jpeg"].includes(extension)) {
+    return relativePath;
+  }
+
+  return `${relativePath.slice(0, -extension.length)}.webp`;
+}
+
 function resolveSourceCandidates(baseSourcePath: string, hrefPath: string) {
   const baseDir = path.posix.dirname(baseSourcePath);
   const normalizedBase = path.posix.normalize(path.posix.join(baseDir, hrefPath));
@@ -346,7 +355,7 @@ export function resolveMarkdownImageSrc(doc: DocItem, src?: string) {
 
   if (src.startsWith("/")) {
     const relative = src.replace(/^\/+/, "");
-    return `/wiki-assets/${encodePathSegments(relative)}`;
+    return `/wiki-assets/${encodePathSegments(maybeConvertToWebp(relative))}`;
   }
 
   const srcPath = src.match(/^[^?#]+/)?.[0] ?? src;
@@ -358,5 +367,5 @@ export function resolveMarkdownImageSrc(doc: DocItem, src?: string) {
     return src;
   }
 
-  return `/wiki-assets/${encodePathSegments(normalized)}${suffix}`;
+  return `/wiki-assets/${encodePathSegments(maybeConvertToWebp(normalized))}${suffix}`;
 }

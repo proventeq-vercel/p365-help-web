@@ -19,7 +19,7 @@ export function MarkdownContent({ doc }: MarkdownContentProps) {
         "prose prose-slate max-w-none text-base leading-7",
         "dark:prose-invert dark:prose-p:text-slate-200 dark:prose-li:text-slate-200 dark:prose-headings:text-slate-100 dark:prose-strong:text-slate-100 dark:prose-code:text-slate-100",
         "prose-headings:scroll-mt-24 prose-a:text-primary dark:prose-a:text-cyan-300 prose-a:no-underline hover:prose-a:underline",
-        "prose-img:rounded-lg prose-img:border prose-img:shadow-sm prose-table:block prose-table:w-full prose-table:overflow-x-auto prose-table:rounded-lg prose-table:border"
+        "prose-img:mx-auto prose-img:block prose-img:rounded-lg prose-img:border prose-img:shadow-sm prose-table:block prose-table:w-full prose-table:overflow-x-auto prose-table:rounded-lg prose-table:border"
       )}
       rehypePlugins={[rehypeSlug]}
       remarkPlugins={[remarkGfm, remarkBreaks]}
@@ -50,10 +50,21 @@ export function MarkdownContent({ doc }: MarkdownContentProps) {
             </a>
           );
         },
-        img({ src, alt, ...props }) {
+        img({ src, alt, title, className, ...props }) {
           const srcValue = typeof src === "string" ? src : undefined;
           const resolvedSrc = resolveMarkdownImageSrc(doc, srcValue);
-          return <img alt={alt ?? ""} loading="lazy" src={resolvedSrc} {...props} />;
+          const tooltip = typeof title === "string" && title.trim().length > 0 ? title : undefined;
+
+          return (
+            <img
+              alt={alt ?? ""}
+              className={cn("mx-auto block", className)}
+              loading="lazy"
+              src={resolvedSrc}
+              title={tooltip}
+              {...props}
+            />
+          );
         },
         table({ className, ...props }) {
           return <table className={cn("w-full text-sm", className)} {...props} />;

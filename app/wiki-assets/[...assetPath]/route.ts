@@ -7,6 +7,8 @@ interface RouteProps {
   params: Promise<{ assetPath: string[] }>;
 }
 
+const WEBP_CACHE_ROOT = path.join(WIKI_ROOT, "_webp-cache");
+
 const mimeByExtension: Record<string, string> = {
   ".png": "image/png",
   ".jpg": "image/jpeg",
@@ -16,23 +18,57 @@ const mimeByExtension: Record<string, string> = {
   ".webp": "image/webp"
 };
 
+function safeResolve(root: string, relativePath: string) {
+  const resolved = path.resolve(root, relativePath);
+  const relativeToRoot = path.relative(root, resolved);
+  if (relativeToRoot.startsWith("..") || path.isAbsolute(relativeToRoot)) {
+    return null;
+  }
+  return resolved;
+}
+
 export async function GET(_request: Request, { params }: RouteProps) {
   const { assetPath } = await params;
   const decoded = assetPath.map((segment) => decodeURIComponent(segment));
-  const candidatePath = path.resolve(WIKI_ROOT, decoded.join(path.sep));
-  const relativeToRoot = path.relative(WIKI_ROOT, candidatePath);
+  const relativeAssetPath = decoded.join(path.sep);
+  const requestedExtension = path.extname(relativeAssetPath).toLowerCase();
 
-  if (relativeToRoot.startsWith("..") || path.isAbsolute(relativeToRoot)) {
+  const candidates = new Set<string>();
+
+  if (requestedExtension === ".webp") {
+    const cacheCandidate = safeResolve(WEBP_CACHE_ROOT, relativeAssetPath);
+    if (cacheCandidate) {
+      candidates.add(cacheCandidate);
+    }
+  }
+
+  const directCandidate = safeResolve(WIKI_ROOT, relativeAssetPath);
+  if (directCandidate) {
+    candidates.add(directCandidate);
+  }
+
+  if (requestedExtension === ".webp") {
+    const stem = relativeAssetPath.slice(0, -requestedExtension.length);
+    for (const extension of [".png", ".jpg", ".jpeg"]) {
+      const fallbackCandidate = safeResolve(WIKI_ROOT, `${stem}${extension}`);
+      if (fallbackCandidate) {
+        candidates.add(fallbackCandidate);
+      }
+    }
+  }
+
+  if (candidates.size === 0) {
     return new Response("Not found", { status: 404 });
   }
 
-  if (!fs.existsSync(candidatePath) || !fs.statSync(candidatePath).isFile()) {
+  const filePath = [...candidates].find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile());
+  if (!filePath) {
     return new Response("Not found", { status: 404 });
   }
 
-  const extension = path.extname(candidatePath).toLowerCase();
+  const extension = path.extname(filePath).toLowerCase();
   const mimeType = mimeByExtension[extension] ?? "application/octet-stream";
-  const file = fs.readFileSync(candidatePath);
+  const file = fs.readFileSync(filePath);
 
   return new Response(file, {
     headers: {

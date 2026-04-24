@@ -7,6 +7,7 @@ This project turns the `/wiki` markdown tree into a fast, SEO-friendly documenta
 - **Wiki is source of truth:** Pages are generated directly from `wiki/**/*.md`.
 - **Friendly URLs:** Numeric prefixes are removed from URLs (for example `wiki/01-navigation-menu/README.md` -> `/navigation-menu`).
 - **Static generation:** All docs routes are pre-rendered at build time for performance.
+- **Image optimization pipeline:** `bun run optimize:images` generates WebP variants into `wiki/_webp-cache/` and runs automatically before each build.
 - **AI-readable:** Semantic HTML, predictable heading anchors, `llms.txt`, and crawlable internal links.
 - **Resend-style docs UX:** Persistent sidebar, breadcrumbs, previous/next links, and an on-page table of contents.
 
