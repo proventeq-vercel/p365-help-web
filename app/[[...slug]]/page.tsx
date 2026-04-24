@@ -16,6 +16,8 @@ interface PageProps {
   params: Promise<{ slug?: string[] }>;
 }
 
+export const dynamicParams = false;
+
 function breadcrumbsFromSlug(slugSegments: string[]) {
   const crumbs = [{ href: "/", label: "Home" }];
   let partial: string[] = [];
@@ -35,7 +37,7 @@ function breadcrumbsFromSlug(slugSegments: string[]) {
 
 export function generateStaticParams() {
   const { docs } = getDocsData();
-  return docs.filter((doc) => doc.slugSegments.length > 0).map((doc) => ({ slug: doc.slugSegments }));
+  return docs.map((doc) => ({ slug: doc.slugSegments }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
