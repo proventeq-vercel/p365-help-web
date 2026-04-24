@@ -23,7 +23,8 @@ Open <http://localhost:3000>.
 
 1. Import this repository in Vercel.
 2. Set `NEXT_PUBLIC_SITE_URL` to your production URL (for canonical links and sitemap).
-3. Deploy with the default Next.js build command.
+3. `vercel.json` is included with build/install commands and `wiki/**/*` file inclusion for the wiki asset route.
+4. Deploy.
 
 Whenever markdown in `/wiki` changes, redeploy to regenerate the whole docs site.
 
