@@ -13,8 +13,8 @@ This project turns the `/wiki` markdown tree into a fast, SEO-friendly documenta
 ## Local development
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Open <http://localhost:3000>.

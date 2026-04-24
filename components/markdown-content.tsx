@@ -16,7 +16,9 @@ export function MarkdownContent({ doc }: MarkdownContentProps) {
   return (
     <ReactMarkdown
       className={cn(
-        "prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-a:text-primary prose-a:no-underline hover:prose-a:underline",
+        "prose prose-slate max-w-none text-base leading-7",
+        "dark:prose-invert dark:prose-p:text-slate-200 dark:prose-li:text-slate-200 dark:prose-headings:text-slate-100 dark:prose-strong:text-slate-100 dark:prose-code:text-slate-100",
+        "prose-headings:scroll-mt-24 prose-a:text-primary dark:prose-a:text-cyan-300 prose-a:no-underline hover:prose-a:underline",
         "prose-img:rounded-lg prose-img:border prose-img:shadow-sm prose-table:block prose-table:w-full prose-table:overflow-x-auto prose-table:rounded-lg prose-table:border"
       )}
       rehypePlugins={[rehypeSlug]}

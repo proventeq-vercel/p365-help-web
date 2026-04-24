@@ -75,7 +75,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             </Link>
             <nav className="flex items-center gap-2 text-sm">
               <a
-                className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 href="https://www.proventeq.com"
                 rel="noreferrer"
                 target="_blank"
@@ -83,7 +83,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
                 <ExternalLink className="h-3.5 w-3.5" />
                 Proventeq
               </a>
-              <a className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" href="/llms.txt">
+              <a className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" href="/llms.txt">
                 <Bot className="h-3.5 w-3.5" />
                 llms.txt
               </a>
