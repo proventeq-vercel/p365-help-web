@@ -1,98 +1,81 @@
 ---
 title: "Trivial Documents Report"
-description: "When you click the down arrow icon under the ROT Analysis menu, a sub-menu will appear allowing you to access the Trivial Documents Report. This report provides detailed "
+description: "Identify low-value or non-business-critical files such as system files, temporary files, logs, and other content with minimal business relevance."
 ---
 
 # Trivial Documents Report
 
-When you click the down arrow icon under the ROT Analysis menu, a sub-menu will appear allowing you to access the Trivial Documents Report. This report provides detailed information on trivial documents identified within the currently selected workspace scope.
+The **Trivial Documents** screen helps you identify low-value or non-business-critical files within your environment. These include system-generated files, temporary files, logs, and other content that offers minimal business relevance.
 
-When the user selects the trivial documents menu, the following screen is displayed
+This view supports **storage optimisation and cleanup efforts** by highlighting files that can typically be removed with low impact.
 
-![Trivial Documents Report illustration 1](images/image96.png)
+![Trivial Documents — main view](images/image058.png)
 
-In right side view of Trivial documents report, following section will be visible
+## Overview
 
-### 4.7.1 Header
+At the top of the screen, key metrics summarise trivial content:
 
-Header section will show following information/details
+- **Trivial Documents** — Total number of low-value or system-generated files.
+- **Total Size** — Storage consumed by trivial documents.
+- **High Risk** — Trivial files that pose higher governance risks. May include temporary or draft files containing sensitive information or misplaced system files in shared locations.
+- **Low Risk** — Files with minimal business or compliance impact. Typically older, unused documents that can be cleaned up safely.
 
-- **Header Text** -- The Header reads - Trivial documents
+## Creation Year
 
-- **Information icon** -- when click on icon, it will open popup with text - **Detailed summary on trivial data**. Popup will have See More link and when click on it, it redirect use to external link -
+Shows trivial documents grouped by the year they were created. Helps identify how old the unused content is. Data is displayed in descending order. Use the **Search** box to locate a specific year.
 
-The current workspace name appears in the top right corner; clicking it opens the Dashboard, where users can view and switch between all available workspaces.
+## Modified Year
 
-### 4.7.2 Count and Size Summary
+Shows trivial documents grouped by the year they were last modified. Helps identify how long documents have remained unchanged. Use the **Search** box to locate a specific year.
 
-This section will show count of trivial document, Total size of Trivial documents and Severity (None, Medium, High)
+## Accessed
 
-![Trivial Documents Report illustration 2](images/image97.png)
+Shows trivial documents grouped by their last access (usage) year. Helps identify files that haven't been opened recently or are no longer actively used. Use the **Search** box to locate a specific year.
 
-### 4.7.3 Create in Year Graph
+## File Extension
 
-A graph will represent data by the year it was created within the workspace. The graph will display a bar chart format, illustrating the relationship between each year and the corresponding data count.
+Breaks down trivial documents by file type, such as PDF, DOCX, MSG, LOG, TEMP. You can switch between:
 
-![Trivial Documents Report illustration 3](images/image98.png)
+- **Size view** — Storage consumed by each file type.
+- **Percentage view** — Relative contribution to trivial storage.
 
-When mouse hover the respective pie chart, it will show count of items
+## Created By
 
-### 4.7.4 Modified in Year Graph
+Shows trivial documents created by different users in descending order. Use the **Search** box to locate a specific user.
 
-A graph will display data by year of modification within the workspace. The graph will use a bar chart format to present the count for each year.
+## Report Filtering
 
-![Trivial Documents Report illustration 4](images/image99.png)
+For all panels, each bar is clickable. The entire report filters based on the selected record, and the selected criteria appear next to **Filter by** at the top of the report. You can filter on multiple criteria simultaneously.
 
-When mouse hover the respective pie chart, it will show count of items
+![Trivial Documents — filtered example](images/image059.png)
 
-### 4.7.5 Accessed in Year Graph
+## Table View
 
-A graph will display data by year within the workspace scope. The bar chart will illustrate the relationship between each year and the corresponding data count.
+![Trivial Documents — table view](images/image060.png)
 
-![Trivial Documents Report illustration 5](images/image100.png)
+The table at the bottom of the screen shows details of trivial documents grouped by Site or OneDrive, with the following columns:
 
-When mouse hover the respective pie chart, it will show count of items
+- **Expand** — Use the expand icon (arrow) to drill down into site-level or OneDrive-level details.
+- **Site** — Name of the SharePoint site or OneDrive.
+- **Trivial Item Count** — Total number of trivial documents in the site or OneDrive.
+- **Modified Year** — Last modified year for the trivial items.
 
-### 4.7.6 File extension Graph
+Sorting is available on Site, Trivial Item Count, and Modified Year. A filter is available for the Site column.
 
-A bar chart will be provided to represent the analysed data by file extension. The chart will display data in the format illustrated below. Users can toggle between viewing percentage and file size using the display option located above the bar chart.
+The table supports an expanded view for each row. Expanding a site displays specific locations within the site where trivial items exist.
 
-![Trivial Documents Report illustration 6](images/image101.png)
+The **Export Data** button at the bottom left of the table downloads the report for offline analysis or reporting.
 
-The data will be presented as percentages, categorized by file extensions such as .txt, .docx, .pptx, and .pdf, as well as by folders and other types.
+At the bottom right of the table:
 
-### 4.7.7 Created By Graph
+- **Rows Per Page** — 5, 10, 15, 20, 25, 30, 50, or 100. Default: 10.
+- **Total Record Count** — Range and total record count.
+- **Next/Previous Navigation** — Arrow icons to navigate.
 
-A graphical representation of data will be provided, separating information according to the user who created it within the workspace. The graph will utilize a pie chart format, with distinct color legends assigned to each user for clarity.
+In the expanded view, clicking on a trivial item count opens a side panel listing the trivial documents in that library or OneDrive location.
 
-![Trivial Documents Report illustration 7](images/image102.png)
+![Trivial Documents — side panel](images/image061.png)
 
-When mouse hover the respective pie chart, it will show count of items
+![Trivial Documents — drill down](images/image062.png)
 
-### 4.7.8 List of Trivial Documents in Table view
-
-At bottom of the screen, it will show list of trivial documents as list view
-
-![Trivial Documents Report illustration 8](images/image103.png)
-
-The table will include the following columns:
-
-- **Expand**: Contains an arrow icon to expand or collapse the tree view for each site.
-
-- **Site**: Displays the name of each site included within the workspace scope.
-
-- **Trivial Item Count**: Shows the number of identified trivial documents per site that are within the workspace scope.
-
-- **Modified Year**: Indicates the year in which the trivial document was last modified for each site included in the workspace scope.
-
-In summary, the data in the table will first be grouped by site, followed by further grouping based on modification year. When expanding the tree view of available records, the data will then be further drilled down to the library level as shown below.
-
-![Trivial Documents Report illustration 9](images/image104.png)
-
-In addition, the bottom right section of the workspace list table provides the following features:
-
-- Rows Per Page: The number of rows displayed per page can be adjusted using a dropdown menu in this section. Available options include 5, 10, 15, 20, 25, 30, 50, and 100 rows per page. The default setting is 10 records per page.
-
-- Total Record Count: This displays the range of records currently shown and the total record count, such as \"0--10 out of 200\".
-
-- Next/Previous Navigation: Users can navigate to the next or previous set of records using the \< and \> arrow icons.
+Each record has an icon to open it in another browser tab.

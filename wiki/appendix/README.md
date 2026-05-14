@@ -1,44 +1,40 @@
 ---
 title: "Appendix"
-description: "A hub site in SharePoint is a special type of site that connects related SharePoint sites together to create a unified experience for navigation, branding, and search."
+description: "Reference material — Hub Site concept, predefined governance policies, and severity allocation table."
 ---
 
 # Appendix
 
-### Hub Site
+This appendix contains reference material referenced throughout the user guide.
+
+## Hub Site
 
 A **hub site in SharePoint** is a special type of site that connects related SharePoint sites together to create a unified experience for navigation, branding, and search.
 
-What Does a Hub Site Do?
+### What does a hub site do?
 
-- **Centralized Navigation**: Adds a shared top navigation bar across all associated sites.
+- **Centralised Navigation** — Adds a shared top navigation bar across all associated sites.
+- **Consistent Branding** — Applies the same theme and logo to all connected sites.
+- **Scoped Search** — Allows users to search across all associated sites from one place.
+- **Content Rollups** — Displays news, events, and activities from connected sites in one view.
+- **Governance & Organisation** — Helps group sites by department, project, region, or function.
 
-- **Consistent Branding**: Applies the same theme and logo to all connected sites.
+### How to create a hub site
 
-- **Scoped Search**: Allows users to search across all associated sites from one place.
+1. Go to the **SharePoint Admin Center**.
+2. Select a site → Click **Register as hub site**.
+3. Assign a name and optionally a hub owner.
+4. Associate other sites via their site settings.
 
-- **Content Rollups**: Displays news, events, and activities from connected sites in one view.
+### Example use cases
 
-- **Governance & Organization**: Helps group sites by department, project, region, or function.
+| Scenario | How hub sites help |
+| --- | --- |
+| Company departments | HR, Finance, and IT sites linked under a "Corporate" hub |
+| Regional teams | Sites for Asia, Europe, and Americas under a "Global" hub |
+| Project portfolios | Multiple project sites connected to a "PMO" hub |
 
-How to Create a Hub Site
+## Related Pages
 
-1.  Go to the **SharePoint Admin Center**
-
-2.  Select a site → Click **Register as hub site**
-
-3.  Assign a name and optionally a hub owner
-
-4.  Associate other sites via their site settings
-
-Example Use Cases
-
-  -------------------------------------------------------------------------------------
-  Scenario                How Hub Sites Help
-  ----------------------- -------------------------------------------------------------
-  Company departments     HR, Finance, and IT sites linked under a \"Corporate\" hub
-
-  Regional teams          Sites for Asia, Europe, and Americas under a \"Global\" hub
-
-  Project portfolios      Multiple project sites connected to a \"PMO\" hub
-  -------------------------------------------------------------------------------------
+- [Predefined Policies](./predefined-policies.md) — The list of predefined governance policies, their rule inputs, and the actions they can take.
+- [Severity Allocations](./severity-allocations.md) — How severity (High/Medium/Low) is assigned in the Security & Oversharing report.

@@ -1,98 +1,77 @@
 ---
 title: "Obsolete Documents Report"
-description: "When you click the down arrow icon under the ROT Analysis menu, a sub-menu will appear allowing you to access the Obsolete Documents Report. This report provides detailed"
+description: "Identify files that are no longer relevant, actively used, or required, based on file age, usage patterns, format, and ownership."
 ---
 
 # Obsolete Documents Report
 
-When you click the down arrow icon under the ROT Analysis menu, a sub-menu will appear allowing you to access the Obsolete Documents Report. This report provides detailed information on obsolete documents identified within the currently selected workspace scope.
+The **Obsolete Documents** screen helps you identify files that are no longer relevant, actively used, or required. It provides insights based on file age, usage patterns, format, and ownership. These documents are identified based on the obsolete criteria provided when creating the workspace.
 
-When the user selects the obsolete documents menu, the following screen is displayed.
+![Obsolete Documents — main view](images/image054.png)
 
-![Obsolete Documents Report illustration 1](images/image87.png)
+## Overview
 
-In right side view of Obsolete documents report, following section will be visible
+At the top of the screen, key metrics summarise obsolete content:
 
-### 4.6.1 Header
+- **Obsolete Documents** — Total number of documents identified as obsolete.
+- **Total Size** — Storage consumed by obsolete documents.
+- **High Risk** — Obsolete files that pose higher governance risks. May include files owned by former employees, sensitive data in unused locations, or outdated file formats.
+- **Low Risk** — Files with minimal business or compliance impact. Typically older, unused documents that can be cleaned up safely.
 
-Header section will show following information/details
+## Creation Year
 
-- **Header Text** -- The header reads - Obsolete documents
+Shows obsolete documents grouped by the year they were created. Helps identify how old the unused content is. Data is displayed in descending order. Use the **Search** box to locate a specific year.
 
-- **Information icon** -- when click on icon, it will open popup with text - **Detailed summary on obsolete data**. Popup will have See More link and when click on it, it redirect use to external link -
+## Modified Year
 
-The current workspace name appears in the top right corner; clicking it opens the Dashboard, where users can view and switch between all available workspaces.
+Shows obsolete documents grouped by the year they were last modified. Helps identify how long documents have remained unchanged. Use the **Search** box to locate a specific year.
 
-### 4.6.2 Count and Size Summary
+## Accessed
 
-This section will provide the count of obsolete documents, the total size of obsolete documents, and their severity levels (None, Medium, High).
+Shows obsolete documents grouped by their last access (usage) year. Helps identify files that haven't been opened recently or are no longer actively used. Use the **Search** box to locate a specific year.
 
-![Obsolete Documents Report illustration 2](images/image88.png)
+## File Extension
 
-### 4.6.3 Create in Year Graph
+Breaks down obsolete documents by file type, such as PDF, DOCX, MSG, TXT, XLSX. You can switch between:
 
-A graph will display data by year of creation within the workspace. The bar chart will represent the number of entries for each year.
+- **Size view** — Storage consumed by each file type.
+- **Percentage view** — Relative contribution to obsolete storage.
 
-![Obsolete Documents Report illustration 3](images/image89.png)
+## Created By
 
-When mouse hover the respective bar chart, it will show count of items
+Shows obsolete documents created by different users in descending order. Use the **Search** box to locate a specific user.
 
-### 4.6.4 Modified in Year Graph
+## Report Filtering
 
-A bar chart will display the data categorized by the year of modification within the workspace. The graph will show the relationship between each year and the corresponding data count.
+For all panels, each bar is clickable. The entire report filters based on the selected record, and the selected criteria appear next to **Filter by** at the top of the report. You can filter on multiple criteria simultaneously.
 
-![Obsolete Documents Report illustration 4](images/image90.png)
+![Obsolete Documents — filtered example](images/image055.png)
 
-When mouse hover the respective bar chart, it will show count of items
+## Table View
 
-### 4.6.5 Accessed in Year Graph
+![Obsolete Documents — table view](images/image056.png)
 
-A graph will display data by year as accessed within the workspace. The graph will use a bar chart format to present the relationship between year and count.
+The table at the bottom of the screen shows details of obsolete documents grouped by Site or OneDrive, with the following columns:
 
-![Obsolete Documents Report illustration 5](images/image91.png)
+- **Expand** — Use the expand icon (arrow) to drill down into site-level or OneDrive-level details.
+- **Site** — Name of the SharePoint site or OneDrive.
+- **Obsolete Item Count** — Total number of obsolete documents in the site or OneDrive.
+- **Modified Year** — Last modified year for the obsolete items.
 
-When mouse hover the respective bar chart, it will show count of items
+Sorting is available on Site, Obsolete Item Count, and Modified Year. A filter is available for the Site column.
 
-### 4.6.6 File extension Graph
+The table supports an expanded view for each row. Expanding a site displays specific locations within the site where obsolete items exist. Example: *SummitNationalBankUK → Bank Documents, 46 obsolete item counts.*
 
-A bar chart will represent the analysed data by file extension. The chart will display as shown below. Users can toggle between viewing percentage or size using the display option above the bar chart.
+The **Export Data** button at the bottom left of the table downloads the report for offline analysis or reporting.
 
-![Obsolete Documents Report illustration 6](images/image92.png)
+At the bottom right of the table:
 
-Data will be presented as percentages, categorized by file extensions such as .txt, .docx, .pptx, and .pdf, as well as folders and other types.
+- **Rows Per Page** — 5, 10, 15, 20, 25, 30, 50, or 100. Default: 10.
+- **Total Record Count** — Range and total record count.
+- **Next/Previous Navigation** — Arrow icons to navigate.
 
-### 4.6.7 Created By Graph
+In the expanded view, clicking on an obsolete item count opens a side panel listing the obsolete documents in that library or OneDrive location.
 
-A graphical representation will display data segmented by the user who created it within the workspace. The information will be presented in a pie chart format, with each user distinguished by unique color legends.
+![Obsolete Documents — side panel](images/image057.png)
 
-![Obsolete Documents Report illustration 7](images/image93.png)
-
-When mouse hover the respective pie chart, it will show count of items
-
-### 4.6.8 List of Obsolete Documents in Table view
-
-A list of obsolete documents will be displayed at the bottom of the screen in a list view format.
-
-![Obsolete Documents Report illustration 8](images/image94.png)
-
-The table will include the following columns:
-
-- **Expand**: This column will feature an arrow icon to allow users to expand or collapse the tree view for each site.
-
-- **Site**: This column will display the name of each site included within the workspace scope.
-
-- **Obsolete Item Count**: This column will show the number of obsolete documents identified for each site that are within the workspace scope.
-
-- **Modified Year**: This column will indicate the year each document was last modified for sites included in the workspace scope.
-
-In summary, the data in the table will be grouped first by site, followed by modification year. When expanding the tree view of available records, the data can be further drilled down to the library level as shown below.
-
-![Obsolete Documents Report illustration 9](images/image95.png)
-
-Additionally, the bottom right of the workspace list table contains several features:
-
-- **Rows Per Page**: Users can adjust the number of rows displayed per page using a dropdown menu. Options include 5, 10, 15, 20, 25, 30, 50, or 100 rows per page. The default setting is 10 rows per page.
-
-- **Total Record Count**: This section displays the total number of records, for example, \"0-10 out of 200.\"
-
-- **Next/Previous Navigation**: Users can navigate between pages of records using the \< and \> arrow icons.
+There is an icon for each record to open the document in the browser.

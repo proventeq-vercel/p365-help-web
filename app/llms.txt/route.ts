@@ -6,7 +6,7 @@ export const dynamic = "force-static";
 export function GET() {
   const docs = getDocsData().docs;
   const lines = [
-    "# P365 Help Center",
+    "# Proventeq365 Help Center",
     "",
     `Base URL: ${siteConfig.baseUrl}`,
     "This documentation is generated from markdown files in /wiki and is the canonical help source.",

@@ -1,160 +1,107 @@
 ---
-title: "Dashboard"
-description: "When the Tenant Admin logs into the system for the first time, the Dashboard module is selected by default and its screen is displayed. A new workspace can be added by cl"
+title: "Dashboard — Overview"
+description: "The Dashboard provides a high-level view of the health, risks, and compliance status of your Microsoft 365 workspace."
 ---
 
-# Dashboard
+# Dashboard — Overview
 
-When the Tenant Admin logs into the system for the first time, the Dashboard module is selected by default and its screen is displayed. A new workspace can be added by clicking the Add Workspace button, which redirects the user to the create workspace wizard.
+The **Dashboard** is the default landing page for Tenant Admin users after sign-in. It surfaces workspace health, governance insights, compliance indicators, and data quality metrics so that risk areas and trends can be identified and prioritised for remediation.
 
-![Dashboard illustration 1](images/image25.png)
+![Dashboard — initial state](images/image025.png)
 
-After the Tenant admin adds one or more workspaces, logging into the application as the Tenant Admin user will display the following screen.
+The Dashboard landing page shows a list of existing workspaces to choose from. If no workspace is present yet, it shows a page with a **Create new workspace** button.
 
-![Dashboard illustration 2](images/image26.png)
+![Dashboard — workspace selector](images/image026.png)
 
-When the user hovers the mouse over the workspace name, a Select button appears, allowing selection of an existing workspace to view its data.
+To open the Dashboard, select the workspace to analyse from the workspace selector at the top of the screen. Once a workspace is selected, the Dashboard populates the summaries and charts described below.
 
-Clicking the Select button opens the Dashboard screen with the following view.
+![Dashboard — populated view](images/image027.png)
 
-![Dashboard illustration 3](images/image27.png)
+## Navigation Tabs
 
-On the Dashboard screen, the following section is displayed:
+At the top of the Dashboard you can switch between different governance focus areas:
 
-### 3.1.1 Header
+- **Overview** — Consolidated governance scores, workspace snapshot, and data health summary. *(This page.)*
+- [Security & Oversharing](./security-oversharing.md) — Risk summary and detailed breakdown of sharing, access, and permission risks.
+- [Storage Optimization](./storage-optimization.md) — Redundant, obsolete, and trivial content metrics to help optimise storage.
+- [Compliance & Governance](./compliance-governance.md) — Active policies, files matched, and auto-remediation status.
 
-The header section includes the following elements:
+## Governance Scores
 
-- **Header Text**: The header reads \"Welcome \<Full name of Logged in user\>\"
+This section displays overall governance scores on a **0–100 scale**, helping you quickly assess risk levels.
 
-- **Subheader Text**: Subheader text reads \"Data last refreshed on \<Date when item discovery happened\>\"
+![Governance scores](images/image028.png)
 
-- **Current Workspace Name**: Presented as a button control with a \"\>\" icon indicating the currently selected workspace name. When clicked, this redirects the user to a page listing all added workspaces.
+Three ring charts are displayed side by side, each showing a score out of 100 along with a short description and a **View insights** link:
 
-### 3.1.2 Workspace Summary
+- **Sharing and Safety** — Highlights issues related to oversharing and external user access. Lower scores indicate higher exposure risk.
+- **Content Health** — Reflects the quality of content based on **ROT analysis**. Lower scores indicate healthy content with less presence of redundant, obsolete, or trivial content.
+- **Compliance** — Score reflecting adherence to configured governance policies.
 
-In Workspace summary section, it will show following information.
+Each card includes a **View Insights** link to open the relevant tab.
 
-![Dashboard illustration 4](images/image28.png)
+## Workspace Snapshot
 
-Under the Workspace Summary header, the system will display the number of sites successfully discovered within the workspace\'s scope, for example: **122 sites successfully discovered.**
+This section provides a quick summary of the workspace environment.
 
-Beneath this, the total number of documents identified will be shown (e.g., 116,662 documents).
+![Workspace snapshot](images/image029.png)
 
-On the right side, the count of Documents at Risk will be presented.
+- **SharePoint Sites** — Total number of sites and number of documents stored in them.
+- **Teams** — Number of Teams and number of documents stored in them.
+- **OneDrives** — Number of user OneDrives and number of documents stored in them.
+- **Active Users** — Count of active users, including external users.
+- **Total Storage Used** — Combined storage consumption and monthly growth.
 
-Below that section, three cards will provide data for SharePoint, OneDrive, and Teams Sites. Each card will include:
+## Data Health and Risk
 
-- An icon representing the respective type: SharePoint Site, OneDrive, or Teams,
+This section highlights areas where data may pose security risks or storage inefficiencies. It focuses on two key aspects:
 
-- The total item count identified in each category,
+- Oversharing risks
+- Data quality (ROT)
 
-- The total document count displayed below the item count,
+![Data health and risk](images/image030.png)
 
-- The number of risky documents indicated on the right side of each card.
+### Oversharing Analysis
 
-### 3.1.3 Open Gate
+The **Oversharing Analysis** panel shows how much content is shared beyond recommended levels and categorises it by risk.
 
-An interactive card will be displayed with the header -- Open Gate. Below the header, descriptive text will state: Sharing is too broad, potentially exposing content to unintended audiences.
+**Risk Levels:**
 
-![Dashboard illustration 5](images/image29.png)
+- **High Risk** — Content with the greatest exposure, such as anonymous links or sensitive data shared externally.
+- **Medium Risk** — Content shared externally or broadly but with some limitations.
+- **Lower Risk** — Content shared in a more controlled or restricted manner.
 
-Below this text, a half pie chart will display the Risk Level percentage. A down arrow will be visible in the upper right corner; clicking this arrow will slide the current screen up to reveal various sharing categories, each accompanied by the corresponding document count.
+**High Risk Breakdown** — Explains *why* content is classified as high risk:
 
-![Dashboard illustration 6](images/image30.png)
+- **Anonymous Links** — Files or folders accessible via links that do not require sign-in.
+- **External Sharing** — Content shared with users outside your organisation.
+- **Broad Permissions** — Content shared with large internal groups such as "Everyone" or "All Users".
 
-For Open Gate, the following categories display counts of documents classified accordingly:
+**Top External Domains** — Shows the most common external domains with which data is shared (for example, `gmail.com` or `outlook.com`). Helps identify unintended or risky external collaboration patterns.
 
-- **Universal Keys**: Identifies files or folders shared through \"Anyone\" links or with the Everyone group.
+Select **View all** to open a detailed report.
 
-- **Corporate Passes**: Flags content shared with the entire organization or the \"Everyone Except External Users\" group.
+**Recommended Action** — An information message *"Reducing oversharing lowers potential breach exposure and compliance risk"* appears at the bottom. Select **Fix** to move on to the Security & Oversharing section for remediation actions.
 
-- **External Invitations**: Detects sharing links sent to specific external users or guests.
+At the top right of the panel, click **View full analysis** to open the detailed report.
 
-- **Sharing Frenzy**: Highlights documents or folders with more than 10 sharing links, indicating excessive sharing activity.
+### Data Quality (ROT)
 
-- **Forwardable Links:** Surfaces links that can be forwarded (e.g., \"Anyone\" or \"Organization\" links), increasing risk of unintended access.
+The **Data Quality (ROT)** panel focuses on unnecessary data stored in the environment.
 
-Each category is clickable and opens a detailed permission report.
+**ROT** stands for:
 
-![Dashboard illustration 7](images/image31.png)
+- **Redundant** — Duplicate or unnecessary copies of content.
+- **Obsolete** — Outdated content no longer needed.
+- **Trivial** — Low-value content with little business relevance.
 
-### 3.1.4 Golden Access
+**ROT Summary:**
 
-An interactive card will be displayed with the header -- Golden Access. Below the header, descriptive text will state: Sharing that grants high levels of access, potentially compromising sensitive information.
+- Number of files in each ROT category.
+- Total storage consumed by each category.
 
-![Dashboard illustration 8](images/image32.png)
+The colour-coded bar visually represents how much space each category occupies.
 
-Below this text, a half pie chart will display the percentage of the Risk Level. A downward arrow will appear in the top right corner. When users click on this arrow, the current screen will slide up, revealing various sharing categories along with the count of documents associated with each category.
+**ROT by Workload** — Shows where ROT data exists across workloads: SharePoint Sites, Microsoft Teams, OneDrive.
 
-![Dashboard illustration 9](images/image33.png)
-
-For Golden Access, the following categories display counts of documents that fall into each classification:
-
-- **Wide Permissions:** Identifies documents or folders accessible to more than 20 users or groups.
-
-- **Edit Privileges:** Flags content where users have been granted Edit, Contribute, Design, or Full Control permissions.
-
-- **Inheritance Overload:** Detects folders or libraries where custom permissions have cascaded to 100+ items due to inheritance.
-
-- **AI Agents:** Identify all SharePoint AI agents present across sites that could potentially be costing you money.
-
-Each category is clickable and opens a detailed permission report.
-
-![Dashboard illustration 10](images/image34.png)
-
-### 3.1.5 Permission Puzzle
-
-An interactive card will be displayed with the header -- Permission Puzzle. Below the header, descriptive text will state: Inconsistencies and irregularities in access management, highlighting areas that need attention.
-
-![Dashboard illustration 11](images/image35.png)
-
-Below this section, a half pie chart will display the percentage of Risk Level. A down arrow icon will appear at the top right corner. When the user clicks on this arrow, the current screen will slide up, revealing various sharing categories along with the corresponding document counts for each category.
-
-![Dashboard illustration 12](images/image36.png)
-
-For Permission Puzzle, following are the categories showing counts of documents fall into it
-
-- **Crowded Sites:** Flags sites with more than 25 users having access, indicating potential sprawl.
-
-- **Overshared Files:** Identifies sites where more than 25% of documents have been shared.
-
-- **Custom Chaos:** Detects sites where more than 25% of documents have direct (non-group) permissions.
-
-- **Hidden Document:** Finds documents with unique permissions assigned only to a single (often deactivated) user.
-
-- **Unnecessary Permission:** Flags documents with custom permissions that are identical to their parent, indicating redundant configuration.
-
-Each category is clickable and opens a detailed permission report.
-
-![Dashboard illustration 13](images/image37.png)
-
-### 3.1.6 Duplicate documents
-
-An interactive card will be displayed with the header -- Duplicate documents. Below the header, descriptive text will state: One or more exact copies of files stored on the system, which increases storage costs and increases risk of stale content
-
-![Dashboard illustration 14](images/image38.png)
-
-Below the descriptive text, a graph displays the percentage Risk Level. Clicking on the card redirects the user to the Duplicate Document Report screen.
-
-![Dashboard illustration 15](images/image39.png)
-
-### 3.1.7 Obsolete documents
-
-An interactive card will be displayed with the header -- Obsolate documents. Below the header, descriptive text will state: Information that is no longer in use, is out of date (modified older than 5 years), is no longer accurate or useful to the end user
-
-![Dashboard illustration 16](images/image40.png)
-
-Beneath the descriptive text, a graph displays the percentage risk level. When a user clicks on the card, they are redirected to the Obsolete Document Report screen.
-
-![Dashboard illustration 17](images/image41.png)
-
-### 4.1.8 Trivial documents
-
-An interactive card will be displayed with the header -- Trivial documents. Below the header, descriptive text will state: File type has no content value (trivial), such as executables, system files, log files, temp files or thumbnails
-
-![Dashboard illustration 18](images/image42.png)
-
-Below the descriptive text, a graph is displayed showing the percentage of Risk Level. Clicking on the card will redirect users to the Trivial Documents Report screen.
-
-![Dashboard illustration 19](images/image43.png)
+**Storage Recovery Insight** — An informational message highlights the total storage that could be reclaimed if ROT data is removed (for example, **2.31 GB**). Select **Fix** to move on to the Storage Optimization section for cleanup if required.

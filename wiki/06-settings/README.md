@@ -1,40 +1,19 @@
 ---
 title: "Settings"
-description: "When click on Settings menu, it will show below screen"
+description: "Application-level preferences that control how information is displayed within Proventeq365."
 ---
 
 # Settings
 
-When click on Settings menu, it will show below screen
+The **Settings** screen allows you to configure application-level preferences that control how information is displayed within Proventeq365. These options help personalise how information is presented while maintaining a consistent user experience across reports.
 
-![Settings illustration 1](images/image107.png)
+When you click **Settings** in the menu, the following screen appears:
 
-In right side view of Screen, following section will be visible
+![Settings](images/image141.png)
 
-### 6.1.1 Header
+## Chart Colour Style
 
-Header section will show following information/details
+This setting controls the colour scheme used for data sections in reports throughout Proventeq365.
 
-- **Header Text** -- The Header reads - Settings
-
-- **Information icon** -- when click on icon, it will open popup with text - **Information about workspaces and their settings**. Popup will have See More link and when click on it, it redirect use to external link -
-
-### 6.1.2 Setting Tab - General
-
-In the General settings screen, the following control is available:
-
-- **Toggle Control** -- This toggle allows users to switch between the Monochromatic and Colorful themes. By default, the Monochromatic theme is enabled.
-
-### 6.1.3 Setting Tab - Notification
-
-In Notification setting screen, following controls are available
-
-![Settings illustration 2](images/image108.png)
-
-For notification settings, users can configure notifications to be sent through three available methods: Email, Teams, or Push Notifications. A checkbox control will be provided to allow selection of the preferred notification method. Notifications will be sent according to this configuration.
-
-Users can set up notifications for the following actions:
-
-- Notification when a run completes successfully
-
-- Notification about a failed run
+- **Monochromatic** — When the toggle is **ON**, data is displayed using a single-colour or neutral colour palette.
+- **Colourful** — When the toggle is **OFF**, data is displayed using multiple colours to differentiate data points clearly.

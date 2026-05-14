@@ -1,6 +1,6 @@
-# P365 Help Website
+# Proventeq365 Help Website
 
-This project turns the `/wiki` markdown tree into a fast, SEO-friendly documentation website deployable on Vercel.
+This project turns the `/wiki` markdown tree into a fast, SEO-friendly documentation website for the **Proventeq365** product, deployable on Vercel.
 
 ## Key design choices
 

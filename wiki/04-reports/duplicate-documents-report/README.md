@@ -1,96 +1,79 @@
 ---
 title: "Duplicate Documents Report"
-description: "When you click the down arrow icon under the ROT Analysis menu, a sub-menu will appear allowing you to access the Duplicate Documents Report. This report provides detaile"
+description: "Identify identical or very similar files stored in multiple locations across your environment to address storage inefficiencies and data integrity issues."
 ---
 
 # Duplicate Documents Report
 
-When you click the down arrow icon under the ROT Analysis menu, a sub-menu will appear allowing you to access the Duplicate Documents Report. This report provides detailed information on duplicate documents identified within the currently selected workspace scope.
+The **Duplicate Documents** screen helps you identify identical or very similar files stored in multiple locations across your environment. It highlights storage inefficiencies and potential data integrity issues, enabling informed decisions around content consolidation, cleanup, and governance.
 
-When the user selects the duplicate documents menu, the following screen is displayed.
+![Duplicate Documents — main view](images/image049.png)
 
-![Duplicate Documents Report illustration 1](images/image78.png)
+## Overview
 
-In Duplicate documents report, following section will be visible
+The summary section provides a quick snapshot of duplicate content and its impact:
 
-### 4.5.1 Header
+- **Duplicate Documents** — Total number of documents that exist more than once across different locations.
+- **Total Size** — The combined storage space used by all duplicate documents.
+- **High Risk** — Duplicate files assessed as high risk, such as very small or non-standard business files and files with no clear business value.
+- **Low Risk** — Duplicate files considered to have acceptable or necessary redundancy.
 
-Header section will show following information/details
+## Duplicate Items
 
-- **Header Text** -- The header reads - Duplicate documents
+Lists files with the number of duplicate copies in descending order from highest to lowest count. Each bar represents a file name; the number indicates how many duplicate copies exist. Use the **Search** box to locate a specific file by name.
 
-- **Information icon** -- when click on icon, it will open popup with text - **Detailed summary on duplicate data**. Popup will have See More link and when click on it, it redirect use to external link -
+## Creation Year
 
-The current workspace name appears in the top right corner; clicking it opens the Dashboard, where users can view and switch between all available workspaces.
+Shows duplicate documents grouped by their year of creation in descending order. Use the **Search** box to locate a specific year.
 
-### 4.5.2 Count and Size Summary
+## Last Modified
 
-This section will show count of duplicate documents, Total size of duplicate documents and Severity (None, Medium, High)
+Shows duplicate documents grouped by the year they were last updated in descending order. Use the **Search** box to locate a specific year.
 
-![Duplicate Documents Report illustration 2](images/image79.png)
+## File Extension
 
-### 4.5.3 Duplicate Item count Graph
+Breaks down duplicate documents by **file type**, such as PDF, DOCX, MSG, TXT, XLSX. You can switch between:
 
-A bar chart will display the number of duplicate documents across sites within the workspace, showing document names versus their duplicate counts.
+- **Size view** — Storage consumed by each file type.
+- **Percentage view** — Relative contribution to duplicate storage.
 
-![Duplicate Documents Report illustration 3](images/image80.png)
+## Created By
 
-When mouse hover the respective pie chart, it will show count of items
+Shows duplicate documents created by different users in descending order. Use the **Search** box to locate a specific user.
 
-### 4.5.4 Create in Year Graph
+## Report Filtering
 
-A graph will display the data by year of creation for site(s) within the workspace. The bar chart will present the count of records for each year.
+For all panels, each bar is clickable. The entire report filters based on the selected record, and the selected criteria appear next to **Filter by** at the top of the report. You can filter on multiple criteria simultaneously.
 
-![Duplicate Documents Report illustration 4](images/image81.png)
+![Duplicate Documents — multi-filter example](images/image050.png)
 
-When mouse hover the respective pie chart, it will show count of items
+## Table View
 
-### 4.5.5 Accessed in Year Graph
+![Duplicate Documents — table view](images/image051.png)
 
-A graphical representation will display data accessed by year across all sites within the workspace scope. The bar chart will differentiate data by year and corresponding count.
+The table at the bottom of the screen shows details of duplicate documents grouped by Site or OneDrive, with the following columns:
 
-![Duplicate Documents Report illustration 5](images/image82.png)
+- **Expand** — Use the expand icon (arrow) to drill down into site-level or OneDrive-level details.
+- **Site** — Name of the SharePoint site or OneDrive.
+- **Master Documents** — Number of unique (original) documents. These are considered the primary versions of files.
+- **Duplicate Documents** — Number of duplicate copies of documents found.
 
-When mouse hover the respective pie chart, it will show count of items
+Sorting is available on Site, Master Documents, and Duplicate Documents. A filter is available for the Site column.
 
-### 4.5.6 File extension Graph
+The table supports an expanded view for each row. Expanding a site displays specific locations within the site where duplicates exist. Example: *Marble Ridge Construction → Current Projects, 224 master documents and 224 duplicates.*
 
-A bar chart will present a graphical representation of the analysed data by file extension. The chart will appear as illustrated below. Users can toggle between displaying data by percentage or by size using the option above the bar chart.
+The **Export Data** button at the bottom left of the table downloads the report for offline analysis or reporting.
 
-![Duplicate Documents Report illustration 6](images/image83.png)
+At the bottom right of the table:
 
-The data will be presented as percentages, categorized by file extension such as txt, docx, pptx, pdf, as well as folders and other types.
+- **Rows Per Page** — 5, 10, 15, 20, 25, 30, 50, or 100. Default: 10.
+- **Total Record Count** — Range and total record count.
+- **Next/Previous Navigation** — Arrow icons to navigate.
 
-### 4.5.7 Created By Graph
+In the expanded view, clicking on a Duplicate item count opens a side panel listing duplicate documents and their counts.
 
-A pie chart will display workspace data separated by user, with each user represented by a distinct color and legend.
+![Duplicate Documents — side panel](images/image052.png)
 
-![Duplicate Documents Report illustration 7](images/image84.png)
+There is a **>** arrow for each record to drill down to the next level to see the location and details of its duplicate documents.
 
-When mouse hover the respective pie chart, it will show count of items
-
-### 4.5.8 List of Duplicate Documents in Table view
-
-A list of duplicate documents will be displayed at the bottom of the screen in list view.
-
-![Duplicate Documents Report illustration 8](images/image85.png)
-
-Table will has the following columns
-
-- **Expand** -- This column contains an arrow icon to expand or collapse the tree view for each site.
-
-- **Site** -- This column displays the name of each site included in the workspace scope.
-
-- **Total Duplicate count** -- This column shows the number of duplicate documents identified per site within the workspace scope.
-
-When expand tree view of available record, data will be furture drill down to library level as like below
-
-![Duplicate Documents Report illustration 9](images/image86.png)
-
-Additionally, in the bottom right corner of the workspace list table, several features are available:
-
-- **Rows Per Page:** Users can adjust the number of rows displayed per page using the dropdown control in this section. Available options include 5, 10, 15, 20, 25, 30, 50, or 100 rows per page, with the default set to 10 records per page.
-
-- **Total Record Count:** This feature displays the total number of records, for example, \"0-10 out of 200\".
-
-- **Next/Previous Navigation:** Users can navigate between record sets using the \"\<\" and \"\>\" arrow icons to move to the previous or next set of records.
+![Duplicate Documents — drill down](images/image053.png)
