@@ -54,6 +54,8 @@
     --topbar-h: 56px;
     --content-max: 760px;
     --gutter: 32px;
+    --shell-max: 1480px;
+    --shell-pad: 28px;
 
     --radius: 10px;
 
@@ -150,10 +152,24 @@
     background: linear-gradient(90deg, var(--accent-swatch) 0%, color-mix(in oklab, var(--accent-swatch) 70%, #fff) 100%);
   }
 
+  /* Bounded shell — both the topbar's inner row and the docs grid sit inside
+     a max-width container, matching the design's .topbar-inner / .shell. */
+  .topbar-inner {
+    max-width: var(--shell-max);
+    margin: 0 auto;
+    padding: 0 var(--shell-pad);
+    height: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+
   /* Docs grid — sidebar width is driven by --docs-sidebar-w so the toggle
      can collapse it without re-rendering. */
   .docs-grid {
     --docs-sidebar-w: var(--sidebar-w);
+    max-width: var(--shell-max);
+    margin: 0 auto;
+    padding: 0 var(--shell-pad);
   }
 
   html[data-sidebar-collapsed="true"] .docs-grid {
@@ -166,9 +182,9 @@
     }
   }
 
-  @media (min-width: 1280px) {
+  @media (max-width: 900px) {
     .docs-grid {
-      grid-template-columns: var(--docs-sidebar-w) minmax(0, 1fr) var(--toc-w);
+      padding: 0;
     }
   }
 
@@ -183,22 +199,36 @@
     overflow: hidden;
   }
 
-  /* Brand mark — gradient navy chip with offset white square */
-  .brand-mark {
-    position: relative;
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent-swatch) 0%, color-mix(in oklab, var(--accent-swatch) 55%, #000) 100%);
-    display: grid; place-items: center;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 1px 2px rgba(15,22,40,.12);
+  /* Proventeq wordmark — uses the original SVG (fill: currentColor) so it
+     adapts to the surrounding theme. */
+  .brand-logo {
+    display: inline-block;
+    height: 22px;
+    width: auto;
+    color: var(--fg);
     flex-shrink: 0;
   }
-  .brand-mark-inner {
-    width: 12px; height: 12px;
-    border-radius: 3px;
-    background: #fff;
-    box-shadow: -3px 3px 0 0 color-mix(in oklab, var(--accent-swatch) 30%, #fff 70%);
-    transform: translate(-1px, -1px);
+  .brand-sup {
+    font-weight: 500;
+    color: var(--accent-swatch);
+    margin-left: 2px;
+  }
+  html.dark .brand-sup {
+    color: color-mix(in oklab, var(--accent-swatch) 55%, #fff);
+  }
+  .brand-tag {
+    font-size: 11px;
+    color: var(--fg-3);
+    letter-spacing: 0.01em;
+  }
+  .brand-divider {
+    width: 1px; height: 22px;
+    background: var(--line);
+    margin: 0 4px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 720px) {
+    .brand-tag, .brand-divider { display: none; }
   }
 
   /* Pill / kbd / chip */
@@ -481,8 +511,7 @@
   .foot-col a { color: var(--fg-2); transition: color .15s; }
   .foot-col a:hover { color: var(--accent-primary); }
   .foot-brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--fg); margin-bottom: 4px; }
-  .foot-brand .brand-mark { width: 22px; height: 22px; border-radius: 6px; }
-  .foot-brand .brand-mark-inner { width: 9px; height: 9px; }
+  .foot-brand .brand-logo { height: 16px; }
   .foot-tag { font-size: 12.5px; color: var(--fg-3); line-height: 1.5; max-width: 280px; margin: 4px 0 0; }
   .foot-title { font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); margin-bottom: 6px; }
   .foot-bar {
@@ -771,6 +800,66 @@
     border-radius: var(--r-md);
     border: 1px solid var(--line);
     box-shadow: var(--shadow-1);
+  }
+
+  /* ── Dark theme contrast overrides ──────────────────────────────────────
+     Without these, accent text (navy) and accent-soft icon tiles fade into
+     the dark navy background. Lighten accent surfaces and shift accent text
+     toward white using oklab mixes against --accent-swatch. */
+  html.dark .section-card-icon,
+  html.dark .meta-action:hover,
+  html.dark .code-lang,
+  html.dark .art-code-inline {
+    color: #fff;
+  }
+  html.dark .sidebar-item.is-active,
+  html.dark .sidebar-section-head.is-active,
+  html.dark .sidebar-section-head.is-active .sidebar-section-icon {
+    color: #fff;
+  }
+  html.dark .toc a.is-active,
+  html.dark .toc a:hover,
+  html.dark .toc-ai button:hover,
+  html.dark .hero-chip:hover,
+  html.dark .highlight-eyebrow,
+  html.dark .highlight-cta,
+  html.dark .article-eyebrow a:hover,
+  html.dark .foot-col a:hover,
+  html.dark .meta-action-primary,
+  html.dark .pn:hover,
+  html.dark .ai-banner-body code,
+  html.dark .docs-prose a {
+    color: color-mix(in oklab, var(--accent-swatch) 50%, #fff);
+  }
+  html.dark .docs-prose a {
+    border-bottom-color: color-mix(in oklab, var(--accent-swatch) 50%, #fff 50%);
+  }
+  html.dark .toc a.is-active,
+  html.dark .toc a:hover {
+    border-left-color: color-mix(in oklab, var(--accent-swatch) 50%, #fff);
+  }
+  html.dark .ai-banner-mark,
+  html.dark .btn-primary {
+    background: color-mix(in oklab, var(--accent-swatch) 55%, #fff);
+    color: #0b1020;
+  }
+
+  /* Hero wordmark gradient — dark-mode-aware so "Proventeq365" doesn't fade. */
+  .hero-wordmark {
+    font-style: normal;
+    background-image: linear-gradient(180deg, var(--accent-primary) 0%, color-mix(in oklab, var(--accent-primary) 70%, #000) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  html.dark .hero-wordmark {
+    background-image: linear-gradient(180deg, color-mix(in oklab, var(--accent-swatch) 35%, #fff) 0%, color-mix(in oklab, var(--accent-swatch) 65%, #fff) 100%);
+  }
+  html.dark .sidebar-item.is-active .sidebar-item-rail {
+    background: color-mix(in oklab, var(--accent-swatch) 50%, #fff);
+  }
+  html.dark .art-quote {
+    border-left-color: color-mix(in oklab, var(--accent-swatch) 50%, #fff);
   }
 }
 

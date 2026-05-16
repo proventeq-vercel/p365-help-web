@@ -101,13 +101,7 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
         >
           Everything you need to run
           <br />
-          <em
-            className="not-italic bg-clip-text text-transparent"
-            style={{
-              backgroundImage:
-                "linear-gradient(180deg, var(--accent-primary) 0%, color-mix(in oklab, var(--accent-primary) 70%, #000) 100%)"
-            }}
-          >
+          <em className="hero-wordmark">
             Proventeq<span style={{ fontFeatureSettings: '"tnum" 1' }}>365</span>
           </em>{" "}
           with confidence.
@@ -235,10 +229,8 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
         <div className="foot-cols">
           <div className="foot-col">
             <div className="foot-brand">
-              <span className="brand-mark">
-                <span className="brand-mark-inner" />
-              </span>
-              <span>Proventeq365</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img alt="Proventeq365" className="brand-logo" src="/proventeq-logo.svg" />
             </div>
             <p className="foot-tag">
               The control plane for the Microsoft 365 content lifecycle.

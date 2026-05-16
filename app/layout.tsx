@@ -67,7 +67,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body className="min-h-screen">
         <script dangerouslySetInnerHTML={{ __html: initialThemeScript }} />
         <header
-          className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b px-5"
+          className="sticky top-0 z-40 border-b"
           style={{
             height: "var(--topbar-h)",
             background: "color-mix(in oklab, var(--bg-panel) 86%, transparent)",
@@ -76,32 +76,29 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             borderColor: "var(--line)"
           }}
         >
-          <div className="flex items-center gap-3">
-            <Link className="flex items-center gap-2.5" href="/">
-              <span className="brand-mark" aria-hidden="true">
-                <span className="brand-mark-inner" />
-              </span>
-              <span className="flex flex-col leading-tight">
-                <span className="text-sm font-semibold tracking-tight" style={{ color: "var(--fg)" }}>
-                  Proventeq<span style={{ color: "var(--accent-swatch)" }} className="font-medium">365</span>
-                </span>
-                <span className="text-[11px]" style={{ color: "var(--fg-3)" }}>Help center</span>
-              </span>
-            </Link>
-          </div>
+          <div className="topbar-inner">
+            <div className="flex items-center gap-3">
+              <Link className="flex items-center gap-2.5" href="/" aria-label="Proventeq365 Help center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img alt="" aria-hidden="true" className="brand-logo" src="/proventeq-logo.svg" />
+                <span className="brand-divider" aria-hidden="true" />
+                <span className="brand-tag">Help center</span>
+              </Link>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <a
-              className="icon-btn"
-              href="https://www.proventeq.com"
-              rel="noreferrer"
-              target="_blank"
-              aria-label="Proventeq.com"
-              title="Proventeq.com"
-            >
-              <ExternalLinkIcon size={16} />
-            </a>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <a
+                className="icon-btn"
+                href="https://www.proventeq.com"
+                rel="noreferrer"
+                target="_blank"
+                aria-label="Proventeq.com"
+                title="Proventeq.com"
+              >
+                <ExternalLinkIcon size={16} />
+              </a>
+            </div>
           </div>
         </header>
         <main className="relative">{children}</main>
