@@ -4,6 +4,8 @@ import rehypeSlug from "rehype-slug";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
+import { CodeBlock } from "@/components/code-block";
+import { HashIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import type { DocItem } from "@/lib/docs";
 import { resolveMarkdownHref, resolveMarkdownImageSrc } from "@/lib/docs";
@@ -15,18 +17,14 @@ interface MarkdownContentProps {
 export function MarkdownContent({ doc }: MarkdownContentProps) {
   return (
     <ReactMarkdown
-      className={cn(
-        "prose prose-slate max-w-none text-base leading-7",
-        "dark:prose-invert dark:prose-p:text-slate-200 dark:prose-li:text-slate-200 dark:prose-headings:text-slate-100 dark:prose-strong:text-slate-100 dark:prose-code:text-slate-100",
-        "prose-headings:scroll-mt-24 prose-a:text-primary dark:prose-a:text-cyan-300 prose-a:no-underline hover:prose-a:underline",
-        "prose-img:mx-auto prose-img:block prose-img:rounded-lg prose-img:border prose-img:shadow-sm prose-table:block prose-table:w-full prose-table:overflow-x-auto prose-table:rounded-lg prose-table:border"
-      )}
+      className={cn("docs-prose")}
       rehypePlugins={[rehypeSlug]}
       remarkPlugins={[remarkGfm, remarkBreaks]}
       components={{
         a({ href, children, ...props }) {
           const hrefValue = typeof href === "string" ? href : undefined;
           const resolvedHref = resolveMarkdownHref(doc, hrefValue);
+
           if (resolvedHref.startsWith("#")) {
             return (
               <a href={resolvedHref} {...props}>
@@ -58,7 +56,7 @@ export function MarkdownContent({ doc }: MarkdownContentProps) {
           return (
             <img
               alt={alt ?? ""}
-              className={cn("mx-auto block", className)}
+              className={cn("docs-img", className)}
               loading="lazy"
               src={resolvedSrc}
               title={tooltip}
@@ -66,29 +64,87 @@ export function MarkdownContent({ doc }: MarkdownContentProps) {
             />
           );
         },
-        table({ className, ...props }) {
-          return <table className={cn("w-full text-sm", className)} {...props} />;
+        h1() {
+          // The page title is rendered by the article header — suppress the
+          // first-class h1 in the markdown body to avoid duplication.
+          return null;
         },
-        th({ className, ...props }) {
-          return <th className={cn("border px-3 py-2 text-left font-semibold", className)} {...props} />;
+        h2({ children, id, ...props }) {
+          return (
+            <h2 className="art-h2" id={id} {...props}>
+              {id && (
+                <a className="art-anchor" href={`#${id}`} aria-label="Anchor">
+                  <HashIcon size={12} />
+                </a>
+              )}
+              {children}
+            </h2>
+          );
         },
-        td({ className, ...props }) {
-          return <td className={cn("border px-3 py-2 align-top", className)} {...props} />;
+        h3({ children, ...props }) {
+          return (
+            <h3 className="art-h3" {...props}>
+              {children}
+            </h3>
+          );
         },
-        h2({ className, ...props }) {
-          return <h2 className={cn("border-b pb-2", className)} {...props} />;
+        p({ children, ...props }) {
+          return (
+            <p className="art-p" {...props}>
+              {children}
+            </p>
+          );
+        },
+        ul({ children, ...props }) {
+          return (
+            <ul className="art-list" {...props}>
+              {children}
+            </ul>
+          );
+        },
+        ol({ children, ...props }) {
+          return (
+            <ol className="art-list art-list-ol" {...props}>
+              {children}
+            </ol>
+          );
+        },
+        blockquote({ children, ...props }) {
+          return (
+            <blockquote className="art-quote" {...props}>
+              {children}
+            </blockquote>
+          );
+        },
+        table({ children, ...props }) {
+          return (
+            <div className="art-table-wrap">
+              <table {...props}>{children}</table>
+            </div>
+          );
+        },
+        pre({ children }) {
+          // react-markdown nests <code> inside <pre> — extract it.
+          const childArray = Array.isArray(children) ? children : [children];
+          const codeChild = childArray.find((c): c is React.ReactElement<{ className?: string; children?: string }> =>
+            typeof c === "object" && c !== null && "props" in c
+          );
+          const className = codeChild?.props?.className ?? "";
+          const langMatch = /language-([\w-]+)/.exec(className);
+          const code = String(codeChild?.props?.children ?? "").replace(/\n$/, "");
+          return <CodeBlock code={code} language={langMatch?.[1]} className={className} />;
         },
         code({ className, children, ...props }) {
           const isInline = !className;
           if (isInline) {
             return (
-              <code className="rounded bg-muted px-1 py-0.5 text-[0.9em]" {...props}>
+              <code className="art-code-inline" {...props}>
                 {children}
               </code>
             );
           }
           return (
-            <code className={cn("block overflow-x-auto rounded-md bg-muted p-4 text-sm", className)} {...props}>
+            <code className={className} {...props}>
               {children}
             </code>
           );

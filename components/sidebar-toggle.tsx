@@ -1,8 +1,8 @@
 "use client";
 
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
+import { PanelLeftCloseIcon, PanelLeftOpenIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "p365-help-sidebar-collapsed";
@@ -68,7 +68,7 @@ export function SidebarCollapseButton({ className }: { className?: string }) {
       title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       type="button"
     >
-      <PanelLeftClose className="h-4 w-4" />
+      <PanelLeftCloseIcon size={16} />
     </button>
   );
 }
@@ -87,7 +87,7 @@ export function SidebarExpandButton() {
       title="Expand sidebar"
       type="button"
     >
-      <PanelLeftOpen className="h-4 w-4" />
+      <PanelLeftOpenIcon size={16} />
     </button>
   );
 }

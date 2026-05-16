@@ -1,6 +1,5 @@
-import { ListTree } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { AiIcon, ArrowUpRightIcon } from "@/components/icons";
+import { CopyMarkdownAction, OpenInCopilotAction } from "@/components/article-actions";
 import type { Heading } from "@/lib/docs";
 
 interface DocsTocProps {
@@ -8,28 +7,38 @@ interface DocsTocProps {
 }
 
 export function DocsToc({ headings }: DocsTocProps) {
-  if (!headings.length) {
-    return null;
-  }
-
   return (
-    <nav aria-label="On this page" className="space-y-1.5">
-      <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        <ListTree className="h-3.5 w-3.5" />
-        On this page
-      </p>
-      {headings.map((heading) => (
-        <a
-          className={cn(
-            "block rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-            heading.level === 3 && "ml-4 text-xs"
-          )}
-          href={`#${heading.id}`}
-          key={heading.id}
-        >
-          {heading.text}
-        </a>
-      ))}
-    </nav>
+    <aside className="toc" aria-label="On this page">
+      {headings.length > 0 && (
+        <>
+          <div className="toc-title">On this page</div>
+          <ul>
+            {headings.map((h) => (
+              <li key={h.id}>
+                <a href={`#${h.id}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+          <div className="toc-divider" />
+        </>
+      )}
+
+      <div className="toc-title toc-title-soft">For Copilot &amp; AI</div>
+      <ul className="toc-ai">
+        <li>
+          <a href="/llms.txt" rel="noreferrer" target="_blank">
+            <AiIcon size={11} />
+            <span>llms.txt</span>
+            <ArrowUpRightIcon size={10} className="ml-auto opacity-55" />
+          </a>
+        </li>
+        <li>
+          <CopyMarkdownAction variant="toc" />
+        </li>
+        <li>
+          <OpenInCopilotAction variant="toc" />
+        </li>
+      </ul>
+    </aside>
   );
 }

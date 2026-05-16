@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
-import { ArrowLeft, ArrowRight, ChevronRight, Home, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  HomeIcon,
+  PanelLeftCloseIcon
+} from "@/components/icons";
+import { CopyMarkdownAction, MarkdownPublisher, OpenInCopilotAction } from "@/components/article-actions";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { DocsToc } from "@/components/docs-toc";
+import { HomeView } from "@/components/home-view";
 import { MarkdownContent } from "@/components/markdown-content";
 import { SidebarCollapseButton, SidebarExpandButton } from "@/components/sidebar-toggle";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDocBySlug, getDocNeighbors, getDocsData } from "@/lib/docs";
-import { getSectionUiMeta } from "@/lib/docs-ui";
 import { siteConfig } from "@/lib/site-config";
-import { cn } from "@/lib/utils";
+import { renderDocAsMarkdown } from "@/lib/markdown-export";
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -20,7 +25,7 @@ interface PageProps {
 export const dynamicParams = false;
 
 function breadcrumbsFromSlug(slugSegments: string[]) {
-  const crumbs = [{ href: "/", label: "Home" }];
+  const crumbs = [{ href: "/", label: "Documentation" }];
   let partial: string[] = [];
 
   for (const segment of slugSegments) {
@@ -52,9 +57,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: doc.title,
     description: doc.description,
-    alternates: {
-      canonical: doc.url
-    },
+    alternates: { canonical: doc.url },
     openGraph: {
       title: doc.title,
       description: doc.description,
@@ -72,14 +75,14 @@ export default async function DocPage({ params }: PageProps) {
     notFound();
   }
 
+  const isHome = doc.url === "/";
   const crumbs = breadcrumbsFromSlug(slug);
   const { previous, next } = getDocNeighbors(doc.url);
-  const isHome = doc.url === "/";
-  const currentMeta = getSectionUiMeta(doc.url);
-  const CurrentIcon = currentMeta.icon;
+  const articleMarkdown = renderDocAsMarkdown(doc);
+
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
+    "@type": isHome ? "WebSite" : "TechArticle",
     name: doc.title,
     description: doc.description,
     url: `${siteConfig.baseUrl}${doc.url}`,
@@ -94,129 +97,158 @@ export default async function DocPage({ params }: PageProps) {
     }
   };
 
+  // Home view: render the marketing landing page, but keep the sidebar.
+  if (isHome) {
+    return (
+      <>
+        <script
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          type="application/ld+json"
+        />
+        <SidebarExpandButton />
+        <div
+          className="docs-grid grid"
+          style={{ minHeight: "calc(100vh - var(--topbar-h))" }}
+        >
+          <aside
+            className="docs-sidebar-aside scrollbar-slim lg:sticky lg:overflow-y-auto"
+            style={{
+              top: "var(--topbar-h)",
+              height: "calc(100vh - var(--topbar-h))",
+              borderRight: "1px solid var(--line)",
+              background: "var(--bg)"
+            }}
+          >
+            <div className="flex justify-end px-3 pt-3 lg:hidden">
+              <SidebarCollapseButton />
+            </div>
+            <DocsSidebar currentUrl={doc.url} items={docsData.sidebar} />
+          </aside>
+          <HomeView topSections={docsData.topSections} totalDocs={docsData.docs.length} />
+        </div>
+      </>
+    );
+  }
+
+  // Article view.
   return (
-    <div className="page-shell py-6">
+    <>
       <script
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         type="application/ld+json"
       />
+      <MarkdownPublisher markdown={articleMarkdown} />
       <SidebarExpandButton />
-      <div className="docs-grid grid gap-8">
-        <aside className="docs-sidebar-aside lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-slim">
-          <div className="rounded-2xl border bg-card/90 p-3 shadow-sm backdrop-blur pastel-ring">
-            <div className="flex items-center justify-between px-3 pb-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Sections</p>
-              <SidebarCollapseButton />
-            </div>
-            <DocsSidebar currentUrl={doc.url} items={docsData.sidebar} />
+      <div className="docs-grid grid" style={{ minHeight: "calc(100vh - var(--topbar-h))" }}>
+        <aside
+          className="docs-sidebar-aside scrollbar-slim lg:sticky lg:overflow-y-auto"
+          style={{
+            top: "var(--topbar-h)",
+            height: "calc(100vh - var(--topbar-h))",
+            borderRight: "1px solid var(--line)",
+            background: "var(--bg)"
+          }}
+        >
+          <div className="flex justify-end px-3 pt-3 lg:hidden">
+            <SidebarCollapseButton />
           </div>
+          <DocsSidebar currentUrl={doc.url} items={docsData.sidebar} />
         </aside>
 
-        <main className="min-w-0">
-          <nav aria-label="Breadcrumb" className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-            {crumbs.map((crumb, index) => (
-              <span className="flex items-center gap-2" key={crumb.href}>
-                <Link className="inline-flex items-center gap-1 hover:text-foreground" href={crumb.href}>
-                  {index === 0 ? <Home className="h-3.5 w-3.5" /> : null}
-                  {crumb.label}
-                </Link>
-                {index < crumbs.length - 1 && <ChevronRight className="h-3.5 w-3.5" />}
-              </span>
-            ))}
-          </nav>
+        <div
+          className="grid min-w-0 gap-12 px-6 pt-7 pb-20 lg:px-8 xl:[grid-template-columns:minmax(0,1fr)_var(--toc-w)]"
+        >
+          <article className="min-w-0" style={{ maxWidth: "var(--content-max)" }}>
+            <header className="border-b pb-6" style={{ borderColor: "var(--line)" }}>
+              <nav aria-label="Breadcrumb" className="article-eyebrow">
+                {crumbs.map((crumb, index) => (
+                  <span className="inline-flex items-center gap-1.5" key={crumb.href}>
+                    {index === 0 ? (
+                      <Link className="inline-flex items-center gap-1" href={crumb.href}>
+                        <HomeIcon size={12} />
+                        {crumb.label}
+                      </Link>
+                    ) : index < crumbs.length - 1 ? (
+                      <Link href={crumb.href}>{crumb.label}</Link>
+                    ) : (
+                      <span style={{ color: "var(--fg-2)" }}>{crumb.label}</span>
+                    )}
+                    {index < crumbs.length - 1 && <ChevronRightIcon size={11} style={{ color: "var(--fg-4)" }} />}
+                  </span>
+                ))}
+              </nav>
 
-          <section className={cn("mb-4 rounded-2xl border p-4 shadow-sm pastel-ring", currentMeta.cardClass)}>
-            <div className="flex flex-wrap items-start gap-3">
-              <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", currentMeta.iconBadgeClass)}>
-                <CurrentIcon className="h-5 w-5" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <h1 className="text-lg font-semibold">{doc.title}</h1>
-                <p className="mt-1 text-sm text-muted-foreground">{doc.description}</p>
+              <h1 className="article-title">{doc.title}</h1>
+              {doc.description && doc.description !== doc.title && (
+                <p className="article-summary">{doc.description}</p>
+              )}
+
+              <div className="article-meta">
+                <span className="meta-pill">
+                  <span
+                    aria-hidden="true"
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ background: "var(--accent-swatch)" }}
+                  />
+                  Updated May 2026
+                </span>
+                <span className="meta-actions">
+                  <CopyMarkdownAction />
+                  <OpenInCopilotAction />
+                </span>
               </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card/80 px-2.5 py-1 text-xs font-medium text-muted-foreground">
-                <Sparkles className="h-3.5 w-3.5" />
-                AI-friendly docs
-              </span>
-            </div>
-          </section>
+            </header>
 
-          <article className="rounded-2xl border bg-card/95 p-5 shadow-sm sm:p-8 pastel-ring">
-            <MarkdownContent doc={doc} />
+            <div className="pt-6">
+              <MarkdownContent doc={doc} />
+            </div>
+
+            <nav className="mt-7 grid grid-cols-2 gap-3">
+              {previous ? (
+                <Link className="pn pn-prev" href={previous.url}>
+                  <ChevronLeftIcon size={14} />
+                  <span>
+                    <span className="pn-label">Previous</span>
+                    <span className="pn-title">{previous.title}</span>
+                  </span>
+                </Link>
+              ) : (
+                <span className="pn pn-disabled" aria-hidden="true">
+                  <ChevronLeftIcon size={14} />
+                  <span>
+                    <span className="pn-label">Previous</span>
+                    <span className="pn-title">—</span>
+                  </span>
+                </span>
+              )}
+              {next ? (
+                <Link className="pn pn-next" href={next.url}>
+                  <span>
+                    <span className="pn-label">Next</span>
+                    <span className="pn-title">{next.title}</span>
+                  </span>
+                  <ChevronRightIcon size={14} />
+                </Link>
+              ) : (
+                <span className="pn pn-next pn-disabled" aria-hidden="true">
+                  <span>
+                    <span className="pn-label">Next</span>
+                    <span className="pn-title">—</span>
+                  </span>
+                  <ChevronRightIcon size={14} />
+                </span>
+              )}
+            </nav>
           </article>
 
-          {isHome && docsData.topSections.length > 0 && (
-            <section className="mt-8">
-              <h2 className="mb-4 text-lg font-semibold">Quick access</h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {docsData.topSections.map((sectionDoc) => {
-                  const sectionMeta = getSectionUiMeta(sectionDoc.url);
-                  const SectionIcon = sectionMeta.icon;
-
-                  return (
-                    <Card className={cn("transition-shadow hover:shadow-md pastel-ring", sectionMeta.cardClass)} key={sectionDoc.url}>
-                      <CardHeader className="pb-3">
-                        <span
-                          className={cn("mb-2 inline-flex h-9 w-9 items-center justify-center rounded-lg", sectionMeta.iconBadgeClass)}
-                        >
-                          <SectionIcon className="h-4 w-4" />
-                        </span>
-                        <CardTitle className="text-base">
-                          <Link className="hover:text-primary" href={sectionDoc.url}>
-                            {sectionDoc.title}
-                          </Link>
-                        </CardTitle>
-                        <CardDescription>{sectionDoc.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Link className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline" href={sectionDoc.url}>
-                          Open section
-                          <ChevronRight className="h-3.5 w-3.5" />
-                        </Link>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            <Link
-              className={cn(
-                "rounded-xl border bg-card p-4 text-sm transition-colors pastel-ring",
-                previous ? "hover:bg-muted" : "pointer-events-none opacity-50"
-              )}
-              href={previous?.url ?? "#"}
-            >
-              <p className="inline-flex items-center gap-1 text-xs uppercase tracking-wide text-muted-foreground">
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Previous
-              </p>
-              <p className="mt-1 font-medium">{previous?.title ?? "No previous page"}</p>
-            </Link>
-            <Link
-              className={cn(
-                "rounded-xl border bg-card p-4 text-right text-sm transition-colors pastel-ring",
-                next ? "hover:bg-muted" : "pointer-events-none opacity-50"
-              )}
-              href={next?.url ?? "#"}
-            >
-              <p className="inline-flex items-center gap-1 text-xs uppercase tracking-wide text-muted-foreground">
-                Next
-                <ArrowRight className="h-3.5 w-3.5" />
-              </p>
-              <p className="mt-1 font-medium">{next?.title ?? "No next page"}</p>
-            </Link>
-          </div>
-        </main>
-
-        <aside className="hidden xl:block">
-          <div className="sticky top-20 rounded-2xl border bg-card/90 p-4 shadow-sm backdrop-blur pastel-ring">
+          <div className="hidden xl:block">
             <DocsToc headings={doc.headings} />
           </div>
-        </aside>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
+
+// Suppress unused-import warning for the icon kept available to layout consumers.
+void PanelLeftCloseIcon;

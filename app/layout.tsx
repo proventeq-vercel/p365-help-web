@@ -1,31 +1,38 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Bot, ExternalLink } from "lucide-react";
-import Image from "next/image";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { CopilotButton } from "@/components/copilot-button";
+import { ExternalLinkIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { siteConfig } from "@/lib/site-config";
 
 import "@/app/globals.css";
 
-const inter = Inter({
+const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  variable: "--font-inter"
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-sans",
+  display: "swap"
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
+  display: "swap"
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
   title: {
-    default: `${siteConfig.name} Documentation`,
+    default: `${siteConfig.name} — Help Center`,
     template: `%s | ${siteConfig.name}`
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
-  alternates: {
-    canonical: "/"
-  },
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     title: `${siteConfig.name} Documentation`,
@@ -57,47 +64,50 @@ const initialThemeScript = `
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} min-h-screen`}>
+    <html lang="en" suppressHydrationWarning className={`${plexSans.variable} ${plexMono.variable}`}>
+      <body className="min-h-screen">
         <script dangerouslySetInnerHTML={{ __html: initialThemeScript }} />
-        <header className="sticky top-0 z-40 border-b border-border/80 bg-card/90 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-          <div className="brand-gradient h-1 w-full" />
-          <div className="page-shell flex h-16 items-center justify-between gap-4">
-            <Link className="group flex items-center gap-3" href="/">
-              <span className="flex items-center rounded-lg bg-[#0f2c3d] px-2.5 py-1.5 shadow-sm ring-1 ring-black/5">
-                <Image
-                  alt="Proventeq logo"
-                  className="h-5 w-auto"
-                  height={28}
-                  priority
-                  src="/proventeq-logo.svg"
-                  width={150}
-                />
+        <header
+          className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b px-5"
+          style={{
+            height: "var(--topbar-h)",
+            background: "color-mix(in oklab, var(--bg-panel) 86%, transparent)",
+            backdropFilter: "saturate(160%) blur(14px)",
+            WebkitBackdropFilter: "saturate(160%) blur(14px)",
+            borderColor: "var(--line)"
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <Link className="flex items-center gap-2.5" href="/">
+              <span className="brand-mark" aria-hidden="true">
+                <span className="brand-mark-inner" />
               </span>
-              <span className="hidden text-sm font-semibold sm:inline">P365 Help Center</span>
+              <span className="flex flex-col leading-tight">
+                <span className="text-sm font-semibold tracking-tight" style={{ color: "var(--fg)" }}>
+                  Proventeq<span style={{ color: "var(--accent-swatch)" }} className="font-medium">365</span>
+                </span>
+                <span className="text-[11px]" style={{ color: "var(--fg-3)" }}>Help center</span>
+              </span>
             </Link>
-            <nav className="flex items-center gap-2 text-sm">
-              <a
-                className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                href="https://www.proventeq.com"
-                rel="noreferrer"
-                target="_blank"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Proventeq
-              </a>
-              <a className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" href="/llms.txt">
-                <Bot className="h-3.5 w-3.5" />
-                llms.txt
-              </a>
-              <ThemeToggle />
-            </nav>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CopilotButton />
+            <span className="topbar-divider" aria-hidden="true" />
+            <ThemeToggle />
+            <a
+              className="icon-btn"
+              href="https://www.proventeq.com"
+              rel="noreferrer"
+              target="_blank"
+              aria-label="Proventeq.com"
+              title="Proventeq.com"
+            >
+              <ExternalLinkIcon size={16} />
+            </a>
           </div>
         </header>
-        <main className="relative">
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[radial-gradient(50%_50%_at_50%_0%,rgba(52,161,160,0.12),rgba(255,255,255,0))] dark:bg-[radial-gradient(50%_50%_at_50%_0%,rgba(52,161,160,0.2),rgba(0,0,0,0))]" />
-          {children}
-        </main>
+        <main className="relative">{children}</main>
       </body>
     </html>
   );

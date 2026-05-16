@@ -1,7 +1,8 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import { MoonIcon, SunIcon } from "@/components/icons";
 
 const THEME_STORAGE_KEY = "p365-help-theme";
 
@@ -19,7 +20,6 @@ export function ThemeToggle() {
   useEffect(() => {
     const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
     const initialTheme = storedTheme === "dark" || storedTheme === "light" ? storedTheme : "light";
-
     applyTheme(initialTheme);
     setTheme(initialTheme);
     setMounted(true);
@@ -34,12 +34,12 @@ export function ThemeToggle() {
   return (
     <button
       aria-label={mounted ? `Switch to ${theme === "dark" ? "light" : "dark"} mode` : "Toggle color mode"}
-      className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      className="icon-btn"
       onClick={toggleTheme}
+      title={mounted ? `Switch to ${theme === "dark" ? "light" : "dark"} mode` : "Toggle theme"}
       type="button"
     >
-      {mounted && theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-      <span className="hidden sm:inline">{mounted ? (theme === "dark" ? "Light mode" : "Dark mode") : "Theme"}</span>
+      {mounted && theme === "dark" ? <SunIcon size={16} /> : <MoonIcon size={16} />}
     </button>
   );
 }
