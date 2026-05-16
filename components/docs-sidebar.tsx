@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 
 import {
   AiIcon,
@@ -87,6 +87,7 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
   const sections = useMemo(() => groupItems(items), [items]);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const [hydrated, setHydrated] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
 
   // Load collapsed state from localStorage after hydration; until then, render
   // everything expanded (matches SSR output to avoid mismatch warnings).
@@ -99,6 +100,14 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
     }
     setHydrated(true);
   }, []);
+
+  // After hydration, scroll the active sidebar item into the visible area so
+  // the sidebar doesn't stay stuck at the top when navigating deep pages.
+  useEffect(() => {
+    if (!hydrated || !navRef.current) return;
+    const active = navRef.current.querySelector<HTMLElement>(".is-active");
+    active?.scrollIntoView({ block: "nearest", behavior: "instant" });
+  }, [hydrated, currentUrl]);
 
   const toggle = useCallback((url: string) => {
     setCollapsed((prev) => {
@@ -155,7 +164,7 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
       </div>
 
       {/* Sections */}
-      <nav aria-label="Documentation sections" className="flex flex-col gap-1">
+      <nav aria-label="Documentation sections" className="flex flex-col gap-1" ref={navRef}>
         {sections.map((section) => {
           const isCollapsed = hydrated && collapsed.has(section.url);
           const SectionIcon = section.Icon;

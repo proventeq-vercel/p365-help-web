@@ -96,6 +96,7 @@
     --line-2:       oklch(30% 0.012 260);
     --line-strong:  oklch(38% 0.014 260);
 
+    --accent-primary: oklch(68% 0.15 258);
     --accent-soft:  oklch(28% 0.06 258);
     --accent-chip:  oklch(34% 0.10 258);
 
@@ -207,6 +208,9 @@
     width: auto;
     color: var(--fg);
     flex-shrink: 0;
+  }
+  html.dark .brand-logo {
+    filter: brightness(0) invert(1);
   }
   .brand-sup {
     font-weight: 500;
