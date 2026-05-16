@@ -8,7 +8,7 @@ import {
   HomeIcon,
   PanelLeftCloseIcon
 } from "@/components/icons";
-import { CopyMarkdownAction, MarkdownPublisher, OpenInCopilotAction } from "@/components/article-actions";
+import { CopyMarkdownAction, MarkdownPublisher } from "@/components/article-actions";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { DocsToc } from "@/components/docs-toc";
 import { HomeView } from "@/components/home-view";
@@ -156,7 +156,7 @@ export default async function DocPage({ params }: PageProps) {
         </aside>
 
         <div
-          className="grid min-w-0 gap-12 px-6 pt-7 pb-20 lg:px-8 xl:[grid-template-columns:minmax(0,1fr)_var(--toc-w)]"
+          className="mx-auto grid w-full min-w-0 max-w-[1180px] gap-12 px-6 pt-7 pb-20 lg:px-8 xl:[grid-template-columns:minmax(0,1fr)_var(--toc-w)]"
         >
           <article className="min-w-0" style={{ maxWidth: "var(--content-max)" }}>
             <header className="border-b pb-6" style={{ borderColor: "var(--line)" }}>
@@ -194,7 +194,6 @@ export default async function DocPage({ params }: PageProps) {
                 </span>
                 <span className="meta-actions">
                   <CopyMarkdownAction />
-                  <OpenInCopilotAction />
                 </span>
               </div>
             </header>

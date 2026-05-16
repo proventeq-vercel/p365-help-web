@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 
-import { CheckIcon, CopyIcon, SparklesIcon } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { CheckIcon, CopyIcon } from "@/components/icons";
 
-const COPILOT_URL = "https://m365.cloud.microsoft/chat";
-const COPILOT_PREFIX =
-  "I'm reading the Proventeq365 help article below. Please answer my next question using this as context.\n\n---\n\n";
+declare global {
+  interface Window {
+    __p365CurrentMarkdown?: string;
+  }
+}
 
 function readMarkdown(): string {
   if (typeof window === "undefined") return "";
@@ -46,47 +47,10 @@ export function CopyMarkdownAction({ variant = "meta" }: { variant?: "meta" | "t
   );
 }
 
-export function OpenInCopilotAction({ variant = "meta" }: { variant?: "meta" | "toc" }) {
-  const [pinged, setPinged] = useState(false);
-
-  function handleClick() {
-    const md = readMarkdown();
-    if (md && navigator.clipboard) {
-      navigator.clipboard.writeText(COPILOT_PREFIX + md).catch(() => {});
-      setPinged(true);
-      setTimeout(() => setPinged(false), 2200);
-    }
-    window.open(COPILOT_URL, "_blank", "noopener,noreferrer");
-  }
-
-  const Icon = pinged ? CheckIcon : SparklesIcon;
-  const label = pinged ? "Copied — paste in Copilot" : "Open in M365 Copilot";
-
-  if (variant === "toc") {
-    return (
-      <button onClick={handleClick} type="button">
-        <Icon size={11} />
-        <span>{label}</span>
-      </button>
-    );
-  }
-
-  return (
-    <button
-      className={cn("meta-action meta-action-primary")}
-      onClick={handleClick}
-      type="button"
-    >
-      <Icon size={12} />
-      <span>{label}</span>
-    </button>
-  );
-}
-
 /**
  * Publishes the current page's Markdown on `window.__p365CurrentMarkdown` so
- * that the Copy / Open-in-Copilot actions (which can live anywhere in the page,
- * including the topbar) read consistent content for the current page.
+ * that the Copy-as-Markdown action reads the right content for the current
+ * page, regardless of where the button is mounted.
  */
 export function MarkdownPublisher({ markdown }: { markdown: string }) {
   if (typeof window !== "undefined") {

@@ -1,5 +1,5 @@
 import { AiIcon, ArrowUpRightIcon } from "@/components/icons";
-import { CopyMarkdownAction, OpenInCopilotAction } from "@/components/article-actions";
+import { CopyMarkdownAction } from "@/components/article-actions";
 import type { Heading } from "@/lib/docs";
 
 interface DocsTocProps {
@@ -34,9 +34,6 @@ export function DocsToc({ headings }: DocsTocProps) {
         </li>
         <li>
           <CopyMarkdownAction variant="toc" />
-        </li>
-        <li>
-          <OpenInCopilotAction variant="toc" />
         </li>
       </ul>
     </aside>

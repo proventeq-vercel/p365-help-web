@@ -210,25 +210,17 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
         </div>
         <div>
           <div className="ai-banner-title">
-            Built for humans <span>and</span> for Copilot.
+            Built for humans <span>and</span> for AI.
           </div>
           <div className="ai-banner-body">
-            Every article is exposed as clean Markdown and indexed in <code>llms.txt</code>. Copy
-            a page as Markdown, drop it into Microsoft 365 Copilot, ChatGPT or Claude — the answer
-            comes back grounded in the same source you read.
+            Every article is exposed as clean Markdown and indexed in <code>llms.txt</code>. Use
+            <strong> Copy as Markdown</strong> on any page to drop it into Microsoft 365 Copilot,
+            ChatGPT or Claude — the answer comes back grounded in the same source you read.
           </div>
         </div>
         <div className="flex gap-2 max-[820px]:col-span-full">
           <a
             className="btn btn-primary"
-            href="https://m365.cloud.microsoft/chat"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <SparklesIcon size={12} /> Open Copilot
-          </a>
-          <a
-            className="btn btn-ghost"
             href="/llms.txt"
             rel="noreferrer"
             target="_blank"
@@ -266,9 +258,8 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
             <Link href="/appendix">Appendix</Link>
           </div>
           <div className="foot-col">
-            <div className="foot-title">For AI & Copilot</div>
+            <div className="foot-title">For AI tools</div>
             <a href="/llms.txt" rel="noreferrer" target="_blank">llms.txt</a>
-            <a href="https://m365.cloud.microsoft/chat" rel="noreferrer" target="_blank">Open in M365 Copilot</a>
           </div>
         </div>
         <div className="foot-bar">

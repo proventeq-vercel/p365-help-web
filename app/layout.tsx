@@ -3,7 +3,6 @@ import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { CopilotButton } from "@/components/copilot-button";
 import { ExternalLinkIcon } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { siteConfig } from "@/lib/site-config";
@@ -92,8 +91,6 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           </div>
 
           <div className="flex items-center gap-2">
-            <CopilotButton />
-            <span className="topbar-divider" aria-hidden="true" />
             <ThemeToggle />
             <a
               className="icon-btn"
