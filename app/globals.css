@@ -62,4 +62,77 @@
   .pastel-ring {
     @apply ring-1 ring-black/5 dark:ring-white/10;
   }
+
+  /* Docs grid uses a CSS variable for the sidebar width so the toggle
+     can collapse the column without re-rendering the layout. */
+  .docs-grid {
+    --docs-sidebar-w: 270px;
+  }
+
+  html[data-sidebar-collapsed="true"] .docs-grid {
+    --docs-sidebar-w: 0px;
+  }
+
+  @media (min-width: 1024px) {
+    .docs-grid {
+      grid-template-columns: var(--docs-sidebar-w) minmax(0, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .docs-grid {
+      grid-template-columns: var(--docs-sidebar-w) minmax(0, 1fr) 240px;
+    }
+  }
+
+  .docs-sidebar-aside {
+    transition: width 200ms ease, opacity 180ms ease;
+  }
+
+  html[data-sidebar-collapsed="true"] .docs-sidebar-aside {
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+}
+
+@layer utilities {
+  /* Slim, polished scrollbar for sidebars and TOCs — always visible but
+     subtle, brighter on hover. */
+  .scrollbar-slim {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+    scrollbar-gutter: stable;
+  }
+
+  .scrollbar-slim:hover,
+  .scrollbar-slim:focus-within {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.45) transparent;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .scrollbar-slim:hover::-webkit-scrollbar-thumb,
+  .scrollbar-slim:focus-within::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.45);
+  }
+
+  .scrollbar-slim::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.7);
+  }
 }

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { DocsToc } from "@/components/docs-toc";
 import { MarkdownContent } from "@/components/markdown-content";
+import { SidebarCollapseButton, SidebarExpandButton } from "@/components/sidebar-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDocBySlug, getDocNeighbors, getDocsData } from "@/lib/docs";
 import { getSectionUiMeta } from "@/lib/docs-ui";
@@ -99,10 +100,14 @@ export default async function DocPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         type="application/ld+json"
       />
-      <div className="grid gap-8 lg:grid-cols-[270px_minmax(0,1fr)] xl:grid-cols-[270px_minmax(0,1fr)_240px]">
-        <aside className="lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)] lg:overflow-y-auto">
+      <SidebarExpandButton />
+      <div className="docs-grid grid gap-8">
+        <aside className="docs-sidebar-aside lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-slim">
           <div className="rounded-2xl border bg-card/90 p-3 shadow-sm backdrop-blur pastel-ring">
-            <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Sections</p>
+            <div className="flex items-center justify-between px-3 pb-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Sections</p>
+              <SidebarCollapseButton />
+            </div>
             <DocsSidebar currentUrl={doc.url} items={docsData.sidebar} />
           </div>
         </aside>

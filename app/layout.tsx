@@ -43,11 +43,14 @@ export const metadata: Metadata = {
 const initialThemeScript = `
 (() => {
   try {
-    const storageKey = "p365-help-theme";
-    const stored = localStorage.getItem(storageKey);
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const resolved = stored === "dark" || stored === "light" ? stored : (systemPrefersDark ? "dark" : "light");
+    const themeKey = "p365-help-theme";
+    const stored = localStorage.getItem(themeKey);
+    const resolved = stored === "dark" || stored === "light" ? stored : "light";
     document.documentElement.classList.toggle("dark", resolved === "dark");
+
+    const sidebarKey = "p365-help-sidebar-collapsed";
+    const collapsed = localStorage.getItem(sidebarKey) === "true";
+    document.documentElement.setAttribute("data-sidebar-collapsed", collapsed ? "true" : "false");
   } catch {}
 })();
 `;

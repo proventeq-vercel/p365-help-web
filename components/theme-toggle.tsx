@@ -7,14 +7,6 @@ const THEME_STORAGE_KEY = "p365-help-theme";
 
 type Theme = "light" | "dark";
 
-function resolveSystemTheme(): Theme {
-  if (typeof window === "undefined") {
-    return "light";
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
 function applyTheme(theme: Theme) {
   document.documentElement.classList.toggle("dark", theme === "dark");
   localStorage.setItem(THEME_STORAGE_KEY, theme);
@@ -26,7 +18,7 @@ export function ThemeToggle() {
 
   useEffect(() => {
     const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    const initialTheme = storedTheme === "dark" || storedTheme === "light" ? storedTheme : resolveSystemTheme();
+    const initialTheme = storedTheme === "dark" || storedTheme === "light" ? storedTheme : "light";
 
     applyTheme(initialTheme);
     setTheme(initialTheme);
