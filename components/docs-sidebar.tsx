@@ -50,6 +50,7 @@ const SECTION_ICONS: Record<string, ComponentType<IconProps>> = {
   "/notification": BellIcon,
   "/archive": ArchiveIcon,
   "/exchange-monitoring": MailIcon,
+  "/deployment-prerequisites": RocketIcon,
   "/appendix": BookIcon
 };
 
@@ -61,24 +62,34 @@ interface SidebarSection {
 }
 
 function groupItems(items: SidebarItem[]): SidebarSection[] {
-  const sections: SidebarSection[] = [];
-  let current: SidebarSection | null = null;
+  // Group by top-level URL segment rather than by document order. The flat
+  // list isn't guaranteed to emit a section's depth-1 header before its
+  // children (a numbered child file sorts ahead of the un-prefixed section
+  // README), so order-based grouping would attach those children to the
+  // wrong parent.
+  const byKey = new Map<string, SidebarSection>();
+  const order: string[] = [];
 
   for (const item of items) {
+    const key = `/${item.url.split("/")[1] ?? ""}`;
+
+    let section = byKey.get(key);
+    if (!section) {
+      section = { url: key, title: item.title, Icon: FolderIcon, items: [] };
+      byKey.set(key, section);
+      order.push(key);
+    }
+
     if (item.depth === 1) {
-      current = {
-        url: item.url,
-        title: item.title,
-        Icon: SECTION_ICONS[item.url] ?? FolderIcon,
-        items: []
-      };
-      sections.push(current);
-    } else if (current) {
-      current.items.push(item);
+      section.url = item.url;
+      section.title = item.title;
+      section.Icon = SECTION_ICONS[item.url] ?? FolderIcon;
+    } else {
+      section.items.push(item);
     }
   }
 
-  return sections;
+  return order.map((key) => byKey.get(key) as SidebarSection);
 }
 
 const COLLAPSE_STORAGE_KEY = "p365-help-sections-collapsed";
@@ -89,17 +100,33 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
   const [hydrated, setHydrated] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Load collapsed state from localStorage after hydration; until then, render
-  // everything expanded (matches SSR output to avoid mismatch warnings).
+  // Resolve collapsed state after hydration; until then, render everything
+  // expanded (matches SSR output to avoid mismatch warnings). With no saved
+  // preference, sections are collapsed by default — except the one holding the
+  // current page, so the active location stays visible.
   useEffect(() => {
+    let stored: string[] | null = null;
     try {
       const raw = localStorage.getItem(COLLAPSE_STORAGE_KEY);
-      if (raw) setCollapsed(new Set(JSON.parse(raw) as string[]));
+      if (raw) stored = JSON.parse(raw) as string[];
     } catch {
       /* ignore */
     }
+
+    if (stored) {
+      setCollapsed(new Set(stored));
+    } else {
+      const activeSection = `/${currentUrl.split("/")[1] ?? ""}`;
+      setCollapsed(
+        new Set(
+          sections
+            .filter((section) => section.items.length > 0 && section.url !== activeSection)
+            .map((section) => section.url)
+        )
+      );
+    }
     setHydrated(true);
-  }, []);
+  }, [sections, currentUrl]);
 
   // After hydration, scroll the active sidebar item into the visible area so
   // the sidebar doesn't stay stuck at the top when navigating deep pages.

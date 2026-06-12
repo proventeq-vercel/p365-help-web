@@ -15,6 +15,7 @@ import {
   LayoutIcon,
   MailIcon,
   ReportIcon,
+  RocketIcon,
   SettingsIcon,
   SparklesIcon,
   WorkflowIcon
@@ -39,6 +40,7 @@ const SECTION_ICONS: Record<string, typeof FolderIcon> = {
   "/notification": BellIcon,
   "/archive": ArchiveIcon,
   "/exchange-monitoring": MailIcon,
+  "/deployment-prerequisites": RocketIcon,
   "/appendix": BookIcon
 };
 
@@ -118,6 +120,9 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
         <div className="mt-3.5 flex flex-wrap gap-2">
           <Link className="hero-chip" href="/navigation-menu">
             <BoltIcon size={12} /> Quick start
+          </Link>
+          <Link className="hero-chip" href="/deployment-prerequisites">
+            <RocketIcon size={12} /> Deployment guide
           </Link>
           <a
             className="hero-chip"

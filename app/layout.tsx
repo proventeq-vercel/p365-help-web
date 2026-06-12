@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ExternalLinkIcon } from "@/components/icons";
+import { SearchBox } from "@/components/search-box";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { siteConfig } from "@/lib/site-config";
 
@@ -87,6 +88,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             </div>
 
             <div className="flex items-center gap-2">
+              <SearchBox />
               <ThemeToggle />
               <a
                 className="icon-btn"

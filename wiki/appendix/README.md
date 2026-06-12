@@ -38,3 +38,4 @@ A **hub site in SharePoint** is a special type of site that connects related Sha
 
 - [Predefined Policies](./predefined-policies.md) — The list of predefined governance policies, their rule inputs, and the actions they can take.
 - [Severity Allocations](./severity-allocations.md) — How severity (High/Medium/Low) is assigned in the Security & Oversharing report.
+- [Entra App Creation Script](./entra-app-script.md) — Optional Bash script that automates the Proventeq365 Entra ID app registration for deployment.
