@@ -124,15 +124,6 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
           <Link className="hero-chip" href="/deployment-prerequisites">
             <RocketIcon size={12} /> Deployment guide
           </Link>
-          <a
-            className="hero-chip"
-            href="/llms.txt"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <AiIcon size={12} /> AI-friendly · llms.txt
-            <ArrowUpRightIcon size={10} />
-          </a>
           <Link className="hero-chip" href="/appendix">
             <SparklesIcon size={12} /> What&apos;s new
           </Link>
@@ -199,33 +190,6 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
               </div>
             </Link>
           ))}
-        </div>
-      </section>
-
-      {/* AI banner */}
-      <section className="ai-banner">
-        <div className="ai-banner-mark" aria-hidden="true">
-          <SparklesIcon size={18} />
-        </div>
-        <div>
-          <div className="ai-banner-title">
-            Built for humans <span>and</span> for AI.
-          </div>
-          <div className="ai-banner-body">
-            Every article is exposed as clean Markdown and indexed in <code>llms.txt</code>. Use
-            <strong> Copy as Markdown</strong> on any page to drop it into Microsoft 365 Copilot,
-            ChatGPT or Claude — the answer comes back grounded in the same source you read.
-          </div>
-        </div>
-        <div className="flex gap-2 max-[820px]:col-span-full">
-          <a
-            className="btn btn-primary"
-            href="/llms.txt"
-            rel="noreferrer"
-            target="_blank"
-          >
-            View llms.txt
-          </a>
         </div>
       </section>
 

@@ -174,16 +174,6 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
           <RocketIcon size={14} />
           <span>Getting started</span>
         </Link>
-        <a
-          className="sidebar-quick-link"
-          href="/llms.txt"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <AiIcon size={14} />
-          <span>llms.txt</span>
-          <ArrowUpRightIcon size={11} className="ml-auto opacity-55" />
-        </a>
         <Link className="sidebar-quick-link" href="/appendix">
           <BoltIcon size={14} />
           <span>What&apos;s new</span>
