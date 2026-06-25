@@ -22,20 +22,6 @@ export function DocsToc({ headings }: DocsTocProps) {
           <div className="toc-divider" />
         </>
       )}
-
-      <div className="toc-title toc-title-soft">For Copilot &amp; AI</div>
-      <ul className="toc-ai">
-        <li>
-          <a href="/llms.txt" rel="noreferrer" target="_blank">
-            <AiIcon size={11} />
-            <span>llms.txt</span>
-            <ArrowUpRightIcon size={10} className="ml-auto opacity-55" />
-          </a>
-        </li>
-        <li>
-          <CopyMarkdownAction variant="toc" />
-        </li>
-      </ul>
     </aside>
   );
 }
