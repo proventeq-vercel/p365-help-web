@@ -25,6 +25,7 @@ import {
   WorkflowIcon
 } from "@/components/icons";
 import type { SidebarItem } from "@/lib/docs";
+import { DOCS_BASE } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 interface DocsSidebarProps {
@@ -61,6 +62,14 @@ interface SidebarSection {
   items: SidebarItem[];
 }
 
+// The first path segment after the `/proventeq365` docs base — e.g.
+// `/proventeq365/manage/foo` → `manage`. Used both to group items into
+// sections and to look up the section icon.
+function topSegment(url: string): string {
+  const relative = url.startsWith(DOCS_BASE) ? url.slice(DOCS_BASE.length) : url;
+  return relative.split("/").filter(Boolean)[0] ?? "";
+}
+
 function groupItems(items: SidebarItem[]): SidebarSection[] {
   // Group by top-level URL segment rather than by document order. The flat
   // list isn't guaranteed to emit a section's depth-1 header before its
@@ -71,11 +80,12 @@ function groupItems(items: SidebarItem[]): SidebarSection[] {
   const order: string[] = [];
 
   for (const item of items) {
-    const key = `/${item.url.split("/")[1] ?? ""}`;
+    const seg = topSegment(item.url);
+    const key = `/${seg}`;
 
     let section = byKey.get(key);
     if (!section) {
-      section = { url: key, title: item.title, Icon: FolderIcon, items: [] };
+      section = { url: `${DOCS_BASE}${key}`, title: item.title, Icon: FolderIcon, items: [] };
       byKey.set(key, section);
       order.push(key);
     }
@@ -83,7 +93,7 @@ function groupItems(items: SidebarItem[]): SidebarSection[] {
     if (item.depth === 1) {
       section.url = item.url;
       section.title = item.title;
-      section.Icon = SECTION_ICONS[item.url] ?? FolderIcon;
+      section.Icon = SECTION_ICONS[key] ?? FolderIcon;
     } else {
       section.items.push(item);
     }
@@ -116,7 +126,7 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
     if (stored) {
       setCollapsed(new Set(stored));
     } else {
-      const activeSection = `/${currentUrl.split("/")[1] ?? ""}`;
+      const activeSection = `${DOCS_BASE}/${topSegment(currentUrl)}`;
       setCollapsed(
         new Set(
           sections
@@ -170,11 +180,11 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
 
       {/* Quick links */}
       <div className="flex flex-col gap-0.5">
-        <Link className="sidebar-quick-link" href="/">
+        <Link className="sidebar-quick-link" href={DOCS_BASE}>
           <RocketIcon size={14} />
           <span>Getting started</span>
         </Link>
-        <Link className="sidebar-quick-link" href="/appendix">
+        <Link className="sidebar-quick-link" href={`${DOCS_BASE}/appendix`}>
           <BoltIcon size={14} />
           <span>What&apos;s new</span>
         </Link>

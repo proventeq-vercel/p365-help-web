@@ -20,7 +20,7 @@ import {
   SparklesIcon,
   WorkflowIcon
 } from "@/components/icons";
-import type { DocItem } from "@/lib/docs";
+import { DOCS_BASE, type DocItem } from "@/lib/docs";
 import { siteConfig } from "@/lib/site-config";
 
 interface HomeViewProps {
@@ -50,21 +50,21 @@ const HIGHLIGHTS = [
     title: "Storage Optimisation, faster",
     body:
       "ROT detection runs incrementally and produces actionable summaries per workspace owner.",
-    path: "/main/dashboard/storage-optimization"
+    path: `${DOCS_BASE}/main/dashboard/storage-optimization`
   },
   {
     eyebrow: "Updated",
     title: "Oversharing severity model",
     body:
       "Severity now weighs label sensitivity, share scope and recency of access together.",
-    path: "/appendix/severity-allocations"
+    path: `${DOCS_BASE}/appendix/severity-allocations`
   },
   {
     eyebrow: "Guide",
     title: "Self-service provisioning",
     body:
       "Set up templates so business users can provision sites and teams within your guardrails.",
-    path: "/self-service/templates"
+    path: `${DOCS_BASE}/self-service/templates`
   }
 ];
 
@@ -118,13 +118,13 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
         </p>
 
         <div className="mt-3.5 flex flex-wrap gap-2">
-          <Link className="hero-chip" href="/navigation-menu">
+          <Link className="hero-chip" href={`${DOCS_BASE}/navigation-menu`}>
             <BoltIcon size={12} /> Quick start
           </Link>
-          <Link className="hero-chip" href="/deployment-prerequisites">
+          <Link className="hero-chip" href={`${DOCS_BASE}/deployment-prerequisites`}>
             <RocketIcon size={12} /> Deployment guide
           </Link>
-          <Link className="hero-chip" href="/appendix">
+          <Link className="hero-chip" href={`${DOCS_BASE}/appendix`}>
             <SparklesIcon size={12} /> What&apos;s new
           </Link>
         </div>
@@ -214,9 +214,9 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
           </div>
           <div className="foot-col">
             <div className="foot-title">Help</div>
-            <Link href="/navigation-menu">Quick start</Link>
+            <Link href={`${DOCS_BASE}/navigation-menu`}>Quick start</Link>
             <a href="https://support.proventeq.com" rel="noreferrer" target="_blank">Open a ticket</a>
-            <Link href="/appendix">Appendix</Link>
+            <Link href={`${DOCS_BASE}/appendix`}>Appendix</Link>
           </div>
           <div className="foot-col">
             <div className="foot-title">For AI tools</div>

@@ -14,7 +14,7 @@ import { DocsToc } from "@/components/docs-toc";
 import { HomeView } from "@/components/home-view";
 import { MarkdownContent } from "@/components/markdown-content";
 import { SidebarCollapseButton, SidebarExpandButton } from "@/components/sidebar-toggle";
-import { getDocBySlug, getDocNeighbors, getDocsData } from "@/lib/docs";
+import { DOCS_BASE, getDocBySlug, getDocNeighbors, getDocsData } from "@/lib/docs";
 import { siteConfig } from "@/lib/site-config";
 import { renderDocAsMarkdown } from "@/lib/markdown-export";
 
@@ -25,12 +25,12 @@ interface PageProps {
 export const dynamicParams = false;
 
 function breadcrumbsFromSlug(slugSegments: string[]) {
-  const crumbs = [{ href: "/", label: "Documentation" }];
+  const crumbs = [{ href: DOCS_BASE, label: "Documentation" }];
   let partial: string[] = [];
 
   for (const segment of slugSegments) {
     partial = [...partial, segment];
-    const href = `/${partial.join("/")}`;
+    const href = `${DOCS_BASE}/${partial.join("/")}`;
     const doc = getDocBySlug(partial);
     crumbs.push({
       href,
@@ -75,7 +75,7 @@ export default async function DocPage({ params }: PageProps) {
     notFound();
   }
 
-  const isHome = doc.url === "/";
+  const isHome = doc.url === DOCS_BASE;
   const crumbs = breadcrumbsFromSlug(slug);
   const { previous, next } = getDocNeighbors(doc.url);
   const articleMarkdown = renderDocAsMarkdown(doc);

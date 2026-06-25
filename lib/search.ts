@@ -1,4 +1,4 @@
-import { getDocsData } from "@/lib/docs";
+import { DOCS_BASE, getDocsData } from "@/lib/docs";
 
 export interface SearchDocument {
   id: string;
@@ -37,7 +37,7 @@ export function getSearchDocuments(): SearchDocument[] {
   const { docs, bySlug } = getDocsData();
 
   return docs
-    .filter((doc) => doc.url !== "/")
+    .filter((doc) => doc.url !== DOCS_BASE)
     .map((doc) => {
       const sectionDoc = doc.slugSegments.length > 1 ? bySlug.get(doc.slugSegments[0]) : undefined;
 

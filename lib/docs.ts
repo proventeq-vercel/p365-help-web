@@ -5,7 +5,10 @@ import { cache } from "react";
 import matter from "gray-matter";
 import GithubSlugger from "github-slugger";
 
+import { DOCS_BASE } from "@/lib/routes";
 import { humanizeSegment } from "@/lib/utils";
+
+export { DOCS_BASE };
 
 export const WIKI_ROOT = path.join(process.cwd(), "wiki");
 
@@ -213,7 +216,8 @@ function loadDocs(): DocsData {
   const docs = files.map((absolutePath) => {
     const sourceRelativePath = toPosixPath(path.relative(WIKI_ROOT, absolutePath));
     const slugSegments = sourcePathToSlugSegments(sourceRelativePath);
-    const url = slugSegments.length === 0 ? "/" : `/${slugSegments.join("/")}`;
+    const url =
+      slugSegments.length === 0 ? DOCS_BASE : `${DOCS_BASE}/${slugSegments.join("/")}`;
 
     const raw = fs.readFileSync(absolutePath, "utf-8");
     const parsed = matter(raw);
@@ -247,7 +251,7 @@ function loadDocs(): DocsData {
   }
 
   const sidebar: SidebarItem[] = docs
-    .filter((doc) => doc.url !== "/")
+    .filter((doc) => doc.url !== DOCS_BASE)
     .map((doc) => ({
       title: doc.title,
       url: doc.url,
