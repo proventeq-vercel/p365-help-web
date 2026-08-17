@@ -19,3 +19,8 @@ Complete every item in this checklist before the deployment date and confirm sta
 | 8 | All required Azure resource providers registered (see [Register Azure Resource Providers](./03-azure-prerequisites.md#register-azure-resource-providers)) | | |
 | 9 | App registration created and API permissions granted with admin consent (see [Entra ID App Registration](./04-entra-app-registration.md)) | | |
 | 10 | Custom domain name and DNS ownership confirmed — only if a custom domain is required (see [Custom Domain and DNS](./05-custom-domain-and-dns.md)) | | |
+| 11 | Application ID URI set on the app registration — performed by Proventeq where the access in [Assign the Cloud Application Administrator Role](./04-entra-app-registration.md#assign-the-cloud-application-administrator-role) has been granted; otherwise by you (see [Set the Application ID URI](./04-entra-app-registration.md#set-the-application-id-uri)) | | |
+| 12 | `access_as_user` scope added to the app registration — performed by Proventeq where that access has been granted; otherwise by you (see [Add the access_as_user Scope](./04-entra-app-registration.md#add-the-access_as_user-scope)) | | |
+| 13 | Client secret created and shared securely — performed by Proventeq where that access has been granted; otherwise by you (see [Create a Client Secret](./04-entra-app-registration.md#create-a-client-secret)) | | |
+| 14 | Subscription quota confirmed in the target region (see [Confirm Subscription Quota](./03-azure-prerequisites.md#confirm-subscription-quota)) | | |
+| 15 | Outbound connectivity allowed — only if egress is restricted (see [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity)) | | |

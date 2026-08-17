@@ -28,6 +28,8 @@ az group create --name "<RESOURCE_GROUP_NAME>" --location "<AZURE_REGION>"
 
 Replace `<RESOURCE_GROUP_NAME>` with your chosen name and `<AZURE_REGION>` with the target region (e.g. `uksouth`).
 
+> **Note on region.** All compute, data and messaging resources are deployed into your chosen region. One exception applies: the Proventeq365 user interface is hosted on **Azure Static Web Apps**, which is available in a limited set of Azure regions and may therefore sit in a different region from the rest of your deployment. It holds static application files only — no customer content is stored there and it is not on the data path. Proventeq will confirm the interface region with you before deployment; if your data-residency policy constrains it, please raise it with your Proventeq contact.
+
 ## Create a Deployment Identity
 
 **What this does:** Provides Proventeq with a secure identity to use during deployment. Choose one of the two options below — agree the approach with your Proventeq contact first.
@@ -67,10 +69,10 @@ Use this option if your policy permits external guest access.
 **Steps — Azure CLI (alternative)**
 
 ```bash
-az ad user invite \
-  --user-email-address "<PROVENTEQ_EMAIL>" \
-  --display-name "<DISPLAY_NAME>" \
-  --redirect-url "https://portal.azure.com"
+az rest --method POST \
+  --url "https://graph.microsoft.com/v1.0/invitations" \
+  --headers "Content-Type=application/json" \
+  --body '{"invitedUserEmailAddress":"<PROVENTEQ_EMAIL>","invitedUserDisplayName":"<DISPLAY_NAME>","inviteRedirectUrl":"https://portal.azure.com","sendInvitationMessage":true}'
 ```
 
 ### Security recommendations for the deployment identity
@@ -168,3 +170,47 @@ To verify that all providers are registered, run:
 ```bash
 az provider list --query "[?registrationState=='Registered'].namespace" --output table
 ```
+
+### Two further points on this step
+
+**Reader role at subscription scope.** Please also grant the deployment identity the **Reader** role at subscription scope, in addition to the Owner role on the resource group described in [Grant Access to the Resource Group](#grant-access-to-the-resource-group-rbac). The deployment tooling reads each provider's registration state before it begins, and that read is a subscription-scope operation. Without it the deployment stops at this check even when every provider is already registered.
+
+**Optional feature providers.** Three additional providers are required only if the corresponding optional features are in scope for your deployment. Proventeq will confirm which apply to you before the deployment date:
+
+| Provider namespace | Required for |
+| --- | --- |
+| Microsoft.Compute | Migrator virtual machines |
+| Microsoft.CognitiveServices | AI Agent |
+| Microsoft.BotService | AI Agent |
+
+None of the three is needed for a standard deployment.
+
+## Confirm Subscription Quota
+
+**What this does:** Confirms your subscription can actually allocate the resources Proventeq365 requires. New or lightly-used subscriptions frequently have zero quota for one or more of these in a given region.
+
+- **App Service Plan** — 1 × B3 Linux, hosting five web apps and two function apps (six web apps if the AI Agent is in scope).
+- **Azure SQL Database** — one database; the SKU is agreed with Proventeq during sizing.
+- **Container Apps** — one environment plus nine jobs, sized between 0.25 and 2 vCPU. If all nine run concurrently they request up to **12.75 vCPU** and **25.5 GiB** against the Container Apps quota — that is the figure to check.
+- **Storage accounts** — four.
+- **Also required:** Front Door (Standard, a global service), Key Vault, App Configuration (Free tier), Log Analytics, Application Insights, and Service Bus (Standard).
+
+## Outbound Connectivity
+
+> **Applies only if** outbound traffic is restricted by firewall, proxy or private networking.
+
+The deployed services require outbound HTTPS access to the following endpoints.
+
+| Endpoint | Purpose |
+| --- | --- |
+| `crpvqsaasdev.azurecr.io` and `*.blob.core.windows.net` | Container images for the Proventeq365 services are pulled from a Proventeq-managed Azure Container Registry. This is a cross-tenant dependency by design and is usually the item that requires explicit approval. |
+| `graph.microsoft.com` and `login.microsoftonline.com` | Microsoft Graph and authentication. |
+| `*.sharepoint.com` and `*-admin.sharepoint.com` | SharePoint Online. |
+| `*.servicebus.windows.net` | Azure Service Bus. |
+| `*.vault.azure.net` and `*.azconfig.io` | Key Vault and App Configuration. |
+| `*.database.windows.net` | Azure SQL. |
+| `*.wasabisys.com` | Only if Wasabi archiving is in scope. |
+| `*.botframework.com`, including the `api.`, `login.` and `token.` hosts | The Teams notification bot. Always required. |
+| `management.azure.com` | The Azure Resource Manager API, used to start the discovery and action container jobs. |
+| `*.applicationinsights.azure.com` and `*.monitor.azure.com` | Telemetry ingestion from all services. |
+| `*.openai.azure.com` and `*.cognitiveservices.azure.com` | Only if the AI Agent is in scope. |
