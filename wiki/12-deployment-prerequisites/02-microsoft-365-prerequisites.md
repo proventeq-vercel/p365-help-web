@@ -11,14 +11,14 @@ Confirm that all users affected by the deployment have the appropriate Microsoft
 
 ## Deployment Mode
 
-Confirm which mode Proventeq365 will operate in:
+Confirm with Proventeq which mode Proventeq365 will operate in:
 
-| Mode | What it does |
-| --- | --- |
-| Read-only | Reports and insights only — no changes made to your environment. |
-| Read-write | Reports, insights, and the ability to remediate issues. |
+| Mode | What it does | Prerequisites script value |
+| --- | --- | --- |
+| Read-only | Reports and insights only — no changes made to your environment. | `-PermissionMode ReadOnly` |
+| Read-write | Reports, insights, and the ability to remediate issues. | `-PermissionMode ReadWrite` |
 
-Your chosen mode affects the permissions required in [Grant API Permissions](./04-entra-app-registration.md#grant-api-permissions).
+Your chosen mode determines the API permissions the prerequisites script requests. See [API Permissions](./04-entra-app-registration.md#api-permissions) for the full list for each mode.
 
 ## Archiving
 

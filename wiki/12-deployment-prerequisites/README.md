@@ -1,46 +1,55 @@
 ---
 title: "Deployment Prerequisites"
-description: "Everything you need to prepare in your Microsoft 365 tenant and Azure subscription before Proventeq deploys Proventeq365 — licensing, deployment identity, RBAC, resource providers, Entra app registration, and DNS."
+description: "Everything you need to prepare and run to deploy Proventeq365 into your Microsoft 365 tenant and Azure subscription — required access, the prerequisites script, the Azure Marketplace deployment, and the post-deployment script."
 ---
 
 # Deployment Prerequisites
 
-This guide describes everything you need to prepare **before** Proventeq deploys Proventeq365 into your Microsoft 365 tenant and Azure environment. Complete all the steps across these pages and share the requested details with your Proventeq contact **before** the agreed deployment date.
+This guide describes how to prepare for and deploy Proventeq365 into your Microsoft 365 tenant and Azure subscription. The deployment is carried out by **your administrator** in three stages, using two PowerShell scripts provided by Proventeq and the Proventeq365 offer in Azure Marketplace. Nothing needs to be installed on your machine: both scripts run in **Azure Cloud Shell**.
+
+| Stage | What happens | Guide |
+| --- | --- | --- |
+| 1. Prerequisites script | `Proventeq365Prerequisites.ps1` creates the Entra ID app registration, grants its API permissions and admin consent, creates the client secret and SharePoint certificate, and stores them in a **Bootstrap Key Vault** in a new resource group. | [Run the Prerequisites Script](./05-run-prerequisites-script.md) |
+| 2. Azure Marketplace | You deploy Proventeq365 from Azure Marketplace and select the Bootstrap Key Vault. The deployment reads everything it needs from that vault. | [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md) |
+| 3. Post-deployment script | `Proventeq365PostDeployment.ps1` sets the app registration's redirect URI to the live Proventeq365 URL, imports the SharePoint certificate into the product Key Vault and, if needed, configures the AI agent. | [Run the Post-Deployment Script](./07-run-post-deployment-script.md) |
 
 ## Who should read this
 
 This guide is intended for:
 
-- **Microsoft 365 / Azure administrators** — managing the tenant, subscription, and identity settings.
-- **Security administrators** — responsible for Conditional Access, MFA, and identity governance.
+- **Microsoft 365 / Azure administrators** — running the scripts and the Marketplace deployment.
+- **Security administrators** — responsible for admin consent, Conditional Access, MFA, and identity governance.
 - **Network administrators** — relevant only if outbound restrictions, proxies, or private networking are in scope. See [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity) for the endpoints that must be reachable.
 
 ## Scope and assumptions
 
-- Proventeq365 is deployed into **your** Azure subscription and Microsoft 365 tenant.
-- Proventeq deploys a dedicated Azure resource group that you create and control.
-- You are responsible for providing the required access and approvals in line with your organisation's security policies.
-- Container images for the Proventeq365 services are pulled from a **Proventeq-managed Azure Container Registry**. This is an outbound dependency on a Proventeq-owned endpoint and is by design. See [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity).
+- Proventeq365 is deployed into **your** Azure subscription and Microsoft 365 tenant, as an Azure **managed application**.
+- This guide assumes the app registration and the Azure resources are in the **same Microsoft Entra tenant**, so you sign in once with one account. If your Azure subscription is in a different tenant from your Microsoft 365 tenant, see [Cross-Tenant Deployment](./09-cross-tenant-deployment.md).
+- Container images for the Proventeq365 services are pulled from a **Proventeq-managed Azure Container Registry**, using a pull-only username and password that Proventeq provides. This is an outbound dependency on a Proventeq-owned endpoint and is by design. See [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity).
 - All resources are deployed into your chosen region, with one exception: the **Azure Static Web App** that hosts the user interface. Azure Static Web Apps is available in a limited set of Azure regions, so the interface may be hosted in a different region from the rest of the deployment. It holds static application files only and no customer content is stored there. The exact region is confirmed with Proventeq during deployment planning.
-- **Important:** Never send passwords, client secrets, or certificates by email. Share sensitive values only through your approved secure channel.
+- **Important:** The client secret and certificate never leave your tenant — the prerequisites script writes them straight into your Bootstrap Key Vault. Never send passwords, client secrets, or certificates by email.
 
 ## Roles and responsibilities
 
 | Area | Your responsibilities (Customer) | Proventeq's responsibilities |
 | --- | --- | --- |
-| Azure subscription | Create the resource group, grant RBAC access to the deployment identity, approve any domain/DNS changes, and register the required Azure resource providers. Provider registration is mandatory and cannot be delegated to Proventeq: it operates at subscription scope, whereas the deployment identity has access only to the resource group. | Deploy Azure resources and validate provisioning once access is in place. |
-| Microsoft 365 tenant | Provide tenant admin contacts, create or invite the deployment account, and approve app registration permissions including admin consent. Granting admin consent requires Privileged Role Administrator or Global Administrator and cannot be performed by Proventeq: the Cloud Application Administrator role is not sufficient to consent to Microsoft Graph application permissions. | Configure Proventeq365 integration and complete post-deployment app registration tasks (e.g. redirect URIs and certificates). |
-| Security & governance | Ensure your MFA and Conditional Access policies allow the agreed deployment approach, and approve any exceptions needed. | Provide a least-privilege access recommendation and support access verification. |
+| Access | Make sure the person running the scripts has the access listed in [Required Access](./03-azure-prerequisites.md#required-access). | Confirm the access required and support access verification. |
+| Microsoft 365 tenant | Run the prerequisites script, which creates the app registration, and grant admin consent to its API permissions. Admin consent requires **Global Administrator** or **Privileged Role Administrator**. | Confirm the deployment mode (Read-only or Read-write) and the resulting permission set. |
+| Azure subscription | Register the required resource providers, run both scripts, deploy Proventeq365 from Azure Marketplace, and keep the bootstrap resource group. | Provide the scripts and the container registry credentials, and support the deployment. |
+| Security & governance | Ensure your MFA and Conditional Access policies allow sign-in to the Azure portal and Azure Cloud Shell for the person running the deployment, and approve any exceptions needed. | Provide a least-privilege access recommendation. |
 | Azure capacity | Confirm sufficient subscription quota in the target region (see [Confirm Subscription Quota](./03-azure-prerequisites.md#confirm-subscription-quota)). | Advise on sizing and confirm the required SKUs. |
 | Network | If outbound traffic is restricted, allow the endpoints listed in [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity). | Provide and maintain the endpoint list. |
 
 ## In this section
 
-1. [Readiness Checklist](./01-readiness-checklist.md) — Confirm every prerequisite is complete before the deployment date.
+1. [Readiness Checklist](./01-readiness-checklist.md) — Track every step from preparation to post-deployment.
 2. [Microsoft 365 Prerequisites](./02-microsoft-365-prerequisites.md) — Licensing, deployment mode, and archiving.
-3. [Azure Prerequisites](./03-azure-prerequisites.md) — Resource group, deployment identity, RBAC, and resource providers.
-4. [Entra ID App Registration](./04-entra-app-registration.md) — Register the application and grant API permissions.
-5. [Custom Domain and DNS](./05-custom-domain-and-dns.md) — Only if a custom domain is required.
-6. [Next Steps](./06-next-steps.md) — What to share with Proventeq once you are ready.
-
-> **Tip:** The Entra app registration can be automated with the [Entra App Creation Script](../appendix/entra-app-script.md) in the Appendix.
+3. [Azure Prerequisites](./03-azure-prerequisites.md) — Required access, information to collect, resource providers, quota, and outbound connectivity.
+4. [Entra ID App Registration](./04-entra-app-registration.md) — What the script creates in Entra ID, admin consent, and the API permissions for each deployment mode.
+5. [Run the Prerequisites Script](./05-run-prerequisites-script.md) — Stage 1, before the Marketplace deployment.
+6. [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md) — Stage 2.
+7. [Run the Post-Deployment Script](./07-run-post-deployment-script.md) — Stage 3, after the Marketplace deployment, including the optional notification mailbox.
+8. [Custom Domain and DNS](./08-custom-domain-and-dns.md) — Only if a custom domain is required.
+9. [Cross-Tenant Deployment](./09-cross-tenant-deployment.md) — Only if the Azure subscription is in a different tenant from Microsoft 365.
+10. [Troubleshooting](./10-troubleshooting.md) — Messages you can ignore and fixes for common errors.
+11. [Next Steps](./11-next-steps.md) — What to share with Proventeq once the deployment is complete.

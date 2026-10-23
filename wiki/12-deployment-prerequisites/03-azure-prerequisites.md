@@ -1,118 +1,53 @@
 ---
 title: "Azure Prerequisites"
-description: "Create a dedicated resource group, set up a deployment identity, grant Owner RBAC, and register the required Azure resource providers for Proventeq365."
+description: "Confirm the access the person running the deployment needs, collect the deployment values, register the required Azure resource providers, and check subscription quota and outbound connectivity for Proventeq365."
 ---
 
 # Azure Prerequisites
 
-Proventeq365 is deployed into a dedicated Azure resource group within your subscription. Work through the steps below in order.
+Complete these steps before you run the [prerequisites script](./05-run-prerequisites-script.md).
 
-## Create a Resource Group
+## Required Access
 
-**What this does:** Creates an isolated container in your Azure subscription where all Proventeq365 resources will live.
+**What this does:** The deployment is run by one person in your organisation. That person **must** have all of the following in your tenant before starting.
 
-### Steps — Azure Portal
+| Access | Where | Why it is needed |
+| --- | --- | --- |
+| **Global Administrator** or **Privileged Role Administrator** | Microsoft Entra ID (your tenant) | To create the app registration and grant **admin consent** to the Microsoft Graph and SharePoint permissions. The script stops with an error if you ask it to grant consent without one of these roles. |
+| **Owner** on the subscription | Azure subscription | To create the bootstrap resource group and Key Vault, **and** to assign roles on the Key Vault: your own access, the *Appliance Resource Provider* and the *Managed Applications On Behalf Application*. |
+| **Contributor** on the deployed (managed) resource group, and Key Vault access on both the bootstrap and product Key Vaults | Azure subscription | Needed by the post-deployment script to read the Front Door profile and import the certificate into the product Key Vault. |
+| Container registry (ACR) username and password | Provided by Proventeq | The Proventeq365 container images are pulled with these. |
 
-1. Sign in to the Azure Portal (https://portal.azure.com).
-2. Search for **Resource groups** and select it.
-3. Click **+ Create**.
-4. Select your **Subscription**, enter a **Resource group name**, and choose the **Region** that matches where your Microsoft 365 data is stored. To find your M365 data location, visit the [Microsoft 365 data locations](https://learn.microsoft.com/en-us/microsoft-365/enterprise/o365-data-locations) guide.
-5. Click **Review + Create**, then **Create**.
+> **Important:** Contributor alone is not enough for the prerequisites script. Contributor cannot create role assignments. If you only have Contributor, you also need **User Access Administrator** on the subscription. Otherwise the Key Vault is created, but the script cannot write the secrets into it.
 
-### Steps — Azure CLI (alternative)
+> **If no one has both roles.** The app registration can be created by an **Application Administrator** or **Cloud Application Administrator** who also has subscription Owner, and a Global Administrator then grants admin consent separately. See [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent).
 
-```bash
-az login
-az group create --name "<RESOURCE_GROUP_NAME>" --location "<AZURE_REGION>"
-```
+## Information to Collect
 
-Replace `<RESOURCE_GROUP_NAME>` with your chosen name and `<AZURE_REGION>` with the target region (e.g. `uksouth`).
+Gather these values before you open Azure Cloud Shell. The examples are samples only.
 
-> **Note on region.** All compute, data and messaging resources are deployed into your chosen region. One exception applies: the Proventeq365 user interface is hosted on **Azure Static Web Apps**, which is available in a limited set of Azure regions and may therefore sit in a different region from the rest of your deployment. It holds static application files only — no customer content is stored there and it is not on the data path. Proventeq will confirm the interface region with you before deployment; if your data-residency policy constrains it, please raise it with your Proventeq contact.
+| Value | Where to find it | Example |
+| --- | --- | --- |
+| **Tenant ID** | Azure portal → **Microsoft Entra ID** → **Overview** → *Tenant ID* | `3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34` |
+| **Subscription ID** (optional) | Azure portal → **Subscriptions** | `9a8b7c6d-1e2f-4a3b-8c9d-0e1f2a3b4c5d` |
+| **Azure region** | Your chosen region — see the note below | `uksouth` |
+| **ACR username and password** | Provided by Proventeq | `p365-contoso-pull` |
+| **Bootstrap resource group name** | Choose a name for a normal, new resource group | `rg-contoso-p365` |
+| **Bootstrap Key Vault name** | Choose a name: 3–24 characters, letters, numbers and hyphens, **globally unique** | `kv-p365boot-contoso01` |
+| **SQL administrator** | The Entra user or group that should become the SQL Server administrator: its **object ID** and **display name**. This may be one of your own security groups. Asked for during the [Marketplace deployment](./06-deploy-from-azure-marketplace.md). | `SQL Admins` |
+| **Custom domain** (optional) | Only if Proventeq365 will use a custom domain — see [Custom Domain and DNS](./08-custom-domain-and-dns.md) | `https://p365.contoso.com` |
 
-## Create a Deployment Identity
-
-**What this does:** Provides Proventeq with a secure identity to use during deployment. Choose one of the two options below — agree the approach with your Proventeq contact first.
-
-### Option A — Create a dedicated user account in your tenant
-
-Use this option if your policy requires Proventeq to use an internal account.
-
-**Steps — Azure Portal**
-
-1. Sign in to the **Azure Portal** (https://portal.azure.com) and go to **Microsoft Entra ID**.
-2. Select **Users** > **+ New user** > **Create new user**.
-3. Enter a display name and a user principal name (UPN) — for example, `proventeq-deploy@yourdomain.com`.
-4. Set a strong temporary password, note it down, and share it with Proventeq via your approved secure channel.
-5. Select **Create**.
-
-**Steps — Azure CLI (alternative)**
-
-```bash
-az ad user create \
-  --display-name "<DISPLAY_NAME>" \
-  --user-principal-name "<USERNAME>@<TENANT_DOMAIN>" \
-  --password "<TEMPORARY_PASSWORD>"
-```
-
-### Option B — Invite Proventeq as a guest user
-
-Use this option if your policy permits external guest access.
-
-**Steps — Azure Portal**
-
-1. Sign in to the **Azure Portal** (https://portal.azure.com) and go to **Microsoft Entra ID**.
-2. Select **Users** > **+ New user** > **Invite external user**.
-3. Enter the Proventeq email address provided by your Proventeq contact.
-4. Add a meaningful display name and click **Invite**.
-
-**Steps — Azure CLI (alternative)**
-
-```bash
-az rest --method POST \
-  --url "https://graph.microsoft.com/v1.0/invitations" \
-  --headers "Content-Type=application/json" \
-  --body '{"invitedUserEmailAddress":"<PROVENTEQ_EMAIL>","invitedUserDisplayName":"<DISPLAY_NAME>","inviteRedirectUrl":"https://portal.azure.com","sendInvitationMessage":true}'
-```
-
-### Security recommendations for the deployment identity
-
-- **Enable MFA** — Strongly recommended. Even if credentials are compromised, MFA prevents unauthorized sign-in.
-- **Limit session lifetime** — Configure short session timeouts and disable persistent sessions to reduce the risk of session hijacking.
-
-## Grant Access to the Resource Group (RBAC)
-
-**What this does:** Gives the deployment identity the permissions it needs to create and manage resources in the resource group.
-
-### Steps — Azure Portal
-
-1. Go to the resource group you created in [Create a Resource Group](#create-a-resource-group).
-2. In the left-hand menu, select **Access control (IAM)**.
-3. Click **Add** > **Add role assignment**.
-4. On the **Role** tab, search for and select **Owner**, then click **Next**.
-5. On the **Members** tab, click **+ Select members**. Search for and select the deployment user or Proventeq guest account, then click **Select** and **Next**.
-6. On the **Conditions** tab, select **Allow user to assign all roles**, then click **Next**.
-7. On the **Assignment type** tab, set the assignment type to **Active** and the duration to **Permanent**, then click **Next**.
-8. Click **Review + assign** to complete the setup.
-
-### Steps — Azure CLI (alternative)
-
-```bash
-az login
-az role assignment create \
-  --assignee "<DEPLOYMENT_IDENTITY_UPN_OR_OBJECT_ID>" \
-  --role "Owner" \
-  --scope "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP_NAME>"
-```
+> **Note on region.** Choose the region that matches where your Microsoft 365 data is stored. To find your Microsoft 365 data location, see the [Microsoft 365 data locations](https://learn.microsoft.com/en-us/microsoft-365/enterprise/o365-data-locations) guide. All compute, data and messaging resources are deployed into your chosen region. One exception applies: the Proventeq365 user interface is hosted on **Azure Static Web Apps**, which is available in a limited set of Azure regions and may therefore sit in a different region from the rest of your deployment. It holds static application files only — no customer content is stored there and it is not on the data path. Proventeq will confirm the interface region with you before deployment; if your data-residency policy constrains it, please raise it with your Proventeq contact.
 
 ## Register Azure Resource Providers
 
-**What this does:** Authorizes your Azure subscription to use the specific Azure services that Proventeq365 requires. This is a one-time step per subscription.
+**What this does:** Authorizes your Azure subscription to use the specific Azure services that Proventeq365 requires. This is a one-time step per subscription. It operates at subscription scope, so it must be carried out by someone with Owner or Contributor on the subscription.
 
 The following resource providers must be registered:
 
 | Provider namespace |
 | --- |
+| Microsoft.Solutions |
 | Microsoft.ManagedIdentity |
 | Microsoft.Network |
 | Microsoft.ContainerService |
@@ -132,6 +67,8 @@ The following resource providers must be registered:
 | Microsoft.Resources |
 | Microsoft.ServiceBus |
 
+**Microsoft.Solutions** is the provider behind Azure managed applications, which is how Proventeq365 is deployed from Azure Marketplace. If it is not registered, the prerequisites script cannot find the *Appliance Resource Provider* and cannot grant it access to the Bootstrap Key Vault.
+
 ### Option 1 — Azure Portal
 
 1. Sign in to the **Azure Portal** (https://portal.azure.com).
@@ -140,11 +77,12 @@ The following resource providers must be registered:
 4. Search for each provider namespace listed above. If its status is **Not Registered**, select it and click **Register**.
 5. Repeat for all providers in the list. Registration usually completes within 1–2 minutes.
 
-### Option 2 — Azure CLI (faster for multiple providers)
+### Option 2 — Azure Cloud Shell (faster for multiple providers)
 
-Run the following commands after signing in (`az login`) and selecting your target subscription:
+Open [Azure Cloud Shell](./05-run-prerequisites-script.md#open-azure-cloud-shell-and-upload-the-scripts), make sure your target subscription is selected (`az account show`), and run:
 
 ```bash
+az provider register --namespace Microsoft.Solutions
 az provider register --namespace Microsoft.ManagedIdentity
 az provider register --namespace Microsoft.Network
 az provider register --namespace Microsoft.ContainerService
@@ -165,17 +103,15 @@ az provider register --namespace Microsoft.Resources
 az provider register --namespace Microsoft.ServiceBus
 ```
 
-To verify that all providers are registered, run:
+These commands work in both the PowerShell and Bash modes of Cloud Shell. To verify that all providers are registered, run:
 
 ```bash
 az provider list --query "[?registrationState=='Registered'].namespace" --output table
 ```
 
-### Two further points on this step
+### Optional feature providers
 
-**Reader role at subscription scope.** Please also grant the deployment identity the **Reader** role at subscription scope, in addition to the Owner role on the resource group described in [Grant Access to the Resource Group](#grant-access-to-the-resource-group-rbac). The deployment tooling reads each provider's registration state before it begins, and that read is a subscription-scope operation. Without it the deployment stops at this check even when every provider is already registered.
-
-**Optional feature providers.** Three additional providers are required only if the corresponding optional features are in scope for your deployment. Proventeq will confirm which apply to you before the deployment date:
+Three additional providers are required only if the corresponding optional features are in scope for your deployment. Proventeq will confirm which apply to you before the deployment date:
 
 | Provider namespace | Required for |
 | --- | --- |

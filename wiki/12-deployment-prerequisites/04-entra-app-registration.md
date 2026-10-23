@@ -1,117 +1,76 @@
 ---
 title: "Entra ID App Registration"
-description: "Register Proventeq365 in Microsoft Entra ID, assign the Cloud Application Administrator role, and grant the Microsoft Graph and SharePoint API permissions for your deployment mode."
+description: "What the Proventeq365 prerequisites script creates in Microsoft Entra ID, how admin consent is granted, and the Microsoft Graph and SharePoint API permissions for each deployment mode."
 ---
 
 # Entra ID App Registration (Microsoft 365)
 
-**What this does:** Registers Proventeq365 as an application in your Microsoft Entra ID tenant and grants it the permissions it needs to access Microsoft 365 services.
+**What this does:** Proventeq365 connects to your Microsoft 365 tenant through a Microsoft Entra ID **application**. The [prerequisites script](./05-run-prerequisites-script.md) creates and configures this app registration for you — there is no manual portal setup. This page describes what the script creates so you can review it, and lists the API permissions it requests for each deployment mode.
 
-> **Note:** You can either follow the steps below or use the [Entra App Creation Script](../appendix/entra-app-script.md) in the Appendix. The specific API permissions depend on your chosen deployment mode (Read-only or Read-write). Proventeq will confirm the exact permissions list before you complete this step.
+## What the Script Creates
 
-## Create the App Registration
+| Item | Detail |
+| --- | --- |
+| App registration | A single-tenant app registration, named by `-ApplicationName` (for example `Proventeq365`). |
+| Application ID URI | `api://<application-client-id>` |
+| Delegated scope | `access_as_user` — requested by the Proventeq365 user interface to call its API. |
+| API permissions | The Microsoft Graph and SharePoint permissions for your deployment mode — see [API Permissions](#api-permissions). |
+| Admin consent | Granted during the run when you pass `-GrantAdminConsent` — see [Grant Admin Consent](#grant-admin-consent). |
+| Client secret | Created and written straight into the Bootstrap Key Vault. It is never displayed. |
+| SharePoint certificate | A certificate used for application-only access to SharePoint Online. The public key is added to the app registration and the certificate is stored in the Bootstrap Key Vault; the [post-deployment script](./07-run-post-deployment-script.md) imports it into the product Key Vault. The private key never leaves your Key Vaults. |
+| Redirect URI | Set by the post-deployment script once the Proventeq365 URL is known, or up front with `-FrontendUrl` if you already have a custom domain. |
+| AI agent app registration (optional) | A second app registration named `<ApplicationName> AI Agent`, created only with `-ConfigureAiAgent`. |
 
-### Steps — Azure Portal
+The person who runs the script becomes the Proventeq365 **platform administrator** by default. To nominate someone else, pass their Entra object ID with `-PlatformAdminObjectId`.
 
-1. Sign in to the **Azure Portal** (https://portal.azure.com) and go to **Microsoft Entra ID**.
-2. Select **App registrations** > **+ New registration**.
-3. Enter a meaningful name (e.g. `Proventeq365`), leave the default account type, and click **Register**.
-4. Note the **Application (client) ID** and **Directory (tenant) ID** — you will need to share these with Proventeq.
+> **Re-running is safe.** The script reuses the existing app registration and never removes anything it already has — existing permissions, certificates, scopes and redirect URIs are merged with, not replaced by, what a new run adds. A new client secret and SharePoint certificate are created only when you pass `-ForceNewCert`.
 
-### Steps — Azure CLI (alternative)
+## Grant Admin Consent
 
-```bash
-az ad app create \
-  --display-name "<APP_NAME>" \
-  --sign-in-audience AzureADMyOrg
+Proventeq365 cannot access Microsoft 365 or SharePoint until admin consent is granted. Granting admin consent requires **Global Administrator** or **Privileged Role Administrator**. The Application Administrator and Cloud Application Administrator roles are **not** sufficient to consent to Microsoft Graph application permissions.
+
+### Option A — During the script run (recommended)
+
+If the person running the prerequisites script is a Global Administrator or Privileged Role Administrator, include `-GrantAdminConsent` in the command. The script grants consent as part of the run. See [Scenario A](./05-run-prerequisites-script.md#scenario-a--standard-read-write-with-admin-consent).
+
+### Option B — Separately, after the script run
+
+If the person running the script does not hold either role, they run it **without** `-GrantAdminConsent` (see [Scenario F](./05-run-prerequisites-script.md#scenario-f--without-admin-consent)). A Global Administrator then grants consent in one of two ways, using the **App (client) ID** from the script summary.
+
+**Azure Cloud Shell:**
+
+```powershell
+az ad app permission admin-consent --id <APP-CLIENT-ID>
 ```
 
-## Assign the Cloud Application Administrator Role
+**Azure portal:**
 
-### Steps — Azure Portal
+1. Go to **Microsoft Entra ID** → **App registrations** and open the **Proventeq365** application.
+2. Open **API permissions**.
+3. Click **Grant admin consent for &lt;your organisation&gt;** and confirm.
+4. Confirm that every permission shows **Granted**.
 
-1. In **Microsoft Entra ID**, go to **Roles and administrators**.
-2. Search for and select **Cloud Application Administrator**.
-3. Click **+ Add assignment**.
-4. On the **Members** tab, click **Select member(s)** and add the deployment user account created in [Create a Deployment Identity](./03-azure-prerequisites.md#create-a-deployment-identity).
-5. On the **Settings** tab, set the assignment type to **Active**, then confirm.
+## API Permissions
 
-### Alternative — app registration ownership
+The script requests the permission set for the deployment mode passed in `-PermissionMode`. See [Deployment Mode](./02-microsoft-365-prerequisites.md#deployment-mode).
 
-If a tenant-wide directory role is not acceptable under your policy, an alternative is to make the deployment identity an **owner of this app registration**. That grants exactly the rights needed to configure the Application ID URI, the scope and the client secret, and nothing else. Agree the approach with your Proventeq contact.
+- **Application permissions** allow the platform to run its scheduled discovery, reporting and remediation jobs without a user being signed in. These require a one-time **admin consent**.
+- **Delegated permissions** are used only when a user signs in to the Proventeq365 portal.
+- All access is confined to your own tenant and is **fully revocable** at any time by removing consent in Microsoft Entra ID.
 
-```bash
-az ad app owner add \
-  --id <APP_OBJECT_ID> \
-  --owner-object-id <USER_OBJECT_ID>
-```
+> **`Sites.FullControl.All` appears under two APIs — Microsoft Graph and SharePoint — and these are separate permissions, not a duplicate.** Where a mode lists `Sites.FullControl.All` under both, both are required.
 
-## Set the Application ID URI
-
-**What this does:** Defines the identifier that Proventeq365 uses to validate API access tokens. This is a **required deployment input**.
-
-> **Who performs this and the two steps that follow.** Where you have granted Proventeq the access described in [Assign the Cloud Application Administrator Role](#assign-the-cloud-application-administrator-role) — either the Cloud Application Administrator role or ownership of this app registration — **Proventeq completes these three steps**. Follow them yourself only if that access has not been granted, and then share the resulting values with your Proventeq contact as listed in [Share Details with Proventeq](./06-next-steps.md#share-details-with-proventeq).
-
-### Steps — Azure Portal
-
-1. In the app registration, go to **Expose an API**.
-2. Next to **Application ID URI**, click **Set**.
-3. Accept the default `api://<application-client-id>`, or use a verified custom domain form if you prefer, then click **Save**.
-4. Record the value — it must be shared with Proventeq exactly as configured.
-
-## Add the access_as_user Scope
-
-**What this does:** Defines the delegated scope that the Proventeq365 user interface requests to call its API. This is a **required deployment input**.
-
-### Steps — Azure Portal
-
-1. In the app registration, go to **Expose an API** and click **+ Add a scope**.
-2. Set **Scope name** to `access_as_user`.
-3. Set **Who can consent** to **Admins and users**.
-4. Provide display names and descriptions for both admin and user consent, then click **Add scope**.
-
-> **Important:** the exact scope string matters. Whatever scope name you create must be shared with Proventeq **verbatim** — it is used unmodified in the deployment configuration and in the user interface.
-
-## Create a Client Secret
-
-**What this does:** Provides the credential the deployment uses to authenticate as the application. This is a **required deployment input**.
-
-### Steps — Azure Portal
-
-1. In the app registration, go to **Certificates & secrets**, then **Client secrets**.
-2. Click **+ New client secret**, add a description and an expiry period, then click **Add**.
-3. Copy the **Value** immediately — it cannot be retrieved after you leave the page.
-4. Share it with Proventeq through your approved secure channel. **Never send it by email.**
-
-### Steps — Azure CLI (alternative)
-
-```bash
-az ad app credential reset \
-  --id <APP_OBJECT_ID> \
-  --display-name "Proventeq365 deployment" \
-  --years 1 \
-  --append
-```
-
-> **Certificate.** In addition to the client secret, Proventeq will upload a public-key certificate to this app registration. It is required for application-only access to SharePoint Online. The private key never leaves Proventeq's key store. This is noted here because certificate upload is normally a change-control item.
-
-## Grant API Permissions
-
-1. In the app registration, go to **Manage** > **API permissions**.
-2. Add the required Microsoft Graph and service permissions for your chosen deployment mode:
-   - **Read-only mode:** Apply the permissions shown in the Read-only permissions screenshot provided by Proventeq.
-   - **Read-write mode:** Apply the permissions shown in the Read-write permissions screenshot provided by Proventeq (this includes additional permissions compared to Read-only).
-3. Once all permissions are added, click **Grant Admin Consent for [your organization]** and confirm.
-
-> **Who can grant admin consent.** This step requires **Privileged Role Administrator** or **Global Administrator**. The Cloud Application Administrator role assigned in [Assign the Cloud Application Administrator Role](#assign-the-cloud-application-administrator-role) is **not** sufficient to consent to Microsoft Graph application permissions, so admin consent cannot be performed by Proventeq on your behalf and must be carried out by an administrator in your tenant.
+> **Changing mode later.** To move from Read-only to Read-write, re-run the prerequisites script with `-PermissionMode ReadWrite` and `-GrantAdminConsent`; the additional permissions are added and consented. Because the script never removes permissions, moving from Read-write to Read-only means removing the extra permissions manually in **API permissions**.
 
 ### Read-only mode permissions
 
-#### Microsoft Graph (13 permissions)
+#### Microsoft Graph (15 permissions)
 
 | API / Permission | Type | Description | Admin Consent |
 | --- | --- | --- | --- |
 | AuditLog.Read.All | Application | Required to read sign-in activity for users and service principals. Without it the whole request fails, not just that field. | Yes |
+| ChannelMessage.Read.All | Application | Required for Microsoft Teams discovery — reads Teams channel messages. | Yes |
+| Chat.Read.All | Application | Required for Microsoft Teams discovery — reads Teams chats. | Yes |
 | Directory.Read.All | Application | Required to read directory roles and members, service principals, app role assignments and OAuth2 permission grants. | Yes |
 | Group.Read.All | Application | Read all groups | Yes |
 | Mail.Read | Application | Read mail in all mailboxes | Yes |
@@ -134,11 +93,13 @@ az ad app credential reset \
 
 ### Read-write mode permissions
 
-#### Microsoft Graph (25 permissions)
+#### Microsoft Graph (27 permissions)
 
 | API / Permission | Type | Description | Admin Consent |
 | --- | --- | --- | --- |
 | AuditLog.Read.All | Application | Read all audit log data | Yes |
+| ChannelMessage.Read.All | Application | Required for Microsoft Teams discovery — reads Teams channel messages. | Yes |
+| Chat.Read.All | Application | Required for Microsoft Teams discovery — reads Teams chats. | Yes |
 | Directory.ReadWrite.All | Application | Read and write directory data | Yes |
 | Group.Read.All | Application | Read all groups | Yes |
 | Group.ReadWrite.All | Application | Read and write all groups | Yes |
