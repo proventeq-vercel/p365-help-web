@@ -20,7 +20,7 @@ Both scripts write a log file to the `logs` folder next to the script (`logs/pre
 | Problem | Fix |
 | --- | --- |
 | `The term './Proventeq365Prerequisites.ps1' is not recognized` | The file is not in the current folder. Run `cd ~` then `ls`, and upload the file again if it is missing. |
-| `-GrantAdminConsent requires Global Administrator or Privileged Role Administrator` | Use [Scenario F](./05-run-prerequisites-script.md#scenario-f--without-admin-consent), then ask a Global Administrator to [grant consent](./04-entra-app-registration.md#grant-admin-consent). |
+| `-GrantAdminConsent requires Global Administrator or Privileged Role Administrator` | Use [Scenario E](./05-run-prerequisites-script.md#scenario-e--without-admin-consent), then ask a Global Administrator to [grant consent](./04-entra-app-registration.md#grant-admin-consent). |
 | `More than one app named '<name>' in tenant <tenant>` | The script will not guess which app registration is yours. Use a more specific `-ApplicationName`, or rename or remove the duplicate app registration. |
 | `Failed to write secret ... (Key Vault RBAC not ready?)` | You do not have **Owner** (or **User Access Administrator**) on the subscription, or the permission has not taken effect yet. Fix the access, wait a minute, then re-run the same command. |
 | Key Vault name already in use / `VaultAlreadyExists` | Key Vault names are globally unique. Choose a different `-KeyVaultName`. |

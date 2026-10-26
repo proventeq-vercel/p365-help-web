@@ -5,13 +5,13 @@ description: "Everything you need to prepare and run to deploy Proventeq365 into
 
 # Deployment Prerequisites
 
-This guide describes how to prepare for and deploy Proventeq365 into your Microsoft 365 tenant and Azure subscription. The deployment is carried out by **your administrator** in three stages, using two PowerShell scripts provided by Proventeq and the Proventeq365 offer in Azure Marketplace. Nothing needs to be installed on your machine: both scripts run in **Azure Cloud Shell**.
+This guide describes how to prepare for and deploy Proventeq365 into your Microsoft 365 tenant and Azure subscription. The deployment is carried out by **your administrator** in three stages, using two PowerShell scripts and the Proventeq365 offer in Azure Marketplace. Nothing needs to be installed on your machine: both scripts run in **Azure Cloud Shell**.
 
 | Stage | What happens | Guide |
 | --- | --- | --- |
-| 1. Prerequisites script | `Proventeq365Prerequisites.ps1` creates the Entra ID app registration, grants its API permissions and admin consent, creates the client secret and SharePoint certificate, and stores them in a **Bootstrap Key Vault** in a new resource group. | [Run the Prerequisites Script](./05-run-prerequisites-script.md) |
+| 1. Prerequisites script | [Proventeq365Prerequisites.ps1](/prerequisites/Proventeq365Prerequisites.ps1) creates the Entra ID app registration, grants its API permissions and admin consent, creates the client secret and SharePoint certificate, and stores them in a **Bootstrap Key Vault** in a new resource group. | [Run the Prerequisites Script](./05-run-prerequisites-script.md) |
 | 2. Azure Marketplace | You deploy Proventeq365 from Azure Marketplace and select the Bootstrap Key Vault. The deployment reads everything it needs from that vault. | [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md) |
-| 3. Post-deployment script | `Proventeq365PostDeployment.ps1` sets the app registration's redirect URI to the live Proventeq365 URL, imports the SharePoint certificate into the product Key Vault and, if needed, configures the AI agent. | [Run the Post-Deployment Script](./07-run-post-deployment-script.md) |
+| 3. Post-deployment script | [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1) sets the app registration's redirect URI to the live Proventeq365 URL, imports the SharePoint certificate into the product Key Vault and, if needed, configures the AI agent. | [Run the Post-Deployment Script](./07-run-post-deployment-script.md) |
 
 ## Who should read this
 
@@ -35,7 +35,7 @@ This guide is intended for:
 | --- | --- | --- |
 | Access | Make sure the person running the scripts has the access listed in [Required Access](./03-azure-prerequisites.md#required-access). | Confirm the access required and support access verification. |
 | Microsoft 365 tenant | Run the prerequisites script, which creates the app registration, and grant admin consent to its API permissions. Admin consent requires **Global Administrator** or **Privileged Role Administrator**. | Confirm the deployment mode (Read-only or Read-write) and the resulting permission set. |
-| Azure subscription | Register the required resource providers, run both scripts, deploy Proventeq365 from Azure Marketplace, and keep the bootstrap resource group. | Provide the scripts and the container registry credentials, and support the deployment. |
+| Azure subscription | Register the required resource providers, download and run both scripts, deploy Proventeq365 from Azure Marketplace, and keep the bootstrap resource group. | Maintain the scripts, provide the container registry credentials, and support the deployment. |
 | Security & governance | Ensure your MFA and Conditional Access policies allow sign-in to the Azure portal and Azure Cloud Shell for the person running the deployment, and approve any exceptions needed. | Provide a least-privilege access recommendation. |
 | Azure capacity | Confirm sufficient subscription quota in the target region (see [Confirm Subscription Quota](./03-azure-prerequisites.md#confirm-subscription-quota)). | Advise on sizing and confirm the required SKUs. |
 | Network | If outbound traffic is restricted, allow the endpoints listed in [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity). | Provide and maintain the endpoint list. |

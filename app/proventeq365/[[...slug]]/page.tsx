@@ -190,7 +190,7 @@ export default async function DocPage({ params }: PageProps) {
                     className="h-1.5 w-1.5 rounded-full"
                     style={{ background: "var(--accent-swatch)" }}
                   />
-                  Updated May 2026
+                  Updated Oct 2026
                 </span>
                 <span className="meta-actions">
                   <CopyMarkdownAction />

@@ -7,9 +7,18 @@ description: "Run Proventeq365Prerequisites.ps1 in Azure Cloud Shell to create t
 
 **What this does:** `Proventeq365Prerequisites.ps1` prepares everything the Marketplace deployment needs. It creates the [Entra ID app registration](./04-entra-app-registration.md) with its permissions, admin consent, client secret and SharePoint certificate, and a bootstrap resource group containing a **Bootstrap Key Vault**. The Marketplace deployment reads everything from that vault, so no secrets are shared with Proventeq.
 
-Run this script **before** you deploy Proventeq365 from Azure Marketplace. Your Proventeq contact provides both deployment scripts — `Proventeq365Prerequisites.ps1` and `Proventeq365PostDeployment.ps1` — together with the container registry (ACR) username and password.
+Run this script **before** you deploy Proventeq365 from Azure Marketplace. Your Proventeq contact provides the container registry (ACR) username and password.
 
 > **Before you start:** confirm the person running the script has the access listed in [Required Access](./03-azure-prerequisites.md#required-access), and that you have the values listed in [Information to Collect](./03-azure-prerequisites.md#information-to-collect).
+
+## Download the Scripts
+
+Download both deployment scripts to your machine:
+
+- [Proventeq365Prerequisites.ps1](/prerequisites/Proventeq365Prerequisites.ps1) — run before the Marketplace deployment.
+- [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1) — run after the Marketplace deployment.
+
+You upload both files to Azure Cloud Shell in the next step.
 
 ## Open Azure Cloud Shell and Upload the Scripts
 
@@ -30,7 +39,7 @@ Run this script **before** you deploy Proventeq365 from Azure Marketplace. Your 
 ### Step 3 — Upload both scripts
 
 1. In the Cloud Shell toolbar, select **Manage files** → **Upload**.
-2. Select `Proventeq365Prerequisites.ps1` and upload it.
+2. Select the downloaded `Proventeq365Prerequisites.ps1` and upload it.
 3. Repeat for `Proventeq365PostDeployment.ps1`.
 
 ![Manage files menu in the Cloud Shell toolbar, with Upload highlighted](images/cloud-shell-upload.png)
@@ -84,7 +93,6 @@ To sign in, use a web browser to open the page https://login.microsoft.com/devic
 | `-SubscriptionId` | Optional | Skips the subscription selection prompt |
 | `-PlatformAdminObjectId` | Optional | Entra object ID of the Proventeq365 platform administrator. Defaults to the person running the script. |
 | `-ConfigureAiAgent` | Optional | Also creates the AI agent (Copilot) app registration |
-| `-FrontendUrl` | Optional | Only if you already have a custom domain for Proventeq365 |
 | `-ForceNewCert` | Optional | Creates a new client secret and SharePoint certificate (rotation) |
 
 ### Scenario A — Standard (Read-write, with admin consent)
@@ -123,13 +131,7 @@ This also creates a second app registration named `Proventeq365 AI Agent`. If yo
 ./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -SubscriptionId 9a8b7c6d-1e2f-4a3b-8c9d-0e1f2a3b4c5d -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
 ```
 
-### Scenario E — Custom domain already known
-
-```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -FrontendUrl https://p365.contoso.com
-```
-
-### Scenario F — Without admin consent
+### Scenario E — Without admin consent
 
 Use this when the person running the script is not a Global Administrator or Privileged Role Administrator. Run the script without `-GrantAdminConsent`. To create the app, you need at least **Application Administrator** or **Cloud Application Administrator**.
 
@@ -141,7 +143,7 @@ Then a Global Administrator grants consent using the **App (client) ID** from th
 
 > **Important:** Proventeq365 cannot access Microsoft 365 or SharePoint until admin consent is granted.
 
-### Scenario G — Rotate the client secret and SharePoint certificate
+### Scenario F — Rotate the client secret and SharePoint certificate
 
 ```powershell
 ./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -ForceNewCert

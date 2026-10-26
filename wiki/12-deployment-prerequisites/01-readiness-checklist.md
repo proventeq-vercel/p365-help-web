@@ -27,7 +27,7 @@ Work through this checklist in order and confirm status with your Proventeq cont
 
 | # | Checklist item | Status (Yes / No / N/A) | Notes |
 | --- | --- | --- | --- |
-| 12 | Both scripts uploaded to Azure Cloud Shell (**PowerShell**) (see [Open Azure Cloud Shell](./05-run-prerequisites-script.md#open-azure-cloud-shell-and-upload-the-scripts)) | | |
+| 12 | Both scripts downloaded (see [Download the Scripts](./05-run-prerequisites-script.md#download-the-scripts)) and uploaded to Azure Cloud Shell (**PowerShell**) (see [Open Azure Cloud Shell](./05-run-prerequisites-script.md#open-azure-cloud-shell-and-upload-the-scripts)) | | |
 | 13 | Prerequisites script run, and the **Bootstrap Key Vault** resource ID and **App (client) ID** copied from its summary (see [Run the Prerequisites Script](./05-run-prerequisites-script.md)) | | |
 | 14 | Admin consent granted to the app registration's API permissions (see [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent)) | | |
 | 15 | Proventeq365 deployed from Azure Marketplace with the Bootstrap Key Vault selected (see [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md)) | | |

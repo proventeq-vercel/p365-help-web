@@ -18,7 +18,7 @@ description: "What the Proventeq365 prerequisites script creates in Microsoft En
 | Admin consent | Granted during the run when you pass `-GrantAdminConsent` — see [Grant Admin Consent](#grant-admin-consent). |
 | Client secret | Created and written straight into the Bootstrap Key Vault. It is never displayed. |
 | SharePoint certificate | A certificate used for application-only access to SharePoint Online. The public key is added to the app registration and the certificate is stored in the Bootstrap Key Vault; the [post-deployment script](./07-run-post-deployment-script.md) imports it into the product Key Vault. The private key never leaves your Key Vaults. |
-| Redirect URI | Set by the post-deployment script once the Proventeq365 URL is known, or up front with `-FrontendUrl` if you already have a custom domain. |
+| Redirect URI | Set by the post-deployment script once the Proventeq365 URL is known. |
 | AI agent app registration (optional) | A second app registration named `<ApplicationName> AI Agent`, created only with `-ConfigureAiAgent`. |
 
 The person who runs the script becomes the Proventeq365 **platform administrator** by default. To nominate someone else, pass their Entra object ID with `-PlatformAdminObjectId`.
@@ -35,7 +35,7 @@ If the person running the prerequisites script is a Global Administrator or Priv
 
 ### Option B — Separately, after the script run
 
-If the person running the script does not hold either role, they run it **without** `-GrantAdminConsent` (see [Scenario F](./05-run-prerequisites-script.md#scenario-f--without-admin-consent)). A Global Administrator then grants consent in one of two ways, using the **App (client) ID** from the script summary.
+If the person running the script does not hold either role, they run it **without** `-GrantAdminConsent` (see [Scenario E](./05-run-prerequisites-script.md#scenario-e--without-admin-consent)). A Global Administrator then grants consent in one of two ways, using the **App (client) ID** from the script summary.
 
 **Azure Cloud Shell:**
 

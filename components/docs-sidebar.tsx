@@ -175,7 +175,7 @@ export function DocsSidebar({ items, currentUrl }: DocsSidebarProps) {
         }}
       >
         <SparklesIcon size={12} />
-        <span>v4.2 · May 2026</span>
+        <span>Oct 2026</span>
       </div>
 
       {/* Quick links */}

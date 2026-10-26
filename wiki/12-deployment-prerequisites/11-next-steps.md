@@ -18,7 +18,7 @@ Provide your Proventeq contact with:
 - The **Directory (tenant) ID** — and, for a [cross-tenant deployment](./09-cross-tenant-deployment.md), both tenant IDs.
 - The **App (client) ID** from the prerequisites script summary.
 - The name of the **managed application** and its **managed resource group** (`mrg-...`).
-- The **Frontend URL** from the post-deployment script summary, or your custom domain.
+- The **Frontend URL** from the post-deployment script summary.
 - The **deployment mode** you used (Read-only or Read-write), and whether the **AI agent** was deployed.
 - The **notification sender mailbox** address, if you granted one (see [Notification Mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional)).
 
