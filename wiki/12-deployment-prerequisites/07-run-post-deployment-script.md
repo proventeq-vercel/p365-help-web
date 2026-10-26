@@ -1,11 +1,9 @@
 ---
 title: "Run the Post-Deployment Script"
-description: "Marketplace deployment only — run Proventeq365PostDeployment.ps1 in Azure Cloud Shell after the Marketplace deployment to set the redirect URI, import the SharePoint certificate, and configure the AI agent."
+description: "Run Proventeq365PostDeployment.ps1 in Azure Cloud Shell after the Marketplace deployment to set the redirect URI, import the SharePoint certificate, configure the AI agent, and optionally grant the notification mailbox."
 ---
 
 # Run the Post-Deployment Script
-
-> **Azure Marketplace deployment only.** In a [direct deployment](./06-direct-deployment.md), Proventeq completes these steps as part of the deployment and you do not run this script.
 
 **What this does:** `Proventeq365PostDeployment.ps1` completes the values that only exist once the Marketplace deployment has finished. It:
 
@@ -16,7 +14,7 @@ description: "Marketplace deployment only — run Proventeq365PostDeployment.ps1
 
 Run it in the same Cloud Shell session as the prerequisites script, or upload it again if the session has ended (see [Open Azure Cloud Shell](./05-run-prerequisites-script.md#open-azure-cloud-shell-and-upload-the-scripts)). If you have not downloaded it yet: [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1).
 
-> **Before you start:** you need the **App (client) ID** and **Bootstrap Key Vault** resource ID from the [prerequisites script summary](./05-run-prerequisites-script.md#script-output--copy-these-values), and the **managed resource group** name from the [Marketplace deployment](./07-deploy-from-azure-marketplace.md#find-the-managed-resource-group).
+> **Before you start:** you need the **App (client) ID** and **Bootstrap Key Vault** resource ID from the [prerequisites script summary](./05-run-prerequisites-script.md#script-output--copy-these-values), and the **managed resource group** name from the [Marketplace deployment](./06-deploy-from-azure-marketplace.md#find-the-managed-resource-group).
 
 ## Parameters
 
@@ -84,4 +82,52 @@ Use this to set the redirect URI again without re-importing the certificate:
 
 > **The post-deployment script is safe to run again.** Each run overwrites the same values.
 
-Next: [Notification Mailbox](./09-notification-mailbox.md) if Proventeq365 should send email notifications, otherwise [Next Steps](./13-next-steps.md).
+## Notification Mailbox (optional)
+
+> **Applies only if** Proventeq365 should send email notifications.
+
+Proventeq365 sends notification emails from **one** mailbox in your tenant. Instead of an organisation-wide `Mail.Send` permission in Entra ID, access is granted with **Exchange Online RBAC for Applications**: a management scope containing only that mailbox, and the *Application Mail.Send* role assigned to the Proventeq365 app over that scope. The app can then send from that mailbox and no other.
+
+> **Important:** Do **not** also add `Mail.Send` as an application permission on the app registration. Exchange Online combines the two grants, so an Entra ID grant would let the app send as every mailbox in your tenant.
+
+### What you need
+
+- The **Exchange Online Organization Management** role group.
+- Admin consent already granted to the app registration (see [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent)).
+- The grant script `Grant-NotificationMailboxSend.ps1`, provided by Proventeq. Upload it to Cloud Shell in the same way as the other two scripts.
+
+### Steps
+
+Run these commands in Cloud Shell (**PowerShell**).
+
+1. Sign in to Exchange Online:
+
+   ```powershell
+   Connect-ExchangeOnline
+   ```
+
+2. If the sender mailbox does not exist yet, create it as a **shared mailbox**. A shared mailbox needs no licence up to 50 GB.
+
+   ```powershell
+   New-Mailbox -Shared -Name "Proventeq365" -PrimarySmtpAddress proventeq365@contoso.com
+   ```
+
+3. Look up the object ID of the Proventeq365 app's service principal, using the **App (client) ID** from the prerequisites script summary:
+
+   ```powershell
+   $spId = az ad sp show --id <APP-CLIENT-ID> --query id -o tsv
+   ```
+
+4. Grant the app permission to send from that mailbox:
+
+   ```powershell
+   ./Grant-NotificationMailboxSend.ps1 -AppId <APP-CLIENT-ID> -SenderMailbox proventeq365@contoso.com -ServicePrincipalObjectId $spId
+   ```
+
+5. Tell your Proventeq contact the sender mailbox address, so it can be configured as the notification sender for your tenant.
+
+The grant can take **30 minutes to 2 hours** to take effect, because Exchange Online caches application permissions. The script is safe to run again: an existing scope or assignment is reused.
+
+> **Note:** `Proventeq365PostDeployment.ps1` also has a `-GrantNotificationMailbox` switch that runs the same grant. It expects the grant script in a fixed folder layout relative to itself, which an upload to the Cloud Shell home folder does not provide, so run the grant script directly as shown above.
+
+Next: [Next Steps](./11-next-steps.md).

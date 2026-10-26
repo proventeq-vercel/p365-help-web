@@ -12,7 +12,7 @@ In that case the two tenants are used for different things:
 | Tenant | Parameter | Used for |
 | --- | --- | --- |
 | Microsoft 365 tenant | `-AppTenantId` | The app registration, its permissions, admin consent, client secret and SharePoint certificate. |
-| Subscription tenant | `-CustomerTenantId` | The Azure subscription, the bootstrap resource group and Bootstrap Key Vault, and the Proventeq365 deployment. |
+| Subscription tenant | `-CustomerTenantId` | The Azure subscription, the bootstrap resource group and Bootstrap Key Vault, and the Marketplace deployment. |
 
 The prerequisites script records the Microsoft 365 tenant in the Bootstrap Key Vault, so the deployed Proventeq365 authenticates against your Microsoft 365 tenant rather than the subscription tenant.
 
@@ -48,20 +48,16 @@ az ad app permission admin-consent --id <APP-CLIENT-ID>
 
 Consent can also be granted in the portal — see [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent).
 
-## Direct deployment
-
-Complete [Direct Deployment](./06-direct-deployment.md) with one difference: the account you provide needs the access above in **both** tenants — Global Administrator or Privileged Role Administrator in the **Microsoft 365 tenant**, and Owner on the subscription in the **subscription tenant**. If the account is a member of only one tenant, invite it as a guest to the other. Share both tenant IDs with Proventeq.
-
 ## Marketplace deployment
 
-Deploy from Azure Marketplace in the **subscription tenant**, exactly as described in [Deploy from Azure Marketplace](./07-deploy-from-azure-marketplace.md).
+Deploy from Azure Marketplace in the **subscription tenant**, exactly as described in [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md).
 
-### Post-deployment script
+## Post-deployment script
 
-Add `-AppTenantId` to the post-deployment script too, because the redirect URI is updated on the app registration in the Microsoft 365 tenant:
+Add `-AppTenantId` here too, because the redirect URI is updated on the app registration in the Microsoft 365 tenant:
 
 ```powershell
 ./Proventeq365PostDeployment.ps1 -CustomerTenantId <SUBSCRIPTION-TENANT-ID> -AppTenantId <M365-TENANT-ID> -ResourceGroupName <MANAGED-RG-NAME> -MainAppClientId <APP-CLIENT-ID> -BootstrapKeyVaultId "<BOOTSTRAP-KEY-VAULT-RESOURCE-ID>"
 ```
 
-The [notification mailbox](./09-notification-mailbox.md) grant, if required, is run in the **Microsoft 365 tenant**.
+The [notification mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional) grant, if required, is run in the **Microsoft 365 tenant**.

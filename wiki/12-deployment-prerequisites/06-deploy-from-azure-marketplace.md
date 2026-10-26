@@ -1,11 +1,9 @@
 ---
 title: "Deploy from Azure Marketplace"
-description: "Azure Marketplace deployment only — deploy Proventeq365 from Azure Marketplace using the Bootstrap Key Vault created by the prerequisites script, and find the managed resource group for the post-deployment script."
+description: "Deploy Proventeq365 from Azure Marketplace using the Bootstrap Key Vault created by the prerequisites script, and find the managed resource group for the post-deployment script."
 ---
 
 # Deploy from Azure Marketplace
-
-> **Azure Marketplace deployment only.** For a direct deployment, see [Direct Deployment](./06-direct-deployment.md) instead.
 
 **What this does:** Deploys Proventeq365 into your subscription as an Azure **managed application**. The deployment reads the app registration, client secret, certificate and container registry credentials from the Bootstrap Key Vault, so the wizard does not ask for them.
 
@@ -38,4 +36,4 @@ az managedapp list --query "[].{name:name, managedResourceGroupId:managedResourc
 
 > **Important:** Keep the **bootstrap resource group** after deployment. **Do not delete it.** It is needed for re-running the scripts and for certificate rotation.
 
-Next: [Run the Post-Deployment Script](./08-run-post-deployment-script.md).
+Next: [Run the Post-Deployment Script](./07-run-post-deployment-script.md).
