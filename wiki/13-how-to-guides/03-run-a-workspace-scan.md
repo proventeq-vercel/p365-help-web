@@ -20,13 +20,13 @@ A workspace scan — called a **data refresh** in Proventeq365 — collects the 
 1. Open **Manage** → **Workspaces**.
 2. In the workspace's row, click **Refresh data** to start a scan now.
 3. To follow progress, click **View runs** in the same row. The run history shows each run's start time, status, type (**Full** or **Delta**) and duration, with counters for runs **In flight**, runs that **Need attention** and **Issues**.
-4. Open a run to see its stages — **Requested**, **Discovering**, **Transforming** and **Reports ready** — and the **Issues** and **Items** tabs.
+4. Open a run to see its stages — **Requested**, **Discovering**, **Transforming** and **Reports ready** — and the **Issues** tab.
 5. When the run shows **Succeeded**, open the [Dashboard](../03-main/dashboard/README.md) or the reports for the workspace.
 6. If a run fails at the transform stage, open it and click **Retry** to retry the step that failed.
 
 ## Result
 
-The dashboard and reports show the data from the latest completed run. The first run of a workspace is a **Full** scan; later runs are **Delta** (incremental) runs. Enabled policies are evaluated at the end of every successful run. Sites that can't be read — for example OneDrives that were never provisioned — are counted as **skipped**, not as errors. If a run ends as **Failed** or **Partially completed**, open it and check the **Issues** tab. See [Troubleshooting — Workspaces and data refresh](../14-troubleshooting/README.md#workspaces-and-data-refresh).
+The dashboard and reports show the data from the latest completed run. The first run of a workspace is a **Full** scan; later runs are **Delta** (incremental) runs. Enabled policies are evaluated at the end of every successful run. Sites that can't be read — for example OneDrives that were never provisioned — are counted as **skipped**, not as errors. If a run ends as **Failed** or **Stopped**, open it and check the **Issues** tab. See [Troubleshooting — Workspaces and data refresh](../14-troubleshooting/README.md#workspaces-and-data-refresh).
 
 ## Related
 

@@ -7,23 +7,23 @@ updated: 2026-10-26
 
 # How to Give Users Access to a Workspace
 
-People see a workspace's dashboard and reports only if they have a role on that workspace. Add them on the workspace's **Users** step and give each one a role: **Workspace User** to view reports, or **Workspace Admin** to also manage the workspace, run data refreshes and policies, and start remediation actions.
+People see a workspace's dashboard and reports only if they have a role on that workspace. Add them on the workspace's **Users** step and give each one a role: **Workspace User** to view reports, or **Workspace Admin** to also run data refreshes and start remediation actions.
 
 ## Before you begin
 
-- You need the **Tenant Admin** role, or the **Workspace Admin** role on the workspace.
+- You need the **Tenant Admin** role. The workspace list, where **Edit** is, is shown to Tenant Admins.
 
 ## What each role can do
 
 | Role | Can do |
 | --- | --- |
 | **Workspace User** | View the workspace's dashboard and reports, the policy list and policy reports, and action executions. |
-| **Workspace Admin** | Everything a Workspace User can do, plus edit the workspace (except its scope), view run history, start or stop a data refresh, run policies and start actions such as removing permissions or archiving. |
-| **Tenant Admin** | Everything, across all workspaces, plus create workspaces, create and edit policies, manage connections, templates, the license, the audit log and settings. |
+| **Workspace Admin** | Everything a Workspace User can do, plus edit the workspace (except its scope), view run history, start or stop a data refresh, and start actions such as removing permissions or archiving. |
+| **Tenant Admin** | Everything, across all workspaces, plus create workspaces, create, edit and run policies, manage connections, templates, the license, the audit log and settings. |
 
 ## Steps
 
-1. Open **Manage** → **Workspaces** and click **Edit** on the workspace. When creating a new workspace, go to the **Users** step of the wizard instead.
+1. As a Tenant Admin, open **Manage** → **Workspaces** and click **Edit** on the workspace. When creating a new workspace, go to the **Users** step of the wizard instead.
 2. On the **Users** step, search by name or email address and select the user from the results. To add many people at once, click **Upload CSV** and upload a CSV file of their email addresses.
 3. Choose the role — **Workspace User** or **Workspace Admin** — for each user.
 4. To remove access, click the **Delete** icon next to the user.

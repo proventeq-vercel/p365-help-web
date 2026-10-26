@@ -12,7 +12,7 @@ Proventeq365 archives obsolete SharePoint content to low-cost **Wasabi** or **Az
 ## Before you begin
 
 - Add an archive connection and select its container. See [How to Add an Archive Connection](./06-add-an-archive-connection.md).
-- You need the **Tenant Admin** role to create the policy, and **Workspace Admin** (or Tenant Admin) to run it and start the archive.
+- You need the **Tenant Admin** role to create and run the policy, and **Workspace Admin** (or Tenant Admin) to start a manual archive from the report.
 - Check the workspace's **obsolete detection** rules (age in months and file extensions) on the workspace's **Configuration** step.
 - Your license must include the **Execute Policy** feature to run the archive action, and **Archive Items** for opening and restoring archived files. Check **Enabled features** on the [License](../08-license/README.md) screen.
 

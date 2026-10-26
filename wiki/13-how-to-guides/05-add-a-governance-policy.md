@@ -11,7 +11,7 @@ A **governance policy** applies a rule — for example *Excessive Sharing*, *Lar
 
 ## Before you begin
 
-- You need the **Tenant Admin** role to create or edit policies. Workspace Admins can run policies and start their actions.
+- You need the **Tenant Admin** role to create, edit and run policies. Workspace Admins can start a policy's manual actions from its report.
 - The workspace must exist and should have completed at least one data refresh, so the policy has data to evaluate. See [How to Run a Workspace Scan](./03-run-a-workspace-scan.md).
 - Choose the rule from the [Predefined Policies](../appendix/predefined-policies.md) list and check which inputs and actions it supports.
 - For an **Archive** action, add a storage connection first. See [How to Add an Archive Connection](./06-add-an-archive-connection.md).

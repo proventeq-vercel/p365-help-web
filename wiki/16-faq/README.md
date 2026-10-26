@@ -96,7 +96,7 @@ With their Microsoft 365 work account, through Microsoft Entra ID. There are no 
 ### What roles are there?
 
 - **Tenant Admin** — manages everything: creates workspaces and policies, and manages connections, templates, the license, the audit log and settings.
-- **Workspace Admin** — on a workspace: edits it (except its scope), runs data refreshes and policies, and starts actions such as removing permissions or archiving.
+- **Workspace Admin** — on a workspace: runs and stops data refreshes, and starts actions such as removing permissions or archiving.
 - **Workspace User** — on a workspace: views its dashboard, reports and policy results.
 
 Any licensed user can raise self-service requests from the templates available to them, and template approvers decide requests. See [How to Give Users Access to a Workspace](../13-how-to-guides/04-give-users-access-to-a-workspace.md).
@@ -121,7 +121,11 @@ The workspace's first data refresh hasn't finished yet, or it failed. Check **Vi
 
 ### Can I change which sites a workspace scans?
 
-Not after it has been created — the scope is fixed for security reasons. Create a new workspace for a different set of sites. Other settings, such as the schedule, the ROT rules, the policies and the users, can be changed.
+Not after it has been created — the scope, the include options and the Entra ID discovery options are fixed. Only **Include URL patterns** can be edited, and changing them makes the next refresh re-read every site. Create a new workspace for a different set of sites. Other settings, such as the schedule, the ROT rules, the policies and the users, can be changed.
+
+### Can I stop a data refresh?
+
+Yes. A Workspace Admin can click **Stop data refresh** on the run while it is queued or still collecting data. Data collected so far is kept, and the reports keep showing the last completed refresh. See [Workspace Runs](../02-manage/workspaces/workspace-runs.md).
 
 ### Can I add many sites at once?
 
@@ -147,15 +151,31 @@ More than twenty predefined rules covering permissions and access, content lifec
 
 ### When do policies run?
 
-Every enabled policy is evaluated at the end of each workspace data refresh. A Workspace Admin can also run a single policy at any time with **Run Policy**. Policies have no schedule of their own.
+Every enabled policy is evaluated at the end of each workspace data refresh. A Tenant Admin can also run a single policy at any time with **Run Policy**. Policies have no schedule of their own.
 
 ### What is the difference between manual and automatic actions?
 
 An **automatic** action runs on every item the policy matches as soon as the policy runs. A **manual** action waits until a Workspace Admin reviews the policy report and clicks **Execute on All Items** or **Execute on Selection**. Automatic actions can't be undone, so start with manual actions until you trust a policy's results. See [How to Add a Governance Policy](../13-how-to-guides/05-add-a-governance-policy.md).
 
+### Can I undo a policy action?
+
+It depends on the action. Archived files can be restored from the policy report, the stub link or the archived file page; content moved to Microsoft 365 Archive is reactivated in Microsoft 365. Deleted files go to the SharePoint recycle bin. Removed permissions and sharing links, trimmed versions and reinforced labels can't be undone from Proventeq365, so start with **Manual** actions until you trust a policy's results. See [Predefined Policies](../appendix/predefined-policies.md).
+
+### Why does the Excessive Versions Policy find nothing?
+
+It needs version history to be collected, which is off by default in a deployment. Ask Proventeq to turn it on, then run a data refresh.
+
 ### Can a second person check a policy's results before its actions run?
 
 Yes. Turn on **Requires approval** on the policy and add approvers. Every report the policy produces is then held — automatic actions wait and manual actions can't be started — until an approver approves the whole report or selected items. See [Policy Approvals](../02-manage/policies/policy-approvals.md).
+
+### Does a Tenant Admin automatically count as a policy approver?
+
+No. Only the people and groups listed under **Approvers** on the policy can approve or reject its reports. Tenant Admins don't bypass this list.
+
+### Why does an approval show "Superseded"?
+
+Each run of the policy replaces its report, and the previous approval — decided or not — is superseded. The new report needs its own decision.
 
 ### Can we create our own policy rules?
 
@@ -217,6 +237,10 @@ The request shows **Provisioning failed**, and its **Provisioning errors** panel
 
 Start a new **Draft** version, edit it and test it with a test run; users keep requesting from the **Published** version until you publish the draft. Earlier versions stay in the template's **Version history** and can be restored as a new draft. See [Template Versions](../05-self-service/templates/template-versions.md).
 
+### Does a test run of a draft template create real sites?
+
+Yes. A test run provisions for real, waits for approval if the template requires it, and appears in your **Request History**. Use it to check a draft before you publish it. See [How to Test a Template Before Publishing](../13-how-to-guides/28-test-a-template-before-publishing.md).
+
 ### Can another system request sites and teams automatically?
 
 Yes, through the **Public API**. A Tenant Admin creates an app connection under **Settings**; the other system then submits signed provisioning requests and receives the outcome through a signed callback. See [Public API](../06-settings/public-api.md).
@@ -234,6 +258,10 @@ Proventeq365 can't be used until a new license is uploaded: every page redirects
 ### How does Proventeq365 notify people?
 
 In the app, through the bell icon, for scans, policy runs, actions and provisioning. By email for failures, approval requests and decisions, and changes to a person's workspace access — if a notification mailbox has been set up in your tenant. See [Notification](../09-notification/README.md) and [Notification Mailbox](../12-deployment-prerequisites/07-run-post-deployment-script.md#notification-mailbox-optional).
+
+### I lost an app connection's secret. Can I see it again?
+
+No — the secret is shown only once. Use **Rotate secret** to get a new one; the old secret stops working straight away. See [Settings](../06-settings/README.md).
 
 ### Can I choose which notifications I get by email?
 

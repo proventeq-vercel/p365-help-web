@@ -49,7 +49,7 @@ Messages you may see when creating or running a governance policy, or when an ac
 ### Failed to start policy run
 
 **Cause:** the run could not be started. A common reason is that the policy is disabled.
-**Fix:** Enable the policy and run it again. You need the **Workspace Admin** role on the workspace.
+**Fix:** Enable the policy and run it again. You need the **Tenant Admin** role to run policies.
 
 ### This policy is disabled. It is skipped during discovery and its actions cannot be run until it is re-enabled.
 
@@ -95,7 +95,7 @@ Messages you may see when creating or running a governance policy, or when an ac
 
 **Where:** status of an action execution.
 **Cause:** some items succeeded and at least one failed.
-**Fix:** Open the execution, filter the **Items** tab by **Failed**, and read each item's error (select **Full error** for the complete text). Fix the cause and run the action again on the failed items. Items that were already done are **skipped** on the next run.
+**Fix:** Open the execution, filter the **Items** tab by **Failed**, and read each item's error. Fix the cause and run the action again on the failed items. Items that were already done are **skipped** on the next run.
 
 ## Permissions and external users
 
