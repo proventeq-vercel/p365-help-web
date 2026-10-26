@@ -11,7 +11,8 @@ To see how files are shared by email, create a workspace of the **Exchange Monit
 
 ## Before you begin
 
-- You need permission to create workspaces in Proventeq365.
+- You need the **Tenant Admin** role to create workspaces, and your license must include the **Exchange** feature.
+- The Proventeq365 app registration needs the `Mail.Read` application permission, which the prerequisites script requests. Proventeq365 reads email metadata, links and attachment names and sizes through Microsoft Graph; it does not store email bodies or attachment content.
 - Know your organisation's **internal email domains** (for example *contoso.com*), so that external recipients can be identified.
 
 ## Steps

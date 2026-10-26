@@ -25,7 +25,7 @@ To get a new SharePoint site, Microsoft Team, library, channel or user account t
 
 ## Result
 
-When the status is **Provisioning successful**, the site, team, library, channel or user exists in Microsoft 365 as defined by the template. If the status is **Provisioning failed**, open the request to see the provisioning errors. See [Troubleshooting — Self-service provisioning](../14-troubleshooting/README.md#self-service-provisioning).
+When the status is **Provisioning successful**, the site, team, library, channel or user exists in Microsoft 365 as defined by the template. If the status is **Approval rejected**, an approver declined the request and nothing was created. If the status is **Provisioning failed**, open the request to see the **Provisioning errors** panel — each error says what went wrong and what to do; a partly created site is removed automatically. Fix the cause and submit a new request. See [Troubleshooting — Self-service provisioning](../14-troubleshooting/README.md#self-service-provisioning).
 
 ## Related
 

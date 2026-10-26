@@ -12,6 +12,7 @@ Use the **Security & Oversharing** report to find content that is shared too wid
 ## Before you begin
 
 - A workspace must have completed at least one scan so that the report contains data. See [How to Run a Workspace Scan](./03-run-a-workspace-scan.md).
+- You need the **Workspace Admin** role on the workspace (or **Tenant Admin**) to remove permissions. Workspace Users can view the report only.
 - Your license must include the **Remove Permissions** feature. You can check this on the [License](../08-license/README.md) screen under **Enabled Features**.
 - Removing a permission changes access in Microsoft 365. Check with the content owner before removing access that people may still need.
 
@@ -28,7 +29,7 @@ Use the **Security & Oversharing** report to find content that is shared too wid
 
 ## Result
 
-The selected permissions are removed in SharePoint and OneDrive. After the next scan, the report and the [Security & Oversharing dashboard](../03-main/dashboard/security-oversharing.md) reflect the reduced exposure. The action is recorded in the [Audit Log](../07-audit-log/README.md).
+The selected permissions are removed in SharePoint and OneDrive. After the next scan, the report and the [Security & Oversharing dashboard](../03-main/dashboard/security-oversharing.md) reflect the reduced exposure.
 
 ## Related
 

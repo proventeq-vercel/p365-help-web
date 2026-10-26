@@ -12,6 +12,7 @@ The **External Users** report lists every user from outside your organisation wh
 ## Before you begin
 
 - A workspace must have completed at least one scan. See [How to Run a Workspace Scan](./03-run-a-workspace-scan.md).
+- You need the **Workspace Admin** role on the workspace (or **Tenant Admin**) to remove, disable or enable users, and your license must include the **Disable Guests** feature for disabling and enabling.
 - Agree with the site owners which external collaborators still need access.
 
 ## Steps
@@ -27,7 +28,7 @@ The **External Users** report lists every user from outside your organisation wh
 
 ## Result
 
-The external user's access is removed, blocked or restored. The change appears in the report after the next workspace scan and is recorded in the [Audit Log](../07-audit-log/README.md).
+The external user's access is removed, blocked or restored. The change appears in the report after the next workspace scan.
 
 ## Related
 

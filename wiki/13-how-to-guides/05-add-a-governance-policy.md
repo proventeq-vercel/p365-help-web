@@ -11,9 +11,10 @@ A **governance policy** applies a rule — for example *Excessive Sharing*, *Lar
 
 ## Before you begin
 
+- You need the **Tenant Admin** role to create or edit policies. Workspace Admins can run policies and start their actions.
 - The workspace must exist and should have completed at least one data refresh, so the policy has data to evaluate. See [How to Run a Workspace Scan](./03-run-a-workspace-scan.md).
 - Choose the rule from the [Predefined Policies](../appendix/predefined-policies.md) list and check which inputs and actions it supports.
-- For an **Archive** action, add a storage connection first. See [How to Add a Wasabi Archive Connection](./06-add-a-wasabi-connection.md).
+- For an **Archive** action, add a storage connection first. See [How to Add an Archive Connection](./06-add-an-archive-connection.md).
 
 ## Steps
 
@@ -28,7 +29,7 @@ A **governance policy** applies a rule — for example *Excessive Sharing*, *Lar
 
 ## Result
 
-The policy report lists every item that matches the rule, with the reason it matched — for example *Site has a document count* above the threshold, or a document whose sensitivity label differs from the library's label. Automatic actions run on the matched items; manual actions wait until you start them from the report. Policies also run with each workspace data refresh.
+The policy report lists every item that matches the rule, with the reason it matched — for example *Site has a document count* above the threshold, or a document whose sensitivity label differs from the library's label. Automatic actions run on the matched items; manual actions wait until you start them from the report. Policies have no schedule of their own: every enabled policy is evaluated again at the end of each workspace data refresh.
 
 > **Automatic actions cannot be undone.** When you run a policy that has automatic actions, those actions run in the background on every item the policy matches.
 

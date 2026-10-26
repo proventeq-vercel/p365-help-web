@@ -11,6 +11,7 @@ A **provisioning template** defines what gets created when someone raises a self
 
 ## Before you begin
 
+- You need the **Tenant Admin** role to manage templates.
 - Prepare a template image (PNG, JPG or SVG) — it is required.
 - Decide which values requesters should provide, for example a site name suffix or the owners. These become the template's **user inputs**.
 - Decide who should be able to use the template and who should approve requests.
@@ -29,11 +30,11 @@ A **provisioning template** defines what gets created when someone raises a self
    - **Start with a Microsoft Team** — create a new Team, or add channels to an existing Team.
    - **User Management** — create a user, or terminate a user.
 7. Configure the container. Wherever a value should come from the requester, click **Apply User Input** and select the matching input. Click **Save** — the message *Plugin successfully updated!* confirms it.
-8. Repeat for any other containers, then open the menu next to the **Draft** status and click **Publish**.
+8. Repeat for any other containers, then open the menu next to the **Draft** status and click **Publish**. Proventeq365 validates the template first and lists any container that still needs attention.
 
 ## Result
 
-The template status changes to **Published** and the template appears under **New Request** for the users allowed to see it. To change a published template later, edit it; to take it out of use, **Unpublish** it. Only **Draft** templates can be deleted.
+The template status changes to **Published** and the template appears under **New Request** for the users allowed to see it. Templates are versioned: to change a published template, start a new draft version, edit it and publish it. To take a template out of use, **Unpublish** it. Only **Draft** templates can be deleted.
 
 ## Related
 

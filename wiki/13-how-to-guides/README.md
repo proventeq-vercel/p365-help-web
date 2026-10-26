@@ -10,14 +10,16 @@ Short, task-focused guides for the most common Proventeq365 jobs. Each guide lis
 
 ## Set up and scan
 
+- [How to Get Started with Proventeq365](./01-get-started.md) — from deployment to your first insights.
 - [How to Create a Microsoft 365 Governance Workspace](./02-create-a-governance-workspace.md)
 - [How to Run a Workspace Scan](./03-run-a-workspace-scan.md)
+- [How to Give Users Access to a Workspace](./04-give-users-access-to-a-workspace.md)
 - [How to Add a Governance Policy](./05-add-a-governance-policy.md)
 - [How to Monitor Exchange Links and Attachments](./15-monitor-exchange-links-and-attachments.md)
 
 ## Archive and clean up
 
-- [How to Add a Wasabi Archive Connection](./06-add-a-wasabi-connection.md)
+- [How to Add an Archive Connection](./06-add-an-archive-connection.md)
 - [How to Archive Obsolete Content](./07-archive-obsolete-content.md)
 - [How to Restore an Archived File](./08-restore-an-archived-file.md)
 - [How to Find and Clean Up ROT Content](./11-find-and-clean-up-rot-content.md)

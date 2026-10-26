@@ -48,11 +48,18 @@ function splitSections(markdown: string, level: 2 | 3): Section[] {
   return sections;
 }
 
+/** Plain text for JSON-LD: no emphasis markers, list bullets or spaces before punctuation. */
+function toSchemaText(markdown: string) {
+  return toPlainText(markdown.replace(/\*\*|__/g, "").replace(/^\s*[-*+]\s+/gm, ""))
+    .replace(/\s+([,.;:!?)])/g, "$1")
+    .trim();
+}
+
 /** Each `### Question?` heading and the text beneath it becomes one FAQ entry. */
 function extractFaqEntries(markdown: string) {
   return splitSections(markdown, 3)
     .filter((section) => section.heading.endsWith("?"))
-    .map((section) => ({ question: section.heading, answer: toPlainText(section.lines.join("\n")) }))
+    .map((section) => ({ question: section.heading, answer: toSchemaText(section.lines.join("\n")) }))
     .filter((entry) => entry.answer.length > 0);
 }
 
@@ -73,11 +80,11 @@ function extractHowToSteps(markdown: string) {
     if (item) {
       steps.push(item[1]);
     } else if (steps.length > 0 && line.trim() && !inFence && !line.trim().startsWith("![")) {
-      steps[steps.length - 1] += ` ${line.trim()}`;
+      steps[steps.length - 1] += `\n${line.trim()}`;
     }
   }
 
-  return steps.map((step) => toPlainText(step)).filter(Boolean);
+  return steps.map((step) => toSchemaText(step)).filter(Boolean);
 }
 
 /**

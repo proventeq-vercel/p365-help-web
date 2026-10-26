@@ -11,7 +11,8 @@ When a template has **Require Approval Before Provisioning** turned on, every re
 
 ## Before you begin
 
-- You must be one of the approvers named on the template.
+- You must be one of the approvers named on the template. Approval is single-level: the **first** approver to decide completes the approval, and later decisions don't change it.
+- Approvers are notified when a request is raised and reminded once a day, up to three notifications in total.
 
 ## Steps
 
@@ -22,7 +23,7 @@ When a template has **Require Approval Before Provisioning** turned on, every re
 
 ## Result
 
-After approval, the message *Request approved.* appears and provisioning starts; the requester can follow it in **Request History**. After rejection, the message *Request rejected.* appears and nothing is provisioned.
+After approval, the message *Request approved.* appears and provisioning starts; the requester can follow it in **Request History**. After rejection, the message *Request rejected.* appears, the request status becomes **Approval rejected** and nothing is provisioned. The requester is notified of the decision either way.
 
 ## Related
 

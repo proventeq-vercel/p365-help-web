@@ -1,19 +1,20 @@
 ---
 title: "How to Archive Obsolete Content"
-description: "How to archive obsolete SharePoint files to Wasabi with Proventeq365: set up an Obsolete Content Policy with an Archive action, run it, and follow the archive execution."
+description: "How to archive obsolete SharePoint files to Wasabi or Azure Blob Storage with Proventeq365: set up an Obsolete Content Policy with an Archive action, run it, and follow the archive execution."
 type: howto
 updated: 2026-10-26
 ---
 
 # How to Archive Obsolete Content
 
-Proventeq365 archives obsolete SharePoint content to low-cost **Wasabi** storage. Content is archived by the **Archive** action of an **Obsolete Content Policy**: the policy finds files that match the workspace's obsolete rules, and the action moves them to your Wasabi container. The original file can be replaced with a **stub link**, so users can still find and restore it.
+Proventeq365 archives obsolete SharePoint content to low-cost **Wasabi** or **Azure Blob Storage**. Content is archived by the **Archive** action of an **Obsolete Content Policy**: the policy finds files that match the workspace's obsolete rules, and the action copies them — with the versions you choose — to your archive container and removes them from SharePoint. The original file can be replaced with a **stub link** at the same address, so users can still find, download and restore it.
 
 ## Before you begin
 
-- Add a Wasabi connection and select its container. See [How to Add a Wasabi Archive Connection](./06-add-a-wasabi-connection.md).
+- Add an archive connection and select its container. See [How to Add an Archive Connection](./06-add-an-archive-connection.md).
+- You need the **Tenant Admin** role to create the policy, and **Workspace Admin** (or Tenant Admin) to run it and start the archive.
 - Check the workspace's **obsolete detection** rules (age in months and file extensions) on the workspace's **Configuration** step.
-- Your license must include archiving. Check **Enabled Features** on the [License](../08-license/README.md) screen.
+- Your license must include the **Archive Items** feature. Check **Enabled features** on the [License](../08-license/README.md) screen.
 
 ## Steps
 
@@ -23,9 +24,9 @@ Proventeq365 archives obsolete SharePoint content to low-cost **Wasabi** storage
    - **Manual** — you review the report and start archiving yourself.
    - **Automatic** — files are archived whenever the policy runs.
 4. Under **Action Configuration**, choose the **Target Connection** and **Target Container**, and set the archive options:
-   - **Replace with Stub** — leave a link in place of the original file.
-   - **Copy Permissions** — copy the original file permissions to the archived content.
+   - **Replace with Stub** — replace the original file with a stub link. Without a stub, the original file is deleted after it is archived.
    - **Use Structured Hierarchy** — keep the site, library and folder structure in the container instead of a flat structure.
+   - **Include minor versions**, **Keep last N versions** or **Keep versions from the last N months** — choose which versions to archive. Leave the version fields blank to archive every version. The current version is always archived.
 5. Click **Add Policy**, then click **Run Policy** in the policy's row and confirm.
 6. When the run has finished, click **View** to open the policy report.
 7. For a **Manual** action, click **Execute on All Items**, or select items and click **Execute on Selection**, then confirm.
@@ -33,7 +34,7 @@ Proventeq365 archives obsolete SharePoint content to low-cost **Wasabi** storage
 
 ## Result
 
-The archived files are stored in your Wasabi container. With **Replace with Stub**, each original file is replaced by a stub link that anyone with access to the original file can use to download or restore it. An execution that ends **Partially Completed** archived some items but not all — open it to see the errors for the failed items.
+The archived files are stored in your archive container. With **Replace with Stub**, each original file is replaced in place by a stub link — the address and existing sharing links keep working — and anyone who can open the stub can download or restore the file. The original's content and version history are removed from SharePoint and are not kept in the recycle bin, so make sure the right items are selected before you archive. Items that are already archived are **skipped**, not archived twice. An execution that ends **Partially Completed** archived some items but not all — open it to see the errors for the failed items.
 
 ## Related
 
