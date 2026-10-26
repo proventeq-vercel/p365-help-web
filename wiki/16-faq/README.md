@@ -79,6 +79,14 @@ A **Global Administrator** or **Privileged Role Administrator**. The prerequisit
 
 In a **Key Vault in your own subscription**. The prerequisites script writes them there directly, so they never leave your tenant, and they should never be sent by email. See [Run the Prerequisites Script](../12-deployment-prerequisites/05-run-prerequisites-script.md).
 
+### Can Proventeq365 show which apps can access our SharePoint and OneDrive content?
+
+Yes. The **App Permissions** report lists every app and service principal with access to SharePoint or OneDrive content, who publishes it, whether it is third-party, how far its access reaches and its highest permission level. A third-party app is one not published by Microsoft and not registered in your own tenant. See [App Permissions](../04-reports/app-permissions/README.md).
+
+### Can Proventeq365 revoke an app's tenant-wide permissions, such as Sites.FullControl.All?
+
+No. Proventeq365 can revoke only the grants an app holds on specific sites. Application and delegated permissions are held in Microsoft Entra ID and must be removed there. See [How to Review Third-Party App Access](../13-how-to-guides/18-review-third-party-app-access.md).
+
 ## Access and roles
 
 ### How do users sign in?
@@ -123,6 +131,14 @@ Yes. Choose **Import CSV file** on the **Sources** step and upload a CSV file wi
 
 Yes. With **Select all sites**, turn on **Include One Drives**; with a manual list or CSV, add the OneDrive addresses under `/personal/`.
 
+### Why do the Storage Optimisation savings say "No change today"?
+
+Your tenant is inside its Microsoft 365 storage entitlement. Reclaiming space frees capacity but doesn't reduce your bill until usage goes over the entitlement. See [Storage Optimisation Overview](../04-reports/storage-optimization/README.md).
+
+### Why do Version Clean-up or Archive candidates show Unavailable or Unknown?
+
+They depend on deployment options: collecting version history, and capturing the Microsoft 365 site usage report (which needs the `Reports.Read.All` permission). Ask Proventeq to enable them. See [Error Messages: Reports](../15-error-catalog/07-reports.md).
+
 ## Policies
 
 ### What governance policies are available?
@@ -137,11 +153,23 @@ Every enabled policy is evaluated at the end of each workspace data refresh. A W
 
 An **automatic** action runs on every item the policy matches as soon as the policy runs. A **manual** action waits until a Workspace Admin reviews the policy report and clicks **Execute on All Items** or **Execute on Selection**. Automatic actions can't be undone, so start with manual actions until you trust a policy's results. See [How to Add a Governance Policy](../13-how-to-guides/05-add-a-governance-policy.md).
 
+### Can a second person check a policy's results before its actions run?
+
+Yes. Turn on **Requires approval** on the policy and add approvers. Every report the policy produces is then held — automatic actions wait and manual actions can't be started — until an approver approves the whole report or selected items. See [Policy Approvals](../02-manage/policies/policy-approvals.md).
+
+### Can we create our own policy rules?
+
+Yes, with **Policy Rules**: describe the rule in plain language to the rule assistant, review the safety checks and the preview of matching items, and a Tenant Admin approves and deploys it for use in policies. Policy Rules needs the optional AI component in your deployment and works for Microsoft 365 Governance workspaces. See [Policy Rules](../02-manage/policy-rules/README.md).
+
+### Where can I see what an action changed?
+
+On the **Actions** page. It lists every action run in the workspace — permission removals, deletions, archiving and restores, whether started by a person or a policy — with each item's outcome and any error, and an **Export CSV** option. See [Actions](../02-manage/actions/README.md).
+
 ## Archiving
 
 ### Where are archived files stored?
 
-In storage you own and connect to Proventeq365: **Wasabi** object storage or **Azure Blob Storage**. See [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md).
+In storage you own and connect to Proventeq365 — **Wasabi** object storage or **Azure Blob Storage** — or, for whole sites, OneDrives and libraries, in **Microsoft 365 Archive** inside your own tenant. See [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md) and [Microsoft 365 Archive](../10-archive/microsoft-365-archive.md).
 
 ### What happens to a file in SharePoint when it is archived?
 
@@ -159,6 +187,18 @@ Yes. By default every version is archived, including minor (draft) versions. You
 
 Yes — one file at a time from its stub link, or in bulk by a Workspace Admin. A restore puts the file and its versions back in the original location and removes it from the archive.
 
+### Can Proventeq365 archive whole sites to Microsoft 365 Archive?
+
+Yes. Whole sites, OneDrives or selected libraries, folders and files can be moved to Microsoft 365 Archive from **Workspace Inventory**, or with the **M365 Archive** policy action. Microsoft 365 Archive must be enabled in your tenant with billing set up, and Proventeq sets up the archive mode. Content in Microsoft 365 Archive is reactivated in Microsoft 365, not in Proventeq365. See [Microsoft 365 Archive](../10-archive/microsoft-365-archive.md).
+
+### How many items can I restore at once?
+
+From a policy report, up to 1,000 archived records per selection; **Restore all** restores every archived item in the report. From **Workspace Inventory**, up to 1,000 sites, or 1,000 files and 1,000 folders. Bulk restores need the **Workspace Admin** role. See [Restore Archived Content](../10-archive/restore-archived-content.md).
+
+### Does changing the default archive destination move existing archives?
+
+No. Existing archives stay where they were written and are restored from there. Only new archives go to the new destination. See [How to Set the Default Archive Destination](../13-how-to-guides/26-set-the-default-archive-destination.md).
+
 ## Self-service provisioning
 
 ### Can business users create sites and teams themselves?
@@ -173,6 +213,14 @@ Yes. Turn on **Require Approval Before Provisioning** on the template and add ap
 
 The request shows **Provisioning failed**, and its **Provisioning errors** panel explains each error and what to do. A partly created site is removed automatically. Fix the cause and submit a new request. See [Error Messages: Self-Service Provisioning](../15-error-catalog/05-self-service-provisioning.md).
 
+### How do I change a published template without disrupting users?
+
+Start a new **Draft** version, edit it and test it with a test run; users keep requesting from the **Published** version until you publish the draft. Earlier versions stay in the template's **Version history** and can be restored as a new draft. See [Template Versions](../05-self-service/templates/template-versions.md).
+
+### Can another system request sites and teams automatically?
+
+Yes, through the **Public API**. A Tenant Admin creates an app connection under **Settings**; the other system then submits signed provisioning requests and receives the outcome through a signed callback. See [Public API](../06-settings/public-api.md).
+
 ## License and notifications
 
 ### How do I renew the license?
@@ -186,6 +234,10 @@ Proventeq365 can't be used until a new license is uploaded: every page redirects
 ### How does Proventeq365 notify people?
 
 In the app, through the bell icon, for scans, policy runs, actions and provisioning. By email for failures, approval requests and decisions, and changes to a person's workspace access — if a notification mailbox has been set up in your tenant. See [Notification](../09-notification/README.md) and [Notification Mailbox](../12-deployment-prerequisites/07-run-post-deployment-script.md#notification-mailbox-optional).
+
+### Can I choose which notifications I get by email?
+
+Yes. On the **Preferences** tab of your notifications, choose for each event whether you get it in the app, by email, or both. Email is offered only for failures, approvals and changes to your workspace access, and only when a notification mailbox is set up. See [How to Choose Which Notifications You Get by Email](../13-how-to-guides/29-choose-which-notifications-you-get-by-email.md).
 
 ## Related
 

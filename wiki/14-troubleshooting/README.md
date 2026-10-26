@@ -124,7 +124,7 @@ Click **Refresh** on the containers step. If it is still missing, check that the
 
 ### A connection can't be deleted
 
-Archived files that still use the connection keep it in use, because their stub links point to it. Keep the connection while archived content depends on it.
+Archived files that still use the connection keep it in use, because their stub links point to it. A connection that is turned on as an archive destination under **Manage default connections** can't be deleted either — turn it off there first. Keep the connection while archived content depends on it.
 
 ## Archiving and restore
 

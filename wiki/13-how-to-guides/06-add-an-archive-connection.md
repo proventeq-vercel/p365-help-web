@@ -11,7 +11,7 @@ Before Proventeq365 can archive content, it needs a **connection** to the storag
 
 ## Before you begin
 
-- You need the **Tenant Admin** role to manage connections.
+- You need the **Tenant Admin** role to manage connections, and your license must include the **Execute Policy** feature.
 - For **Wasabi**: a bucket for archived content, an **access key** and **secret key** with access to it, and the bucket's **region** (for example `eu-west-1`). If outbound traffic from your deployment is restricted, allow `*.wasabisys.com`. See [Outbound Connectivity](../12-deployment-prerequisites/03-azure-prerequisites.md#outbound-connectivity).
 - For **Azure Blob Storage**: a storage account and its **connection string** (in the Azure portal: **Access keys** → **Connection string**). The connection string must include the account key and must not be a shared access signature (SAS).
 

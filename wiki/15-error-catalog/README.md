@@ -20,6 +20,8 @@ Tip: use the site search, or your browser's find (Ctrl+F / Cmd+F), with a few wo
 | [Policies and Remediation Actions](./03-policies-and-remediation.md) | *Failed to start policy run*, *The last run of this policy failed*, *Partially completed*, *Nothing here can be removed* |
 | [Connections, Archiving and Restore](./04-connections-and-archiving.md) | *Connection validation failed*, *Failed to delete connection*, *Access denied - you do not have permission to download this item* |
 | [Self-Service Provisioning](./05-self-service-provisioning.md) | *The SharePoint site could not be created because the URL already exists.*, *Provisioning failed*, template validation messages |
+| [Settings, Notifications and Public API](./06-settings-and-notifications.md) | App connections, notification preferences and Public API responses |
+| [Reports](./07-reports.md) | *Version history has not been discovered*, *Tenant entitlement unavailable*, *Couldn't load the storage overview.* |
 | [Deployment scripts](../12-deployment-prerequisites/10-troubleshooting.md) | *Failed to write secret … (Key Vault RBAC not ready?)*, `VaultAlreadyExists`, `AuthorizationFailed`, *No Front Door … resource found* |
 
 ## Status values

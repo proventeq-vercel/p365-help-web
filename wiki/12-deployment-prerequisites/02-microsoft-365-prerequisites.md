@@ -27,4 +27,5 @@ Your chosen mode determines the API permissions the prerequisites script request
 If your deployment includes archiving, ensure your archiving provider is configured **before** deployment. Supported providers:
 
 - **Wasabi** — Third-party archiving. Ensure this is configured in your environment.
+- **Azure Blob Storage** — An Azure Storage account that allows account-key access.
 - **Microsoft 365 Archive** — Ensure Microsoft 365 archiving is enabled in your tenant.

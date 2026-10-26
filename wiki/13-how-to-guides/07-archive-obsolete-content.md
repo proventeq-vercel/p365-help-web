@@ -14,7 +14,7 @@ Proventeq365 archives obsolete SharePoint content to low-cost **Wasabi** or **Az
 - Add an archive connection and select its container. See [How to Add an Archive Connection](./06-add-an-archive-connection.md).
 - You need the **Tenant Admin** role to create the policy, and **Workspace Admin** (or Tenant Admin) to run it and start the archive.
 - Check the workspace's **obsolete detection** rules (age in months and file extensions) on the workspace's **Configuration** step.
-- Your license must include the **Archive Items** feature. Check **Enabled features** on the [License](../08-license/README.md) screen.
+- Your license must include the **Execute Policy** feature to run the archive action, and **Archive Items** for opening and restoring archived files. Check **Enabled features** on the [License](../08-license/README.md) screen.
 
 ## Steps
 
@@ -26,7 +26,7 @@ Proventeq365 archives obsolete SharePoint content to low-cost **Wasabi** or **Az
 4. Under **Action Configuration**, choose the **Target Connection** and **Target Container**, and set the archive options:
    - **Replace with Stub** — replace the original file with a stub link. Without a stub, the original file is deleted after it is archived.
    - **Use Structured Hierarchy** — keep the site, library and folder structure in the container instead of a flat structure.
-   - **Include minor versions**, **Keep last N versions** or **Keep versions from the last N months** — choose which versions to archive. Leave the version fields blank to archive every version. The current version is always archived.
+   - **Include minor versions** and **Versions to archive** — choose **All versions** (the default), **Last N versions** or **Versions from the last N months**. The current version is always archived.
 5. Click **Add Policy**, then click **Run Policy** in the policy's row and confirm.
 6. When the run has finished, click **View** to open the policy report.
 7. For a **Manual** action, click **Execute on All Items**, or select items and click **Execute on Selection**, then confirm.

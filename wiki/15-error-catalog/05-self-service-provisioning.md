@@ -158,8 +158,103 @@ When a request ends with the status **Provisioning failed**, open it from **Requ
 
 **Fix:** Open the existing draft, or delete it before starting a new one.
 
+## Template versions and test runs
+
+Messages you may see when you start, publish, restore, copy or delete a template version, or test a draft. See [Template Versions](../05-self-service/templates/template-versions.md).
+
+### Could not start a new version of this template. Please try again.
+
+**Where:** after **Edit — creates a new draft version** on the **Templates** screen.
+**Fix:** Try again. If the message names a draft that is already open, continue that draft instead.
+
+### Another draft of this template was created at the same time. Reload and try again.
+
+**Cause:** another Tenant Admin started a draft of the same template at the same moment.
+**Fix:** Reload the **Templates** screen and continue the draft that now exists.
+
+### The template's open draft could not be opened. Please try again.
+
+**Fix:** Try again. If it keeps happening, reload the **Templates** screen and open the draft from there.
+
+### The open draft was published in the meantime, so start a new draft to edit it.
+
+**Cause:** another Tenant Admin published the draft you were about to edit.
+**Fix:** Start a new draft with **Edit in a draft** or **Edit — creates a new draft version**.
+
+### This container could not be matched in the draft, so pick it from the draft's containers.
+
+**Cause:** you chose to edit a container of a read-only version in a draft, and the draft has more than one container of that type.
+**Fix:** Open the right container from the draft's container list.
+
+### A superseded version cannot be published directly. Restore it as a new draft and publish that instead.
+
+**Cause:** a newer version of the template has been published since this version.
+**Fix:** Open **Version history**, click **Restore this version — creates a new draft from it** and publish the new draft.
+
+### Another version of this template was published at the same time. Reload and try again.
+
+**Fix:** Reload the template, check which version is now published, and publish again if you still need to.
+
+### The template changed while it was being published. Review the changes and publish again.
+
+**Cause:** a container of the draft was changed while it was being validated for publishing.
+**Fix:** Review the draft's containers, then publish again.
+
+### Failed to publish template / Failed to unpublish template
+
+**Fix:** Try again. If a more specific message is shown instead, follow it.
+
+### A draft cannot be unpublished. Delete the draft instead.
+
+**Cause:** only the published version can be unpublished.
+**Fix:** To discard a draft, delete it.
+
+### A version cannot be moved back to draft. Start a new draft version of the template instead.
+
+**Fix:** Start a new draft with **Edit — creates a new draft version**.
+
+### Inputs can only be added to a draft version. Start a new draft version of the template instead.
+
+**Also shown as:** *Plugins can only be added to draft definitions.* or *Plugins can only be removed from draft definitions.*
+**Cause:** you tried to change the user inputs or containers of a version that is not a draft.
+**Fix:** Start a new draft version, make the change there and publish it.
+
+### Could not restore this version. Please try again.
+
+**Fix:** Try again. A template can have only one draft at a time: if it already has one, you see *This template already has a draft (version N)* instead — publish or delete that draft, then restore the version.
+
+### Could not copy this template. Please try again.
+
+**Fix:** Try again. The copy is created as a new template at version 1.
+
+### Could not delete the draft. Please try again.
+
+**Fix:** Try again. If a more specific message is shown instead, follow it.
+
+### This draft has already been deleted.
+
+**Cause:** another Tenant Admin deleted the draft first. Nothing else needs to be done.
+
+### The test run "…" is awaiting approval. Approve or reject it, or remove it from Request History, before deleting this draft.
+
+**Cause:** a test run of the draft is waiting for an approver.
+**Fix:** Have an approver approve or reject the test run, or remove it from **Request History**, then delete the draft.
+
+### The test run "…" is still in progress. Wait for it to finish before deleting this draft.
+
+**Fix:** Wait until the test run shows **Provisioning successful** or **Provisioning failed** in **Request History**, then delete the draft.
+
+### A superseded version cannot be deleted; it is the template's history.
+
+**Fix:** None needed. Earlier versions are kept as the template's history; only a draft can be deleted.
+
+### This version has provisioning requests against it and cannot be deleted.
+
+**Cause:** requests were made from this version, so it is kept.
+
 ## Related
 
 - [Troubleshooting — Self-service provisioning](../14-troubleshooting/README.md#self-service-provisioning)
 - [How to Create a Provisioning Template](../13-how-to-guides/12-create-a-provisioning-template.md)
 - [How to Request a New Site, Team or User](../13-how-to-guides/13-request-a-site-team-or-user.md)
+- [How to Test a Template Before Publishing](../13-how-to-guides/28-test-a-template-before-publishing.md)

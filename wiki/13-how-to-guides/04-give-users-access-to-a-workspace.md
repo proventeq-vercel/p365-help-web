@@ -35,5 +35,5 @@ The added users see the workspace in the workspace selector and can open its das
 
 ## Related
 
-- [Workspaces — Users](../02-manage/workspaces/README.md#users)
+- [Workspaces — Workspace Users](../02-manage/workspaces/README.md#workspace-users)
 - [FAQ — Access and roles](../16-faq/README.md#access-and-roles)

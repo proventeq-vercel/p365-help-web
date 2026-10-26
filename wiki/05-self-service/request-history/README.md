@@ -1,58 +1,70 @@
 ---
 title: "Request History"
-description: "A complete log of all provisioning requests created within the system, with status, progress, and outcome of each request."
+description: "Track your Proventeq365 provisioning requests: request statuses from Awaiting approval to Provisioning successful, request details, provisioning errors and removing a request."
+type: article
+updated: 2026-10-26
 ---
 
 # Request History
 
-The **Request History** screen provides a complete log of all provisioning requests created within the system. It allows you to track the status, progress, and outcomes of requests submitted by users.
+The **Request History** screen lists the provisioning requests you have submitted, newest first, with their approval and provisioning progress. Use it to see whether a request is still waiting for approval, follow it while it is provisioned, open the site it created, or find out why it failed.
+
+Request History is available to anyone whose organisation's license includes the **Provision** feature. Open it from **Self Service** → **Request History**. You are taken here automatically after you submit a request. Test runs of draft templates started by a Tenant Admin are listed here too.
 
 ![Request History](images/image137.png)
 
-At the top of the screen, a description explains that this page shows a chronological record of provisioning requests.
-
 ## List View
 
-The following columns are displayed:
+The bar at the top counts your requests: **Runs**, **In flight** (waiting or being provisioned), **Needs attention** (failed or rejected) and **Issues**.
 
-- **Request Name** — The name of the provisioning request.
-- **Template Name** — The template used to create the request.
-- **Created** — The date and time the request was submitted.
-- **Status** — The current status of the request:
-  - **Awaiting provisioning** — When the request has been generated.
-  - **Provisioning failed** — When provisioning has failed for any reason.
-  - **Provisioning successful** — When provisioning has completed successfully.
-- **Actions** — Each request provides:
-  - **View Details (Arrow Icon)** — Open the request details to review configuration parameters and User Input values.
-  - **Delete (Trash Icon)** — Remove the request before approving it.
+Use **Search requests by name** to find a request, and the status filters to show only requests with particular statuses. Choose **All statuses** to clear the filters.
 
-At the bottom right of the list:
+Each request is a card showing the request name, the template it was created from, its status and when it was created. Cards have two actions:
 
-- **Rows Per Page** — 5, 10, 15, 20, 25, 30, 50, or 100. Default: 10.
-- **Total Record Count** — Range and total record count.
-- **Next/Previous Navigation** — Arrow icons to navigate.
+- **View full request** — Opens the request's full details page.
+- **Delete** — Removes the request. Available only while the request is **Awaiting approval** or **Approval rejected**. If the request was approved in the meantime, you see *Failed to remove request. It may have been approved already.*
+
+## Request Statuses
+
+- **Awaiting approval** — The template requires approval, and no approver has decided yet.
+- **Approval rejected** — An approver rejected the request. Nothing was created.
+- **Awaiting provisioning** — The request was approved, or its template does not require approval, and it is waiting to be provisioned.
+- **Provisioning in progress** — Proventeq365 is creating the site, team, folders, libraries or user.
+- **Provisioning successful** — Everything was created.
+- **Provisioning failed** — Provisioning stopped with an error. See [Provisioning errors](#provisioning-errors).
 
 ## Request Details
 
-The **Request Details** screen provides a complete view of a provisioning request, including the selected template, user inputs, requester information, and current status. It allows you to review all configuration details before or after approval and provisioning.
+Click a request card to open its details panel:
+
+- **Overview** — The stages **Submitted**, **Approval** (only when the template requires approval), **Provisioning** and **Site ready**, together with the **Request ID**, who requested it, the **Template**, the **Provisioned site** once it exists and, after an approval, the **Approval wait**.
+- **Issues** — The provisioning errors of a failed request, or the approver's rejection of a rejected request.
+
+## Full Request Page
+
+**View full request** opens a page with the template used and the request's current status.
 
 ![Request details](images/image138.png)
 
-At the top of the screen, the template used to create the request is displayed with the current stage. Example: **Awaiting approval**.
+- **Requester Name** and **Requester Email** — Who submitted the request.
+- **User input configuration** — Each user input defined by the template, with its **Name**, **Type** and the **Value** entered when the request was created.
 
-### Requester Information
+Approvers approve or reject requests from the **Approvals** screen. See [Approvals](../approvals/README.md).
 
-This section identifies who created the request:
+### Provisioning Errors
 
-- **Requester Name** — The name of the user who submitted the request. Example: `Glan Andrew`.
-- **Requester Email** — The user's email address. Example: `Glan.andrew@sharepoint.onmicrosoft.com`.
+When a request has failed, the page shows a **Provisioning errors** panel: *What went wrong while this request was being provisioned, in the order it happened.* Each error shows:
 
-### User Input Configuration
+- The step that failed, for example **SharePoint site creation**, **Teams channel creation**, **Folder structure**, **Library creation**, **PnP template application**, **User creation** or **User termination**.
+- What went wrong and what to do about it, for example *The SharePoint site could not be created because the URL already exists.* with *Choose a different URL for the site, or ask your administrator to remove the existing site.*
+- **show technical details** — The **Error code** and the **Technical message** recorded by Microsoft 365. Include them when you contact your administrator or Proventeq support.
 
-This section displays all the **inputs provided during request configuration**, based on the selected template:
+If a site was created before the failure, Proventeq365 removes it again; a failure of that clean-up is listed as **SharePoint site cleanup**. To try again, fix the cause and submit a new request.
 
-- **Name** — The field name defined by the template.
-- **Type** — The input type (e.g. TextField, UserSelection).
-- **Value** — The value entered or selected during request creation.
+![Provisioning errors panel](images/request-provisioning-errors.png)
 
-This entire page is read-only.
+## Related
+
+- [New Request](../new-request/README.md)
+- [Approvals](../approvals/README.md)
+- [Error Messages: Self-Service Provisioning](../../15-error-catalog/05-self-service-provisioning.md)

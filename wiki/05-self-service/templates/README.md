@@ -1,30 +1,36 @@
 ---
 title: "Templates"
-description: "Create, view, and manage reusable provisioning templates for Microsoft Teams and SharePoint with standardised configurations and approval workflows."
+description: "Create, view, and manage reusable provisioning templates for Microsoft Teams and SharePoint with standardised configurations, versions and approval workflows."
+type: article
+updated: 2026-10-26
 ---
 
 # Templates
 
 The **Templates** screen allows administrators to create, view, and manage reusable provisioning templates for **Microsoft Teams** and **SharePoint**. Templates define standardised configurations and approval workflows to ensure consistency, governance, and control across self-service requests.
 
+Managing templates needs the **Tenant Admin** role, and your license must include the **Provision** feature. Templates are versioned: users request from the published version while you prepare and test changes in a draft. See [Template Versions](./template-versions.md).
+
 When you click on **Templates** in the menu, the following screen appears:
 
-![Templates list](images/image063.png)
+![Templates list](images/templates-list.png)
 
 ## Templates List
 
-The main section of the page displays a list of all configured templates. Each row represents one template and includes:
+The main section of the page displays a list of all configured templates, one row per template. Each row includes:
 
-- **Name** — The template name, typically reflecting the business or project context (for example, *Insurance Project* or *Construction Project*).
+- **Name** — The template name, typically reflecting the business or project context (for example, *Insurance Project* or *Construction Project*). Click it to open the template.
 - **Created** — The date and time the template was created.
-- **Last Update** — The most recent date and time the template was modified.
-- **Status** — The current status of the template:
-  - **Draft** — Under configuration; not available for use in self-service requests.
+- **Status** — The status and number of the template's current version, for example **Published · v2**. When a draft is open, a second label shows the draft, for example **Draft · v3**. The statuses are:
+  - **Draft** — Under configuration; not available for use in self-service requests. Only a draft can be edited.
   - **Published** — Finalised and available to users when raising new requests.
-  - **Unpublished** — The template is outdated or its configuration needs an update for new requests, and so is unpublished. Templates in this state are not available to users for raising new requests.
-- **Action** — Icons to manage each template:
-  - **Edit** — Modify the template configuration.
-  - **Delete** — Remove the template. Only **Draft** status templates can be deleted; the Delete icon remains disabled for Published and Unpublished templates.
+  - **Unpublished** — Not available for new requests: the version was taken out of use with **Unpublish**, or replaced when a newer version was published.
+- **Versions** — How many versions the template has. Click it to open the template's **Version history**.
+- **Actions** — Icons to manage each template:
+  - **Test run the draft before publishing** — Shown only while the template has a draft. Opens a real test request for the draft. See [Template Versions](./template-versions.md#test-a-draft-before-publishing).
+  - **Edit — creates a new draft version** — Starts a new draft from the current version. When a draft is already open, the icon reads **Continue editing the draft** and opens it.
+  - **Copy to a new template** — Creates a separate template, as a draft, from the current version.
+  - **Delete** — Deletes the template's draft, or the whole template when the draft is its only version. Available only while the template has a draft; published and older versions cannot be deleted.
 
 At the bottom right of the list:
 
@@ -51,15 +57,16 @@ This section controls **who can use the template** and **whether approval is req
 ![Template access & approvals](images/image065.png)
 
 - **Limit Template Access** — Controls who can see and use the template:
-  - **Enabled** — Only selected users or groups can see and use this template.
-  - **Disabled** — The template is available to all eligible users.
-- **Require Approval Before Provisioning** — Controls whether provisioning requests require approval before any resources are actually created in Microsoft 365:
-  - **Enabled** — Requests created using this template must be approved before any resources are provisioned. The request enters an approval workflow after submission.
-  - **Disabled** — Approved users can provision resources without additional approval.
+  - **Enabled** — Only the people you add under **Requestors** can see and use this template. If no requestors are chosen, the template is available to everyone.
+  - **Disabled** — Everyone can use the template.
+- **Require Approval Before Provisioning** — Controls whether a request must be approved before anything is created in Microsoft 365:
+  - **Enabled** — Requests wait for a decision from one of the people you add under **Approvers**. The first approver to respond decides: approval starts provisioning, rejection ends the request with the status **Approval rejected**.
+  - **Disabled** — Requests are provisioned without approval.
 
-When either toggle is ON, an additional section appears to select users to assign for access and approval:
+When a toggle is ON, its **Requestors** or **Approvers** list appears:
 
 - **Search** — A text box to search users within the tenant. As you type, results are suggested. Click a result to add the user to the list (with Name and a Delete icon).
+- **Upload CSV** — Add several people at once from a CSV file with one email address per line.
 
 When you try to add an already-selected user, the search box result shows the text **"Already added"**.
 
@@ -119,3 +126,9 @@ From the main category, click **Continue** to open the subcategory for the conta
 - [Add Channels to an Existing Team](./containers/add-channels-to-team.md)
 - [Create User](./containers/create-user.md)
 - [Terminate User](./containers/terminate-user.md)
+
+## Related
+
+- [Template Versions](./template-versions.md)
+- [How to Create a Provisioning Template](../../13-how-to-guides/12-create-a-provisioning-template.md)
+- [How to Update a Published Template](../../13-how-to-guides/27-update-a-published-template.md)

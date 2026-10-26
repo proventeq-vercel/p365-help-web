@@ -35,7 +35,7 @@ Each card shows the number of duplicate items detected and a status indicating w
 - **Same-Site Duplicates** — Identical files stored in the same SharePoint site or location.
 - **Permission-Mismatch Copies** — Identical files stored in the same or multiple locations, but with different access permissions between copies.
 
-Each card shows a recommended action — **No Exposure Detected**, **Review Recommended**, **Immediate Action Required**, or **Action Required** — based on the identified counts.
+Each card shows a recommended action — **No Exposure Detected**, **No Immediate Risk**, **Review Recommended**, **Action Required**, or **Immediate Action Required** — based on the identified counts. Click a card to open the [Duplicate Documents Report](../../04-reports/duplicate-documents-report/README.md) filtered to that category.
 
 ## Obsolete Content
 
@@ -49,7 +49,7 @@ This section highlights files that are outdated, no longer actively used, or no 
 - **Former Owner Files** — Files whose original owners are no longer active in the organisation (content owned by departed or inactive users).
 - **Outdated Formats** — Files in legacy or deprecated formats that may be unsupported or difficult to open.
 
-Each card shows a recommended action — **No Exposure Detected**, **Review Recommended**, **Immediate Action Required**, or **Action Required** — based on the identified counts.
+Each card shows a recommended action — **No Exposure Detected**, **No Immediate Risk**, **Review Recommended**, **Action Required**, or **Immediate Action Required** — based on the identified counts. Click a card to open the [Obsolete Documents Report](../../04-reports/obsolete-documents-report/README.md) filtered to that category.
 
 ## Trivial Content
 
@@ -63,4 +63,6 @@ This section highlights low-value content that consumes storage but typically pr
 - **Temporary & Draft Files** — Auto-saved drafts, temporary working files, or interim versions.
 - **Never Updated** — Files that were created but never edited or meaningfully used.
 
-Each card shows a recommended action — **No Exposure Detected**, **Review Recommended**, **Immediate Action Required**, or **Action Required** — based on the identified counts.
+Each card shows a recommended action — **No Exposure Detected**, **No Immediate Risk**, **Review Recommended**, **Action Required**, or **Immediate Action Required** — based on the identified counts. Click a card to open the [Trivial Documents Report](../../04-reports/trivial-documents-report/README.md) filtered to that category.
+
+For storage capacity, growth forecasts and the savings you could make, open **Reports** → **Storage Optimisation**. See [Storage Optimisation Overview](../../04-reports/storage-optimization/README.md).

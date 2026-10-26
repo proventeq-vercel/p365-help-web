@@ -56,24 +56,24 @@ const SECTION_ICONS: Record<string, typeof FolderIcon> = {
 const HIGHLIGHTS = [
   {
     eyebrow: "New",
-    title: "Storage Optimisation, faster",
+    title: "App Permissions report",
     body:
-      "ROT detection runs incrementally and produces actionable summaries per workspace owner.",
-    path: `${DOCS_BASE}/main/dashboard/storage-optimization`
+      "See which apps can reach SharePoint and OneDrive content, spot third-party and tenant-wide full control apps, and revoke site grants.",
+    path: `${DOCS_BASE}/reports/app-permissions`
   },
   {
-    eyebrow: "Updated",
-    title: "Oversharing severity model",
+    eyebrow: "New",
+    title: "Policy approvals",
     body:
-      "Severity now weighs label sensitivity, share scope and recency of access together.",
-    path: `${DOCS_BASE}/appendix/severity-allocations`
+      "Hold a policy's actions until a designated approver has checked its report, for the whole report or selected items.",
+    path: `${DOCS_BASE}/manage/policies/policy-approvals`
   },
   {
     eyebrow: "Guide",
-    title: "Self-service provisioning",
+    title: "Microsoft 365 Archive",
     body:
-      "Set up templates so business users can provision sites and teams within your guardrails.",
-    path: `${DOCS_BASE}/self-service/templates`
+      "Move inactive sites, OneDrives and libraries to the Microsoft 365 Archive tier from Workspace Inventory or a policy.",
+    path: `${DOCS_BASE}/archive/microsoft-365-archive`
   }
 ];
 

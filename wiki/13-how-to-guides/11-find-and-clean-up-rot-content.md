@@ -12,7 +12,7 @@ updated: 2026-10-26
 ## Before you begin
 
 - A workspace must have completed at least one scan. See [How to Run a Workspace Scan](./03-run-a-workspace-scan.md).
-- Check the workspace's **obsolete** and **trivial detection** rules on the workspace **Configuration** step (for example, the obsolete age in months and the trivial file extensions and names). The reports use these rules. See [Workspaces — Configuration](../02-manage/workspaces/README.md#configuration).
+- Check the workspace's **obsolete** and **trivial detection** rules on the workspace **Configuration** step (for example, the obsolete age in months and the trivial file extensions and names). The reports use these rules. See [Workspaces — Analysis Configuration](../02-manage/workspaces/README.md#analysis-configuration).
 
 ## Steps
 
