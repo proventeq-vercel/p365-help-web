@@ -6,6 +6,7 @@ import matter from "gray-matter";
 import GithubSlugger from "github-slugger";
 
 import { DOCS_BASE } from "@/lib/routes";
+import { siteConfig } from "@/lib/site-config";
 import { humanizeSegment } from "@/lib/utils";
 
 export { DOCS_BASE };
@@ -18,9 +19,15 @@ export interface Heading {
   id: string;
 }
 
+/** Page kind, set with the `type` frontmatter field; drives the structured data emitted. */
+export type DocType = "article" | "howto" | "faq" | "troubleshooting" | "reference";
+
 export interface DocItem {
   title: string;
   description: string;
+  type: DocType;
+  /** ISO date (YYYY-MM-DD) the page was last reviewed. */
+  updated: string;
   url: string;
   slugSegments: string[];
   sourceAbsolutePath: string;
@@ -170,6 +177,23 @@ function extractDescription(markdown: string) {
   return "Documentation page";
 }
 
+const DOC_TYPES: DocType[] = ["article", "howto", "faq", "troubleshooting", "reference"];
+
+function parseDocType(value: unknown): DocType {
+  return DOC_TYPES.includes(value as DocType) ? (value as DocType) : "article";
+}
+
+// gray-matter parses an unquoted YAML date into a Date; accept either form.
+function parseUpdated(value: unknown): string {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.trim())) {
+    return value.trim();
+  }
+  return siteConfig.lastUpdated;
+}
+
 function normalizeHeadingText(text: string) {
   return text
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
@@ -233,6 +257,8 @@ function loadDocs(): DocsData {
     return {
       title,
       description,
+      type: parseDocType(parsed.data.type),
+      updated: parseUpdated(parsed.data.updated),
       url,
       slugSegments,
       sourceAbsolutePath: absolutePath,

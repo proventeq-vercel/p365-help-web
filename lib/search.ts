@@ -15,7 +15,7 @@ export interface SearchDocument {
  * indexing. Fenced code blocks are dropped (they add noise and bloat the
  * index), while inline code, link text and table cells are preserved.
  */
-function toPlainText(markdown: string): string {
+export function toPlainText(markdown: string): string {
   return markdown
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`([^`]*)`/g, "$1")

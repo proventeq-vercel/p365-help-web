@@ -6,12 +6,14 @@ import { siteConfig } from "@/lib/site-config";
 export default function sitemap(): MetadataRoute.Sitemap {
   const landing: MetadataRoute.Sitemap[number] = {
     url: siteConfig.baseUrl,
+    lastModified: siteConfig.lastUpdated,
     changeFrequency: "weekly",
     priority: 1
   };
 
   const docs = getDocsData().docs.map((doc) => ({
     url: `${siteConfig.baseUrl}${doc.url}`,
+    lastModified: doc.updated,
     changeFrequency: "weekly" as const,
     priority: doc.url === DOCS_BASE ? 0.9 : 0.7
   }));

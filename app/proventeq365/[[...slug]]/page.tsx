@@ -17,6 +17,7 @@ import { SidebarCollapseButton, SidebarExpandButton } from "@/components/sidebar
 import { DOCS_BASE, getDocBySlug, getDocNeighbors, getDocsData } from "@/lib/docs";
 import { siteConfig } from "@/lib/site-config";
 import { renderDocAsMarkdown } from "@/lib/markdown-export";
+import { buildStructuredData, formatUpdated } from "@/lib/structured-data";
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -59,9 +60,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: doc.description,
     alternates: { canonical: doc.url },
     openGraph: {
+      type: "article",
       title: doc.title,
       description: doc.description,
-      url: `${siteConfig.baseUrl}${doc.url}`
+      url: `${siteConfig.baseUrl}${doc.url}`,
+      modifiedTime: doc.updated
     }
   };
 }
@@ -80,29 +83,14 @@ export default async function DocPage({ params }: PageProps) {
   const { previous, next } = getDocNeighbors(doc.url);
   const articleMarkdown = renderDocAsMarkdown(doc);
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": isHome ? "WebSite" : "TechArticle",
-    name: doc.title,
-    description: doc.description,
-    url: `${siteConfig.baseUrl}${doc.url}`,
-    breadcrumb: {
-      "@type": "BreadcrumbList",
-      itemListElement: crumbs.map((crumb, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: crumb.label,
-        item: `${siteConfig.baseUrl}${crumb.href}`
-      }))
-    }
-  };
+  const structuredData = buildStructuredData(doc, crumbs);
 
   // Home view: render the marketing landing page, but keep the sidebar.
   if (isHome) {
     return (
       <>
         <script
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
           type="application/ld+json"
         />
         <SidebarExpandButton />
@@ -134,7 +122,7 @@ export default async function DocPage({ params }: PageProps) {
   return (
     <>
       <script
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
         type="application/ld+json"
       />
       <MarkdownPublisher markdown={articleMarkdown} />
@@ -190,7 +178,7 @@ export default async function DocPage({ params }: PageProps) {
                     className="h-1.5 w-1.5 rounded-full"
                     style={{ background: "var(--accent-swatch)" }}
                   />
-                  Updated Oct 2026
+                  <time dateTime={doc.updated}>Updated {formatUpdated(doc.updated)}</time>
                 </span>
                 <span className="meta-actions">
                   <CopyMarkdownAction />

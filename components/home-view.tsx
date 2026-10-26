@@ -11,13 +11,17 @@ import {
   CompassIcon,
   FolderIcon,
   HistoryIcon,
+  InfoIcon,
   KeyIcon,
   LayoutIcon,
+  ListIcon,
   MailIcon,
   ReportIcon,
   RocketIcon,
   SettingsIcon,
+  ShieldIcon,
   SparklesIcon,
+  WarnIcon,
   WorkflowIcon
 } from "@/components/icons";
 import { DOCS_BASE, type DocItem } from "@/lib/docs";
@@ -28,6 +32,7 @@ interface HomeViewProps {
   totalDocs: number;
 }
 
+// Keyed by the section path below DOCS_BASE.
 const SECTION_ICONS: Record<string, typeof FolderIcon> = {
   "/navigation-menu": CompassIcon,
   "/manage": FolderIcon,
@@ -41,6 +46,10 @@ const SECTION_ICONS: Record<string, typeof FolderIcon> = {
   "/archive": ArchiveIcon,
   "/exchange-monitoring": MailIcon,
   "/deployment-prerequisites": RocketIcon,
+  "/how-to-guides": ListIcon,
+  "/troubleshooting": WarnIcon,
+  "/error-catalog": ShieldIcon,
+  "/faq": InfoIcon,
   "/appendix": BookIcon
 };
 
@@ -124,6 +133,15 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
           <Link className="hero-chip" href={`${DOCS_BASE}/deployment-prerequisites`}>
             <RocketIcon size={12} /> Deployment guide
           </Link>
+          <Link className="hero-chip" href={`${DOCS_BASE}/how-to-guides`}>
+            <ListIcon size={12} /> How-to guides
+          </Link>
+          <Link className="hero-chip" href={`${DOCS_BASE}/troubleshooting`}>
+            <WarnIcon size={12} /> Troubleshooting
+          </Link>
+          <Link className="hero-chip" href={`${DOCS_BASE}/faq`}>
+            <InfoIcon size={12} /> FAQ
+          </Link>
           <Link className="hero-chip" href={`${DOCS_BASE}/appendix`}>
             <SparklesIcon size={12} /> What&apos;s new
           </Link>
@@ -148,8 +166,8 @@ export function HomeView({ topSections, totalDocs }: HomeViewProps) {
         </div>
 
         <div className="grid gap-3 [grid-template-columns:repeat(4,minmax(0,1fr))] max-[1100px]:[grid-template-columns:repeat(2,1fr)] max-[600px]:[grid-template-columns:1fr]">
-          {topSections.slice(0, 8).map((section) => {
-            const Icon = SECTION_ICONS[section.url] ?? FolderIcon;
+          {topSections.map((section) => {
+            const Icon = SECTION_ICONS[section.url.slice(DOCS_BASE.length)] ?? FolderIcon;
             return (
               <Link className="section-card group" href={section.url} key={section.url}>
                 <div className="section-card-icon">
