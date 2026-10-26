@@ -34,6 +34,15 @@ export function MarkdownContent({ doc }: MarkdownContentProps) {
           }
 
           const isInternalRoute = resolvedHref.startsWith("/");
+          // A file served from /public (e.g. a deployment script) is downloaded, not routed.
+          if (isInternalRoute && /\.[a-z0-9]+$/i.test(resolvedHref.split("#")[0])) {
+            return (
+              <a download href={resolvedHref} {...props}>
+                {children}
+              </a>
+            );
+          }
+
           if (isInternalRoute) {
             return (
               <Link href={resolvedHref} {...props}>
