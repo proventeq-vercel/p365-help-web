@@ -70,7 +70,7 @@ Below the summary cards, a table lists every site and OneDrive in the workspace 
 
 Click the **SharePoint Sites**, **OneDrives** or **Teams** card to show only that kind of site in the table.
 
-Workspace Admins can tick rows and click **Actions** to **Archive** or **Restore** the selected sites, and use **Restore all** above the table to restore everything archived in the workspace. Archive is offered when archiving is set up for your organisation — to Microsoft 365 Archive or to a Wasabi or Azure Blob Storage connection. Restore needs the **Archive Items** license feature. See [Microsoft 365 Archive](../../10-archive/microsoft-365-archive.md) and [Restore Archived Content](../../10-archive/restore-archived-content.md).
+Workspace Admins can tick rows and click **Actions** to **Archive** or **Restore** the selected sites, and use **Restore all** above the table to restore everything archived in the workspace. Archive is offered when archiving is set up for your organisation — to Microsoft 365 Archive or to a Wasabi or Azure Blob Storage connection. Restore needs the **Archive Items** license feature. See [Microsoft 365 Archive](../../10-archive/02-microsoft-365-archive.md) and [Restore Archived Content](../../10-archive/03-restore-archived-content.md).
 
 **Note:** To archive to Microsoft 365 Archive, it must be enabled in your Microsoft 365 tenant, with billing set up. For more information, see [Overview of Microsoft 365 Archive](https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview).
 

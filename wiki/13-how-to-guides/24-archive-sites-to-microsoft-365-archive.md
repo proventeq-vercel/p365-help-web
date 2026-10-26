@@ -12,7 +12,7 @@ Proventeq365 can move whole SharePoint sites and OneDrives, or selected librarie
 ## Before you begin
 
 - Microsoft 365 Archive is enabled in your Microsoft 365 tenant, with billing set up. See Microsoft's [Overview of Microsoft 365 Archive](https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview).
-- Archiving to Microsoft 365 Archive is set up for your Proventeq365 tenant — ask Proventeq. If your organisation archives to a Wasabi or Azure Blob Storage connection instead, the archive dialog shows **Archiving to** and the connection's name, and content is copied there and replaced by stub links. See [Where Archived Content Goes](../10-archive/microsoft-365-archive.md#where-archived-content-goes).
+- Archiving to Microsoft 365 Archive is set up for your Proventeq365 tenant — ask Proventeq. If your organisation archives to a Wasabi or Azure Blob Storage connection instead, the archive dialog shows **Archiving to** and the connection's name, and content is copied there and replaced by stub links. See [Where Archived Content Goes](../10-archive/02-microsoft-365-archive.md#where-archived-content-goes).
 - The workspace is a Microsoft 365 Governance (SharePoint) workspace and has had at least one data refresh.
 - You need the **Workspace Admin** role on the workspace (or **Tenant Admin**).
 - Your license must include the **Archive M365** feature.
@@ -36,7 +36,7 @@ To archive sites automatically instead, add the **M365 Archive** action to an **
 
 ## Related
 
-- [Microsoft 365 Archive](../10-archive/microsoft-365-archive.md)
+- [Microsoft 365 Archive](../10-archive/02-microsoft-365-archive.md)
 - [Workspace Inventory](../04-reports/workspace-inventory/README.md)
 - [How to Add a Governance Policy](./05-add-a-governance-policy.md)
 - [Error Messages: Connections, Archiving and Restore](../15-error-catalog/04-connections-and-archiving.md#workspace-inventory-and-microsoft-365-archive)

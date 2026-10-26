@@ -32,7 +32,7 @@ A restore stops without changing anything when:
 - The archive holds several versions but the destination library has versioning turned off. Turn versioning on (**Library settings** → **Versioning settings**), then restore again.
 - Another archive or restore of the same file is already running.
 
-Content moved into Microsoft 365 Archive is not restored by Proventeq365. See [Microsoft 365 Archive](./microsoft-365-archive.md#reactivate-content-from-microsoft-365-archive).
+Content moved into Microsoft 365 Archive is not restored by Proventeq365. See [Microsoft 365 Archive](./02-microsoft-365-archive.md#reactivate-content-from-microsoft-365-archive).
 
 ## Restore One File
 
@@ -40,7 +40,7 @@ Content moved into Microsoft 365 Archive is not restored by Proventeq365. See [M
 2. Click **Restore to Original Place**.
 3. The page shows the restore's progress. When it has finished, click **Open restored file**.
 
-The page also lets you download any archived version, or preview audio and video, without restoring. See [Archived File Page](./README.md#archived-file-page) and [How to Restore an Archived File](../13-how-to-guides/08-restore-an-archived-file.md).
+The page also lets you download any archived version, or preview audio and video, without restoring. See [Archived File Page](./01-proventeq365-archiving.md#archived-file-page) and [How to Restore an Archived File](../13-how-to-guides/08-restore-an-archived-file.md).
 
 If the file was archived without a stub, you need the **Workspace Admin** role to restore it on its own; otherwise restore it in bulk as described below.
 
@@ -77,8 +77,8 @@ Restores appear on the **Actions** page with the other actions of the workspace.
 
 ## Related
 
-- [Archive](./README.md)
-- [Microsoft 365 Archive](./microsoft-365-archive.md)
+- [Archiving overview](./README.md)
+- [Microsoft 365 Archive](./02-microsoft-365-archive.md)
 - [How to Restore an Archived File](../13-how-to-guides/08-restore-an-archived-file.md)
 - [How to Restore Archived Content in Bulk](../13-how-to-guides/25-restore-archived-content-in-bulk.md)
 - [Workspace Inventory](../04-reports/workspace-inventory/README.md)

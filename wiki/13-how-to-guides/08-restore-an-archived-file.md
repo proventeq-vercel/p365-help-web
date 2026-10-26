@@ -30,6 +30,6 @@ When Proventeq365 archives a file, it can leave a **stub link** in the file's or
 
 ## Related
 
-- [Archive](../10-archive/README.md#archived-file-page) — archived file details and options.
+- [Archive](../10-archive/01-proventeq365-archiving.md#archived-file-page) — archived file details and options.
 - [How to Archive Obsolete Content](./07-archive-obsolete-content.md)
 - [FAQ — Archiving](../16-faq/README.md#archiving)

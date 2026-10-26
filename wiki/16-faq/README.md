@@ -189,7 +189,7 @@ On the **Actions** page. It lists every action run in the workspace — permissi
 
 ### Where are archived files stored?
 
-In storage you own and connect to Proventeq365 — **Wasabi** object storage or **Azure Blob Storage** — or, for whole sites, OneDrives and libraries, in **Microsoft 365 Archive** inside your own tenant. See [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md) and [Microsoft 365 Archive](../10-archive/microsoft-365-archive.md).
+In storage you own and connect to Proventeq365 — **Wasabi** object storage or **Azure Blob Storage** — or, for whole sites, OneDrives and libraries, in **Microsoft 365 Archive** inside your own tenant. See [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md) and [Microsoft 365 Archive](../10-archive/02-microsoft-365-archive.md).
 
 ### What happens to a file in SharePoint when it is archived?
 
@@ -209,11 +209,11 @@ Yes — one file at a time from its stub link, or in bulk by a Workspace Admin. 
 
 ### Can Proventeq365 archive whole sites to Microsoft 365 Archive?
 
-Yes. Whole sites, OneDrives or selected libraries, folders and files can be moved to Microsoft 365 Archive from **Workspace Inventory**, or with the **M365 Archive** policy action. Microsoft 365 Archive must be enabled in your tenant with billing set up, and Proventeq sets up the archive mode. Content in Microsoft 365 Archive is reactivated in Microsoft 365, not in Proventeq365. See [Microsoft 365 Archive](../10-archive/microsoft-365-archive.md).
+Yes. Whole sites, OneDrives or selected libraries, folders and files can be moved to Microsoft 365 Archive from **Workspace Inventory**, or with the **M365 Archive** policy action. Microsoft 365 Archive must be enabled in your tenant with billing set up, and Proventeq sets up the archive mode. Content in Microsoft 365 Archive is reactivated in Microsoft 365, not in Proventeq365. See [Microsoft 365 Archive](../10-archive/02-microsoft-365-archive.md).
 
 ### How many items can I restore at once?
 
-From a policy report, up to 1,000 archived records per selection; **Restore all** restores every archived item in the report. From **Workspace Inventory**, up to 1,000 sites, or 1,000 files and 1,000 folders. Bulk restores need the **Workspace Admin** role. See [Restore Archived Content](../10-archive/restore-archived-content.md).
+From a policy report, up to 1,000 archived records per selection; **Restore all** restores every archived item in the report. From **Workspace Inventory**, up to 1,000 sites, or 1,000 files and 1,000 folders. Bulk restores need the **Workspace Admin** role. See [Restore Archived Content](../10-archive/03-restore-archived-content.md).
 
 ### Does changing the default archive destination move existing archives?
 

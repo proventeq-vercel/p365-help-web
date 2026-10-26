@@ -321,7 +321,7 @@ Messages you may see when adding an archive connection (Wasabi or Azure Blob Sto
 
 - [Troubleshooting — Archiving and restore](../14-troubleshooting/README.md#archiving-and-restore)
 - [Connections](../02-manage/connections/README.md)
-- [Restore Archived Content](../10-archive/restore-archived-content.md)
-- [Microsoft 365 Archive](../10-archive/microsoft-365-archive.md)
+- [Restore Archived Content](../10-archive/03-restore-archived-content.md)
+- [Microsoft 365 Archive](../10-archive/02-microsoft-365-archive.md)
 - [How to Archive Obsolete Content](../13-how-to-guides/07-archive-obsolete-content.md)
 - [How to Restore an Archived File](../13-how-to-guides/08-restore-an-archived-file.md)

@@ -1,13 +1,13 @@
 ---
 title: "Microsoft 365 Archive"
-description: "Archive whole SharePoint sites, OneDrives, libraries, folders or files from Workspace Inventory, in bulk or one at a time, to Microsoft 365 Archive or your archive storage."
+description: "Microsoft 365 Archive is Microsoft's built-in archive tier for SharePoint. Use Proventeq365 to move whole sites, OneDrives, libraries, folders or files into it from Workspace Inventory or a policy."
 type: article
 updated: 2026-10-26
 ---
 
 # Microsoft 365 Archive
 
-Microsoft 365 Archive is Microsoft's low-cost storage tier for SharePoint content you no longer use but must keep. Proventeq365 can move whole SharePoint sites and OneDrives, or selected libraries, folders and files, into it — from the site table on **Workspace Inventory**, or with the **M365 Archive** action of a policy. Content moved into Microsoft 365 Archive stays in your tenant and is archived in place: no stub link is left behind.
+**Microsoft 365 Archive** is Microsoft's own, out-of-the-box archive capability in SharePoint: a low-cost storage tier for content you no longer use but must keep. It is part of Microsoft 365, not of Proventeq365 — Proventeq365 finds the inactive content and triggers the archiving for you. Proventeq365 can move whole SharePoint sites and OneDrives, or selected libraries, folders and files, into it — from the site table on **Workspace Inventory**, or with the **M365 Archive** action of a policy. Content moved into Microsoft 365 Archive stays in your tenant and is archived in place: no stub link is left behind, and the content is reactivated in Microsoft 365, not in Proventeq365. To archive to storage you own instead, see [Proventeq365 Archiving](./01-proventeq365-archiving.md); for how the two compare, see [Archiving](./README.md).
 
 ## Before You Start
 
@@ -22,7 +22,7 @@ Microsoft 365 Archive is Microsoft's low-cost storage tier for SharePoint conten
 The **Archive** actions on Workspace Inventory, and **Archive selected** on the Obsolete Documents report, follow your organisation's archiving setup in Proventeq365:
 
 - **Microsoft 365 Archive** — The site, OneDrive or file is moved into Microsoft 365 Archive where it is. No stub is left in SharePoint.
-- **An archive storage connection** (Wasabi or Azure Blob Storage) — Each file is copied with all its versions to the default destination set on [Archiving Connections](../02-manage/connections/README.md#archiving-connections), removed from SharePoint and replaced by a stub link. The confirmation dialog shows **Archiving to** and the connection's name. See [Archive](./README.md).
+- **An archive storage connection** (Wasabi or Azure Blob Storage) — Each file is copied with all its versions to the default destination set on [Archiving Connections](../02-manage/connections/README.md#archiving-connections), removed from SharePoint and replaced by a stub link. The confirmation dialog shows **Archiving to** and the connection's name. This is [Proventeq365 Archiving](./01-proventeq365-archiving.md).
 
 If archiving isn't set up, the **Archive** actions are not offered.
 
@@ -81,12 +81,12 @@ The **M365 Archive** action — "Archive files to Microsoft 365 Archive (low-cos
 
 ## Reactivate Content from Microsoft 365 Archive
 
-Proventeq365 doesn't bring content back from Microsoft 365 Archive. Reactivate archived sites and files in Microsoft 365 — see Microsoft's [Overview of Microsoft 365 Archive](https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview). The **Restore** actions on Workspace Inventory restore content that was archived to a Wasabi or Azure Blob Storage connection; see [Restore Archived Content](./restore-archived-content.md).
+Proventeq365 doesn't bring content back from Microsoft 365 Archive. Reactivate archived sites and files in Microsoft 365 — see Microsoft's [Overview of Microsoft 365 Archive](https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview). The **Restore** actions on Workspace Inventory restore content that was archived to a Wasabi or Azure Blob Storage connection; see [Restore Archived Content](./03-restore-archived-content.md).
 
 ## Related
 
 - [How to Archive Sites to Microsoft 365 Archive](../13-how-to-guides/24-archive-sites-to-microsoft-365-archive.md)
 - [Workspace Inventory](../04-reports/workspace-inventory/README.md)
-- [Archive](./README.md)
-- [Restore Archived Content](./restore-archived-content.md)
+- [Archiving overview](./README.md)
+- [Restore Archived Content](./03-restore-archived-content.md)
 - [Error Messages: Connections, Archiving and Restore](../15-error-catalog/04-connections-and-archiving.md#workspace-inventory-and-microsoft-365-archive)

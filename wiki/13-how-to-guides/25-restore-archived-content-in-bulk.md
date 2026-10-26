@@ -29,11 +29,11 @@ When many archived files are needed again, a Workspace Admin can restore them to
 
 The restored files are back in their original SharePoint locations with their archived versions, in place of their stub links, and are no longer in the archive. When the restores finish, the report refreshes and a message says how many completed.
 
-To restore by site, by folder or for a whole workspace instead, use the **Restore** actions on **Workspace Inventory**. See [Restore from Workspace Inventory](../10-archive/restore-archived-content.md#restore-from-workspace-inventory).
+To restore by site, by folder or for a whole workspace instead, use the **Restore** actions on **Workspace Inventory**. See [Restore from Workspace Inventory](../10-archive/03-restore-archived-content.md#restore-from-workspace-inventory).
 
 ## Related
 
-- [Restore Archived Content](../10-archive/restore-archived-content.md)
+- [Restore Archived Content](../10-archive/03-restore-archived-content.md)
 - [How to Restore an Archived File](./08-restore-an-archived-file.md)
 - [How to Archive Obsolete Content](./07-archive-obsolete-content.md)
 - [Error Messages: Connections, Archiving and Restore](../15-error-catalog/04-connections-and-archiving.md#opening-and-restoring-archived-files)

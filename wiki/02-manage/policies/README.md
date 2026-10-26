@@ -92,7 +92,7 @@ On a policy that has an **Archive** action, Workspace Admins also see a **Restor
 - **Restore all** — Restore every archived item in the report back into SharePoint, not only the rows loaded on screen. You are asked to confirm.
 - **Execute on Selection (N)** — Restore the archived items you ticked. Up to 1,000 archived records are restored at a time; the card tells you how many of your ticked rows have no archive record and will be skipped.
 
-Each restoring row shows its progress. Follow the restore on the **Actions** page. See [Restore Archived Content](../../10-archive/restore-archived-content.md).
+Each restoring row shows its progress. Follow the restore on the **Actions** page. See [Restore Archived Content](../../10-archive/03-restore-archived-content.md).
 
 ### Identified items
 

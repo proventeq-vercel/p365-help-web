@@ -31,4 +31,4 @@ The page shows **Archiving connections saved successfully.**, and the card shows
 
 - [Connections — Archiving Connections](../02-manage/connections/README.md#archiving-connections)
 - [How to Add an Archive Connection](./06-add-an-archive-connection.md)
-- [Microsoft 365 Archive](../10-archive/microsoft-365-archive.md)
+- [Microsoft 365 Archive](../10-archive/02-microsoft-365-archive.md)

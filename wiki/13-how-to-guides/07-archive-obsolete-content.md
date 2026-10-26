@@ -38,6 +38,6 @@ The archived files are stored in your archive container. With **Replace with Stu
 
 ## Related
 
-- [Archive](../10-archive/README.md)
+- [Proventeq365 Archiving](../10-archive/01-proventeq365-archiving.md)
 - [How to Restore an Archived File](./08-restore-an-archived-file.md)
 - [Troubleshooting — Archiving](../14-troubleshooting/README.md#archiving-and-restore)

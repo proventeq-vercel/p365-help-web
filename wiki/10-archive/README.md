@@ -1,136 +1,50 @@
 ---
-title: "Archive"
-description: "Archive obsolete SharePoint and OneDrive files to Wasabi or Azure Blob Storage with a stub link left behind, then download, preview or restore them from the archived file page."
+title: "Archiving"
+description: "The two ways to archive inactive SharePoint and OneDrive content with Proventeq365: Proventeq365 Archiving to Wasabi or Azure Blob Storage, and Microsoft 365 Archive, Microsoft's built-in SharePoint archive tier."
 type: article
 updated: 2026-10-26
 ---
 
-# Archive
+# Archiving
 
-Archiving in Proventeq365 moves inactive or obsolete content out of SharePoint and OneDrive into low-cost storage you own — **Wasabi** object storage or **Azure Blob Storage**. Each archived file is copied with the versions you choose, removed from SharePoint, and can be replaced by a **stub link** at the same address. Anyone who can open the stub can download, preview or restore the file. You can also move sites, OneDrives and files to Microsoft's own low-cost tier; see [Microsoft 365 Archive](./microsoft-365-archive.md).
+Archiving takes content that is no longer used out of active SharePoint and OneDrive storage while keeping it available if it is needed again. Proventeq365 finds the content to archive — obsolete files, inactive sites, inactive OneDrives, old file versions — and offers two ways to archive it:
 
-## Ways to Archive
+- **[Proventeq365 Archiving](./01-proventeq365-archiving.md)** — Proventeq365's own archiving capability. It copies files, with the versions you choose, to storage you own — **Wasabi** or **Azure Blob Storage** — removes them from SharePoint and leaves a stub link in their place. Users download, preview or restore archived files through Proventeq365.
+- **[Microsoft 365 Archive](./02-microsoft-365-archive.md)** — Microsoft's out-of-the-box archive tier in SharePoint. Proventeq365 triggers it, but the archiving itself is done by Microsoft 365: sites, OneDrives and files are moved to the low-cost tier inside your own tenant and are reactivated in Microsoft 365.
 
-- **Archive action of a policy** — The **Archive** action ("Archive content to external storage") is offered on the **Obsolete Content Policy**, the **Excessive Versions Policy** and the **Inactive OneDrives** policy. It archives the items the policy finds, to the connection and container set in the policy. This page describes this route.
-- **Workspace Inventory** — Archive whole sites and OneDrives, or selected libraries, folders and files, from the site table. See [Microsoft 365 Archive](./microsoft-365-archive.md).
-- **Obsolete Documents report** — Select obsolete documents in a library's item list and click **Archive selected**.
+## How They Compare
 
-Archiving from Workspace Inventory and the Obsolete Documents report doesn't use a policy. When it archives to a storage connection, it writes to the default destination set on [Archiving Connections](../02-manage/connections/README.md#archiving-connections), always leaves a stub, and archives every version.
+| | Proventeq365 Archiving | Microsoft 365 Archive |
+| --- | --- | --- |
+| **What it is** | A Proventeq365 capability | A Microsoft 365 capability in SharePoint, triggered by Proventeq365 |
+| **Where archived content goes** | Your Wasabi or Azure Blob Storage container | Microsoft 365 Archive, inside your own tenant |
+| **What stays in SharePoint** | A stub link at the file's original address, or nothing if **Replace with Stub** is off | The content stays where it is, in the archive tier; no stub |
+| **What can be archived** | Files, with the versions you choose | Whole sites and OneDrives, or selected libraries, folders and files |
+| **Where you start it** | The **Archive** action of a policy, **Archive selected** on the Obsolete Documents report, or Workspace Inventory | The **M365 Archive** action of a policy, or Workspace Inventory |
+| **Getting content back** | Download or restore in Proventeq365 — one file from its stub link, or in bulk | Reactivate it in Microsoft 365 |
+| **Storage costs** | Billed by your storage provider | Billed by Microsoft for Microsoft 365 Archive |
+| **Prerequisites** | An archive connection with a container; license features **Execute Policy** and **Archive Items** | Microsoft 365 Archive enabled in your tenant with billing set up; license feature **Archive M365** |
 
-## What You Need
+Both need Proventeq365 deployed in **Read-write** mode. See [Microsoft 365 Prerequisites — Archiving](../12-deployment-prerequisites/02-microsoft-365-prerequisites.md#archiving).
 
-- An archive connection with a container. See [Connections](../02-manage/connections/README.md) and [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md).
-- Proventeq365 deployed in **Read-write** mode, so it can change content. See [Deployment Mode](../12-deployment-prerequisites/02-microsoft-365-prerequisites.md#deployment-mode).
-- **Tenant Admin** to create the policy; **Workspace Admin** (or Tenant Admin) to run the policy and start archiving.
-- License features: **Execute Policy** to run actions, and **Archive Items** to open archived files and restore them.
+## Which One Workspace Inventory Uses
 
-## How Archiving Works
+The policy actions name their target: **Archive** always uses Proventeq365 Archiving, and **M365 Archive** always uses Microsoft 365 Archive. The **Archive** actions on **Workspace Inventory** and **Archive selected** on the Obsolete Documents report follow your tenant's archiving setup instead:
 
-1. The policy finds content that matches its rule — for the Obsolete Content Policy, the workspace's obsolete rules (age in months and file extensions).
-2. The archive action runs — automatically when the policy runs, or when someone starts it from the policy report.
-3. Each file's selected versions are written to the target container, together with the file's metadata. With **Use Structured Hierarchy**, the site, library and folder path is recreated in the container.
-4. Proventeq365 reads the archived copy back to check it. Only when the check passes is the SharePoint file replaced or deleted. If the check fails, the SharePoint file is left untouched and the item is reported as an error.
-5. With **Replace with Stub**, the original file is replaced **in place** by a stub link. The stub keeps the file's address, so bookmarks and existing sharing links keep working. The original's content and version history are removed from SharePoint and are **not** kept in the recycle bin. Without **Replace with Stub**, the original file is deleted.
+- With a default destination chosen on [Archiving Connections](../02-manage/connections/README.md#archiving-connections), they use Proventeq365 Archiving to that connection and container.
+- When Proventeq has set up your tenant for Microsoft 365 Archive, they use Microsoft 365 Archive.
+- If neither is set up, the **Archive** actions are not offered.
 
-Items that are already archived, and items that no longer exist, are **skipped** rather than reported as errors. Existing stub links are never archived. Folders, libraries and sites are not archived themselves — their files are.
+## In This Section
 
-## Set Up the Archive Action
-
-Create or edit a policy under **Manage** → **Policies** and choose a policy rule that offers **Archive**, for example the **Obsolete Content Policy**.
-
-![Obsolete Content Policy — choose rule](images/image146.png)
-
-![Obsolete Content Policy — action setup](images/image147.png)
-
-Select the **Archive** action and choose its execution mode:
-
-- **Manual** — The policy report lists the items; a Workspace Admin starts the archive.
-- **Automatic** — Items are archived whenever the policy runs, with no further input. Automatic actions run in the background and can't be undone.
-
-Then set the action's parameters under **Action Configuration**:
-
-- **Target Connection** — The connection to archive content to. Required.
-- **Target Container** — The container within the connection. Required.
-- **Replace with Stub** — Replace the original file with a stub link. On by default.
-- **Use Structured Hierarchy** — Replicate the original source folder hierarchy (site, library and folder path) in the archive target instead of using a flat structure. Off by default.
-- **Include minor versions** — Archive draft (minor) versions as well as published ones. On by default. The current version is always archived, even when it is a draft.
-- **Versions to archive** — **All versions** (the default), **Last N versions** or **Versions from the last N months**. For the last two, enter the number:
-  - **Keep last N versions** — Archive the most recent N versions, counting the current one.
-  - **Keep versions from the last N months** — Archive only versions modified within the last N months. The current version is always archived.
-
-The source is always your tenant's SharePoint connection; it is not shown in the form. You can set a version count or a number of months, not both.
-
-> **Important:** Only the versions selected here are archived. A version that is not archived can't be restored from the archive, and it is removed from SharePoint together with the original. When you save a policy that doesn't archive every version, Proventeq365 asks you to confirm with **Save anyway**.
-
-Click **Add Policy** to save. See [How to Archive Obsolete Content](../13-how-to-guides/07-archive-obsolete-content.md) for the full steps.
-
-## Run the Archive
-
-Enabled policies run at the end of every workspace data refresh, and a Workspace Admin can run one at any time with **Run Policy**. When the run finishes, click **View** in the policy's row to open the policy report.
-
-![Policy report view](images/image148.png)
-
-The report shows the policy name and description, the items found and, under **Available Actions**, a card for each of the policy's actions. The **Archive** card offers:
-
-- **Execute on All Items** — Archives every item in the report.
-- **Execute on Selection** — Archives the items you ticked. The button shows how many are selected.
-- **View Executions** — Opens the history of this action's runs.
-
-Both execute buttons ask you to confirm. They are offered only for a **Manual** action and only to a Workspace Admin. If the policy needs approval, the action waits until an approver releases the report.
-
-### Executions
-
-**View Executions** lists every run of the action with its status, progress, duration and errors.
-
-![View executions](images/image149.png)
-
-An execution's status is one of:
-
-- **Queued** — The run has been accepted and will start shortly.
-- **Running** — Items are being archived.
-- **Succeeded** — Every item was archived or skipped.
-- **Partially completed** — Some items were archived and at least one failed.
-- **Failed** — The run did not complete, or no item succeeded.
-- **Stopped** — The policy was disabled before the action ran.
-
-Open an execution to see its **Items** tab. Filter by **Succeeded** or **Failed**, select **Full error** for the complete error text, and use **Export CSV** to download the list. For what an error means, see [Error Messages: Connections, Archiving and Restore](../15-error-catalog/04-connections-and-archiving.md#archiving).
-
-## Archived Files in SharePoint
-
-After archiving with **Replace with Stub**, the file's original location in SharePoint holds a stub link with the same name and address.
-
-![Stub link in source location](images/image150.png)
-
-Opening the stub takes you to the archived file's page in Proventeq365.
-
-## Archived File Page
-
-The page is titled **Archive** — **Recover archived items**. It lists **Available Options** for the file, then its **Version history**.
-
-![Archived file details](images/image151.png)
-
-### Who Can Open It
-
-- If the file has a stub, you can open the page when you have permission to open the stub in SharePoint.
-- If the file was archived without a stub, you need a role on the workspace the file belongs to.
-- Other users see **Access denied - you do not have permission to download this item**.
-- Your organisation's license must include the **Archive Items** feature.
-
-### Available Options
-
-- **Preview in Browser** — Shown for audio and video files (for example MP4, WebM, MP3, WAV, M4A). Plays the file in your browser without downloading it. Playback streams on demand and stops when you close the player.
-- **Download current version** — Saves the current archived version to your computer. The file stays in the archive and is not restored to its original location.
-- **Restore to Original Place** — Puts the file back in its original location with its archived versions. The file is removed from the archive and becomes active again. Progress is shown on the page, and **Open restored file** appears when it has finished. A restore can take a few minutes. See [Restore Archived Content](./restore-archived-content.md).
-
-### Version History
-
-Every version archived with the file is listed with its **Version**, **Modified (UTC)**, **Modified by**, **Size** and **Check-in comment**. The current version is marked **Current**. Use **Download this version** to save any version, or **Preview this version** for audio and video files.
+1. [Proventeq365 Archiving](./01-proventeq365-archiving.md) — Archive to Wasabi or Azure Blob Storage: the archive action, stub links, executions and the archived file page.
+2. [Microsoft 365 Archive](./02-microsoft-365-archive.md) — Move sites, OneDrives, libraries, folders and files to Microsoft's archive tier from Workspace Inventory or a policy.
+3. [Restore Archived Content](./03-restore-archived-content.md) — Bring content archived with Proventeq365 Archiving back to SharePoint, one file at a time or in bulk.
 
 ## Related
 
-- [Microsoft 365 Archive](./microsoft-365-archive.md)
-- [Restore Archived Content](./restore-archived-content.md)
-- [Connections](../02-manage/connections/README.md)
+- [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md)
 - [How to Archive Obsolete Content](../13-how-to-guides/07-archive-obsolete-content.md)
+- [How to Archive Sites to Microsoft 365 Archive](../13-how-to-guides/24-archive-sites-to-microsoft-365-archive.md)
 - [How to Restore an Archived File](../13-how-to-guides/08-restore-an-archived-file.md)
-- [Error Messages: Connections, Archiving and Restore](../15-error-catalog/04-connections-and-archiving.md)
+- [FAQ — Archiving](../16-faq/README.md#archiving)

@@ -100,5 +100,5 @@ If you save with no connection enabled, archiving from Workspace Inventory and t
 
 - [How to Add an Archive Connection](../../13-how-to-guides/06-add-an-archive-connection.md)
 - [How to Set the Default Archive Destination](../../13-how-to-guides/26-set-the-default-archive-destination.md)
-- [Archive](../../10-archive/README.md)
+- [Archiving](../../10-archive/README.md)
 - [Error Messages: Connections, Archiving and Restore](../../15-error-catalog/04-connections-and-archiving.md#connections)
