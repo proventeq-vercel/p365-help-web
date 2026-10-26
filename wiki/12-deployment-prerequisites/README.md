@@ -10,8 +10,10 @@ This guide describes how to prepare for and deploy Proventeq365 into your Micros
 | Stage | What happens | Guide |
 | --- | --- | --- |
 | 1. Prerequisites script | [Proventeq365Prerequisites.ps1](/prerequisites/Proventeq365Prerequisites.ps1) creates the Entra ID app registration, grants its API permissions and admin consent, creates the client secret and SharePoint certificate, and stores them in a **Bootstrap Key Vault** in a new resource group. | [Run the Prerequisites Script](./05-run-prerequisites-script.md) |
-| 2. Azure Marketplace | You deploy Proventeq365 from Azure Marketplace and select the Bootstrap Key Vault. The deployment reads everything it needs from that vault. | [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md) |
-| 3. Post-deployment script | [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1) sets the app registration's redirect URI to the live Proventeq365 URL, imports the SharePoint certificate into the product Key Vault and, if needed, configures the AI agent. | [Run the Post-Deployment Script](./07-run-post-deployment-script.md) |
+| 2. Azure Marketplace | You deploy Proventeq365 from Azure Marketplace and select the Bootstrap Key Vault. The deployment reads everything it needs from that vault. **Not applicable to a Proventeq-run deployment.** | [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md) |
+| 3. Post-deployment script | [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1) sets the app registration's redirect URI to the live Proventeq365 URL, imports the SharePoint certificate into the product Key Vault and, if needed, configures the AI agent. **Not applicable to a Proventeq-run deployment.** | [Run the Post-Deployment Script](./07-run-post-deployment-script.md) |
+
+> **Proventeq-run deployment.** If Proventeq deploys Proventeq365 into your subscription for you, the process and every other step in this guide are the same, except that stage 2 (the Azure Marketplace deployment) and stage 3 (the post-deployment script) are not applicable — Proventeq carries out the deployment and the post-deployment configuration, and no action is required from you for these stages.
 
 ## Who should read this
 

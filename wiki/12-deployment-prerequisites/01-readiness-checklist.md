@@ -30,9 +30,9 @@ Work through this checklist in order and confirm status with your Proventeq cont
 | 12 | Both scripts downloaded (see [Download the Scripts](./05-run-prerequisites-script.md#download-the-scripts)) and uploaded to Azure Cloud Shell (**PowerShell**) (see [Open Azure Cloud Shell](./05-run-prerequisites-script.md#open-azure-cloud-shell-and-upload-the-scripts)) | | |
 | 13 | Prerequisites script run, and the **Bootstrap Key Vault** resource ID and **App (client) ID** copied from its summary (see [Run the Prerequisites Script](./05-run-prerequisites-script.md)) | | |
 | 14 | Admin consent granted to the app registration's API permissions (see [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent)) | | |
-| 15 | Proventeq365 deployed from Azure Marketplace with the Bootstrap Key Vault selected (see [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md)) | | |
-| 16 | **Managed resource group** name (`mrg-...`) noted (see [Find the Managed Resource Group](./06-deploy-from-azure-marketplace.md#find-the-managed-resource-group)) | | |
-| 17 | Post-deployment script run (see [Run the Post-Deployment Script](./07-run-post-deployment-script.md)) | | |
+| 15 | Proventeq365 deployed from Azure Marketplace with the Bootstrap Key Vault selected (see [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md)) — N/A for a Proventeq-run deployment | | |
+| 16 | **Managed resource group** name (`mrg-...`) noted (see [Find the Managed Resource Group](./06-deploy-from-azure-marketplace.md#find-the-managed-resource-group)) — N/A for a Proventeq-run deployment | | |
+| 17 | Post-deployment script run (see [Run the Post-Deployment Script](./07-run-post-deployment-script.md)) — N/A for a Proventeq-run deployment | | |
 | 18 | Notification mailbox granted — only if Proventeq365 should send email notifications (see [Notification Mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional)) | | |
 | 19 | Script logs downloaded from Cloud Shell (optional) | | |
 | 20 | Bootstrap resource group **kept** — do not delete it | | |

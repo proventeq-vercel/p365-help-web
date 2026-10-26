@@ -5,6 +5,8 @@ description: "Deploy Proventeq365 from Azure Marketplace using the Bootstrap Key
 
 # Deploy from Azure Marketplace
 
+> **Not applicable to a Proventeq-run deployment.** If Proventeq deploys Proventeq365 into your subscription for you, Proventeq carries out the deployment and no action is required from you for this step.
+
 **What this does:** Deploys Proventeq365 into your subscription as an Azure **managed application**. The deployment reads the app registration, client secret, certificate and container registry credentials from the Bootstrap Key Vault, so the wizard does not ask for them.
 
 > **Before you start:** run the [prerequisites script](./05-run-prerequisites-script.md) and make sure admin consent has been granted.

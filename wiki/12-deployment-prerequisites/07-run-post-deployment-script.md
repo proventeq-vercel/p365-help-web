@@ -5,6 +5,8 @@ description: "Run Proventeq365PostDeployment.ps1 in Azure Cloud Shell after the 
 
 # Run the Post-Deployment Script
 
+> **Not applicable to a Proventeq-run deployment.** If Proventeq deploys Proventeq365 into your subscription for you, Proventeq carries out the post-deployment configuration and no action is required from you for this step.
+
 **What this does:** `Proventeq365PostDeployment.ps1` completes the values that only exist once the Marketplace deployment has finished. It:
 
 1. Finds the live Proventeq365 URL (the Azure Front Door hostname).
