@@ -17,8 +17,8 @@ description: "What the Proventeq365 prerequisites script creates in Microsoft En
 | API permissions | The Microsoft Graph and SharePoint permissions for your deployment mode — see [API Permissions](#api-permissions). |
 | Admin consent | Granted during the run when you pass `-GrantAdminConsent` — see [Grant Admin Consent](#grant-admin-consent). |
 | Client secret | Created and written straight into the Bootstrap Key Vault. It is never displayed. |
-| SharePoint certificate | A certificate used for application-only access to SharePoint Online. The public key is added to the app registration and the certificate is stored in the Bootstrap Key Vault; the [post-deployment script](./07-run-post-deployment-script.md) imports it into the product Key Vault. The private key never leaves your Key Vaults. |
-| Redirect URI | Set by the post-deployment script once the Proventeq365 URL is known. |
+| SharePoint certificate | A certificate used for application-only access to SharePoint Online. The public key is added to the app registration and the certificate is stored in the Bootstrap Key Vault; after the deployment it is imported into the product Key Vault — by Proventeq in a [direct deployment](./06-direct-deployment.md), or by the [post-deployment script](./08-run-post-deployment-script.md) in a Marketplace deployment. The private key never leaves your Key Vaults. |
+| Redirect URI | Set once the Proventeq365 URL is known — by Proventeq in a direct deployment, or by the post-deployment script in a Marketplace deployment. |
 | AI agent app registration (optional) | A second app registration named `<ApplicationName> AI Agent`, created only with `-ConfigureAiAgent`. |
 
 The person who runs the script becomes the Proventeq365 **platform administrator** by default. To nominate someone else, pass their Entra object ID with `-PlatformAdminObjectId`.

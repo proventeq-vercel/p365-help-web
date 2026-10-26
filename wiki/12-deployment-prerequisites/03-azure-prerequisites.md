@@ -9,14 +9,14 @@ Complete these steps before you run the [prerequisites script](./05-run-prerequi
 
 ## Required Access
 
-**What this does:** The deployment is run by one person in your organisation. That person **must** have all of the following in your tenant before starting.
+**What this does:** The prerequisites script — and, for an Azure Marketplace deployment, the Marketplace deployment and post-deployment script — is run with one account. In a Marketplace deployment that is your administrator's account; in a [direct deployment](./06-direct-deployment.md) it is the account you provide to the Proventeq DevOps specialist. That account **must** have the following in your tenant before starting.
 
 | Access | Where | Why it is needed |
 | --- | --- | --- |
 | **Global Administrator** or **Privileged Role Administrator** | Microsoft Entra ID (your tenant) | To create the app registration and grant **admin consent** to the Microsoft Graph and SharePoint permissions. The script stops with an error if you ask it to grant consent without one of these roles. |
-| **Owner** on the subscription | Azure subscription | To create the bootstrap resource group and Key Vault, **and** to assign roles on the Key Vault: your own access, the *Appliance Resource Provider* and the *Managed Applications On Behalf Application*. |
-| **Contributor** on the deployed (managed) resource group, and Key Vault access on both the bootstrap and product Key Vaults | Azure subscription | Needed by the post-deployment script to read the Front Door profile and import the certificate into the product Key Vault. |
-| Container registry (ACR) username and password | Provided by Proventeq | The Proventeq365 container images are pulled with these. |
+| **Owner** on the subscription | Azure subscription | To create the bootstrap resource group and Key Vault, **and** to assign roles on the Key Vault: your own access and, for a Marketplace deployment, the *Appliance Resource Provider* and the *Managed Applications On Behalf Application*. |
+| **Contributor** on the deployed (managed) resource group, and Key Vault access on both the bootstrap and product Key Vaults | Azure subscription | **Marketplace deployment only.** Needed by the post-deployment script to read the Front Door profile and import the certificate into the product Key Vault. |
+| Container registry (ACR) username and password | Provided by Proventeq | The Proventeq365 container images are pulled with these. In a direct deployment, Proventeq supplies them itself. |
 
 > **Important:** Contributor alone is not enough for the prerequisites script. Contributor cannot create role assignments. If you only have Contributor, you also need **User Access Administrator** on the subscription. Otherwise the Key Vault is created, but the script cannot write the secrets into it.
 
@@ -34,7 +34,7 @@ Gather these values before you open Azure Cloud Shell. The examples are samples 
 | **ACR username and password** | Provided by Proventeq | `p365-contoso-pull` |
 | **Bootstrap resource group name** | Choose a name for a normal, new resource group | `rg-contoso-p365` |
 | **Bootstrap Key Vault name** | Choose a name: 3–24 characters, letters, numbers and hyphens, **globally unique** | `kv-p365boot-contoso01` |
-| **SQL administrator** | The Entra user or group that should become the SQL Server administrator: its **object ID** and **display name**. This may be one of your own security groups. Asked for during the [Marketplace deployment](./06-deploy-from-azure-marketplace.md). | `SQL Admins` |
+| **SQL administrator** | The Entra user or group that should become the SQL Server administrator: its **object ID** and **display name**. This may be one of your own security groups. Entered during the [Marketplace deployment](./07-deploy-from-azure-marketplace.md), or shared with Proventeq for a [direct deployment](./13-next-steps.md#direct-deployment). | `SQL Admins` |
 
 > **Note on region.** Choose the region that matches where your Microsoft 365 data is stored. To find your Microsoft 365 data location, see the [Microsoft 365 data locations](https://learn.microsoft.com/en-us/microsoft-365/enterprise/o365-data-locations) guide. All compute, data and messaging resources are deployed into your chosen region. One exception applies: the Proventeq365 user interface is hosted on **Azure Static Web Apps**, which is available in a limited set of Azure regions and may therefore sit in a different region from the rest of your deployment. It holds static application files only — no customer content is stored there and it is not on the data path. Proventeq will confirm the interface region with you before deployment; if your data-residency policy constrains it, please raise it with your Proventeq contact.
 
@@ -66,7 +66,7 @@ The following resource providers must be registered:
 | Microsoft.Resources |
 | Microsoft.ServiceBus |
 
-**Microsoft.Solutions** is the provider behind Azure managed applications, which is how Proventeq365 is deployed from Azure Marketplace. If it is not registered, the prerequisites script cannot find the *Appliance Resource Provider* and cannot grant it access to the Bootstrap Key Vault.
+**Microsoft.Solutions** is the provider behind Azure managed applications, which is how Proventeq365 is deployed from Azure Marketplace. It is required for a **Marketplace deployment**: if it is not registered, the prerequisites script cannot find the *Appliance Resource Provider* and cannot grant it access to the Bootstrap Key Vault. A direct deployment does not need it.
 
 ### Option 1 — Azure Portal
 

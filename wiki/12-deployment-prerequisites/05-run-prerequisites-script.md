@@ -1,24 +1,24 @@
 ---
 title: "Run the Prerequisites Script"
-description: "Run Proventeq365Prerequisites.ps1 in Azure Cloud Shell to create the Entra ID app registration, grant admin consent, and create the Bootstrap Key Vault before deploying Proventeq365 from Azure Marketplace."
+description: "Required for both deployment models — run Proventeq365Prerequisites.ps1 in Azure Cloud Shell to create the Entra ID app registration, grant admin consent, and create the Bootstrap Key Vault before Proventeq365 is deployed."
 ---
 
 # Run the Prerequisites Script
 
-**What this does:** `Proventeq365Prerequisites.ps1` prepares everything the Marketplace deployment needs. It creates the [Entra ID app registration](./04-entra-app-registration.md) with its permissions, admin consent, client secret and SharePoint certificate, and a bootstrap resource group containing a **Bootstrap Key Vault**. The Marketplace deployment reads everything from that vault, so no secrets are shared with Proventeq.
+**What this does:** `Proventeq365Prerequisites.ps1` prepares everything the deployment needs. It creates the [Entra ID app registration](./04-entra-app-registration.md) with its permissions, admin consent, client secret and SharePoint certificate, and a bootstrap resource group containing a **Bootstrap Key Vault**. The deployment reads everything from that vault, so no secrets are shared with Proventeq.
 
-Run this script **before** you deploy Proventeq365 from Azure Marketplace. Your Proventeq contact provides the container registry (ACR) username and password.
+This script is **always required**, whichever [deployment model](./README.md#deployment-models) you use, and it is run **before** Proventeq365 is deployed. In a Marketplace deployment your administrator runs it; in a [direct deployment](./06-direct-deployment.md) the Proventeq DevOps specialist runs it with the account you provide. Your Proventeq contact provides the container registry (ACR) username and password.
 
 > **Before you start:** confirm the person running the script has the access listed in [Required Access](./03-azure-prerequisites.md#required-access), and that you have the values listed in [Information to Collect](./03-azure-prerequisites.md#information-to-collect).
 
 ## Download the Scripts
 
-Download both deployment scripts to your machine:
+Download the scripts to your machine:
 
-- [Proventeq365Prerequisites.ps1](/prerequisites/Proventeq365Prerequisites.ps1) — run before the Marketplace deployment.
-- [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1) — run after the Marketplace deployment.
+- [Proventeq365Prerequisites.ps1](/prerequisites/Proventeq365Prerequisites.ps1) — **both models**, run before the deployment.
+- [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1) — **Azure Marketplace deployment only**, run after the Marketplace deployment. Not needed for a direct deployment.
 
-You upload both files to Azure Cloud Shell in the next step.
+You upload them to Azure Cloud Shell in the next step.
 
 ## Open Azure Cloud Shell and Upload the Scripts
 
@@ -36,11 +36,11 @@ You upload both files to Azure Cloud Shell in the next step.
 2. If this is your first time, choose **PowerShell**. When asked about storage, choose **No storage account required**, select your subscription, then select **Apply**.
 3. If the toolbar shows **Switch to PowerShell**, select it. When you are already in PowerShell, the toolbar shows **Switch to Bash** and the prompt starts with `PS /home/<your-name>>`.
 
-### Step 3 — Upload both scripts
+### Step 3 — Upload the scripts
 
 1. In the Cloud Shell toolbar, select **Manage files** → **Upload**.
 2. Select the downloaded `Proventeq365Prerequisites.ps1` and upload it.
-3. Repeat for `Proventeq365PostDeployment.ps1`.
+3. For a Marketplace deployment, repeat for `Proventeq365PostDeployment.ps1`.
 
 ![Manage files menu in the Cloud Shell toolbar, with Upload highlighted](images/cloud-shell-upload.png)
 
@@ -52,7 +52,7 @@ Files are uploaded to your home folder. Run:
 ls ./Proventeq365*.ps1
 ```
 
-You should see both script names listed.
+You should see the uploaded script names listed.
 
 > **The Cloud Shell session is temporary.** Files and logs are lost when the session ends. If you close Cloud Shell or it times out, upload the scripts again. To keep the logs, download them from the `logs` folder with **Manage files** → **Download** before closing (for example, `logs/prereq-20261014-101500.log`).
 
@@ -123,7 +123,7 @@ Use this for most deployments.
 ./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -ConfigureAiAgent
 ```
 
-This also creates a second app registration named `Proventeq365 AI Agent`. If you use this scenario, also select **Deploy Copilot Agent** in the [Marketplace deployment](./06-deploy-from-azure-marketplace.md) and pass `-ConfigureAiAgent` to the [post-deployment script](./07-run-post-deployment-script.md).
+This also creates a second app registration named `Proventeq365 AI Agent`. If you use this scenario in a Marketplace deployment, also select **Deploy Copilot Agent** in the [Marketplace deployment](./07-deploy-from-azure-marketplace.md) and pass `-ConfigureAiAgent` to the [post-deployment script](./08-run-post-deployment-script.md). In a direct deployment, tell Proventeq if the AI agent is in scope.
 
 ### Scenario D — Use a specific subscription (no selection prompt)
 
@@ -149,15 +149,15 @@ Then a Global Administrator grants consent using the **App (client) ID** from th
 ./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -ForceNewCert
 ```
 
-> **It is safe to run the script again.** It reuses the existing app, resource group and Key Vault. A new secret and certificate are created **only** when you pass `-ForceNewCert`. Use the **same** `-ApplicationName`, `-ResourceGroupName` and `-KeyVaultName` every time. After a rotation, run the [post-deployment script](./07-run-post-deployment-script.md) again to import the new certificate.
+> **It is safe to run the script again.** It reuses the existing app, resource group and Key Vault. A new secret and certificate are created **only** when you pass `-ForceNewCert`. Use the **same** `-ApplicationName`, `-ResourceGroupName` and `-KeyVaultName` every time. After a rotation, run the [post-deployment script](./08-run-post-deployment-script.md) again to import the new certificate.
 
 ## Script Output — Copy These Values
 
-When the script finishes, it shows a **SUMMARY**. Copy these two values — you need them in the next stages:
+When the script finishes, it shows a **SUMMARY**. Copy these two values — you need them in the next steps:
 
 | Summary line | Used for | Example |
 | --- | --- | --- |
-| **Bootstrap Key Vault** | The Marketplace deployment, and `-BootstrapKeyVaultId` in the post-deployment script | `/subscriptions/9a8b7c6d-1e2f-4a3b-8c9d-0e1f2a3b4c5d/resourceGroups/rg-contoso-p365/providers/Microsoft.KeyVault/vaults/kv-p365boot-contoso01` |
-| **App (client) ID** | `-MainAppClientId` in the post-deployment script | `6b2e9f14-3c7d-4a58-b1e0-7f9c2d4a8e61` |
+| **Bootstrap Key Vault** | **Direct:** used by Proventeq for the deployment. **Marketplace:** selected in the Marketplace deployment, and `-BootstrapKeyVaultId` in the post-deployment script. | `/subscriptions/9a8b7c6d-1e2f-4a3b-8c9d-0e1f2a3b4c5d/resourceGroups/rg-contoso-p365/providers/Microsoft.KeyVault/vaults/kv-p365boot-contoso01` |
+| **App (client) ID** | **Direct:** used by Proventeq for the deployment. **Marketplace:** `-MainAppClientId` in the post-deployment script. | `6b2e9f14-3c7d-4a58-b1e0-7f9c2d4a8e61` |
 
-Next: [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md).
+Next: [Direct Deployment](./06-direct-deployment.md) or [Deploy from Azure Marketplace](./07-deploy-from-azure-marketplace.md), depending on your [deployment model](./README.md#deployment-models).
