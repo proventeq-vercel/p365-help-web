@@ -1,176 +1,104 @@
 ---
 title: "Container — Create a New Team"
-description: "Creates a brand-new Team site with predefined settings, channels, library structure, access, and appearance."
+description: "Configure a template container that creates a new Microsoft Team with its SharePoint site: branding, hub site, owners, naming, privacy, channels, tabs, libraries and folders."
+type: reference
+updated: 2026-10-26
 ---
 
 # Container — Create a New Team
 
-This container creates a brand-new Team site with predefined settings, channels, library structure, access, and appearance.
+This container creates a new Microsoft Team with a connected SharePoint site, channels and libraries. To add it, open a template's **Containers** screen, click **+ Add**, choose **Start with a Microsoft Team** and then **Create a new Team**.
 
-When this container is selected, a screen with a left-side menu opens. The left-side menu represents a step-by-step configuration flow for defining how a SharePoint container is provisioned when the template is used. Each section groups related settings and ensures a structured, governed setup process. The menu also indicates progress through the configuration lifecycle.
+Configuring containers needs the **Tenant Admin** role, and your license must include the **Provision** feature. You can change containers only in a **Draft** version of a template; a container of a published or older version opens read-only, with **Edit in a draft** (or **Continue the open draft**) in the notice at the top. See [Template Versions](../template-versions.md#version-history).
 
-## Configuration
+The steps in the left menu are **Configure Container**, **Naming & URL**, **Security & Compliance**, **Features & Metadata**, **Setup Channels** and **Setup Libraries**. They work as described for the [Create New Site](./create-new-site.md) container: **Continue** checks the current step, the menu marks each step as complete or as having errors, and **Save** on the last step checks every step before the container is added to the template.
 
-This configuration section lets you do the following:
+Most fields accept a user input, so the requester can supply the value. See [Using User Inputs](./create-new-site.md#using-user-inputs).
+
+## Configure Container
 
 ![Create new team — Configuration](images/image093.png)
 
-### Configure Your New SharePoint Site
+This step sets the appearance, hub site and default access of the team's SharePoint site. There is no **Site Type** field: a team always gets a team site with a Microsoft 365 group.
 
-This section allows you to configure the site's appearance:
-
-- **Site Theme** — Dropdown to select the visual theme for the SharePoint site.
-- **Site Logo** — File import control. You can drag and drop an image or use the standard file selection feature. Once imported, a preview appears; hover to reveal a Delete icon to replace the image. Required. Supported formats: PNG, JPG, SVG.
+- **Site Theme** — required. The colour palette and visual style of the site.
+- **Site Logo** — optional. PNG, JPEG and SVG files up to 5 MB are accepted.
 
 ### Hub Site
 
-This section allows you to associate the new site with an existing Hub Site.
-
 ![Hub site configuration](images/image094.png)
 
-When the **Connect to Hub site** toggle is ON, the following controls appear:
-
-- **Associated Hub Site** — Text box to search for the hub site to associate with the SharePoint site. See [Hub Site](../../../appendix/README.md#hub-site) for more information.
-- **Set site using Params** — Toggle to set the hub site using a user input. OFF by default. When ON, an **Apply User Input** link appears below the search box.
-
-**Note:** When configuring user input for this field, only the **Hub site selection** input type is available for selection.
+Turn on **Connect to a Hub Site** and pick a hub site from the search results (type at least three characters), or turn on **Set site using a user input** and choose a **Hub Site Selection** input with **Apply User Input**. A name typed without picking a result shows *Choose a hub site from the list, or insert a hub site user input*. See [Hub Site](../../../appendix/README.md#hub-site).
 
 ### Default Site Access
 
-This section lets you define who will have access to new sites (containers) created using this template. You can predefine access for Owners, Members, and Visitors.
-
 ![Default site access](images/image095.png)
 
-Each site created using this template includes three permission levels:
+- **Owners** (**Full Control**) — at least one owner is required (*Owner is required*).
+- **Members** (**Edit**) — can create, edit and manage content.
+- **Visitors** (**Read**) — can view content only.
 
-- **Owners (Full Control)** — Full administrative control. At least one owner is required.
-- **Members (Edit)** — Can create, edit, and manage content but do not have full administrative permissions.
-- **Visitors (Read)** — Read-only access.
-
-Each permission level shares the following functionality:
-
-- **Search** — Search box to add users by name or email address. Added users appear in the list. Toggle ON **Set using user input** to reveal the **Apply User Input** link for dynamic configuration.
-
-**Note:** When configuring user input for this field, only the **User Selection** input type is available for selection.
-
-After adding all required configurations, click **Continue** to move on to **Naming & URL**. Click **Back** to cancel container configuration.
+Search for people (at least three characters) or click **Upload CSV**, or turn on **Set owners using a user input** (and the matching toggles for members and visitors) to let the requester pick the people through a **User Selection** input.
 
 ## Naming & URL
 
-This configuration section lets you define consistent rules for how new sites are named and how their web addresses (URLs) are generated.
-
 ![Naming & URL](images/image096.png)
 
-### Site Name
-
-The Site Name section controls how the display name of the new site appears in Microsoft 365.
-
-- **Prefix** — Optional Title prefix used while creating the site collection. Example: `Project - <site title>`.
-- **Title** — The required title.
-- **Suffix** — Optional Title suffix, e.g. `Project - <site title> - 2025`.
-
-The **Title Preview** shows how the final site name will look once prefix, title, and suffix are combined.
-
-### Web Address (URL)
-
-The Web Address (URL) section defines how the site's URL is constructed. Each site URL must be unique.
-
-- **Managed Path** — The base path used for the site URL. Options: `/sites/`, `/teams/`.
-- **Prefix** — Optional URL prefix, e.g. `Governance<URL>`.
-- **URL** — Required text box for the site URL.
-- **Suffix** — Optional URL suffix.
-
-The **URL Preview** displays how the complete site address will appear.
-
-Below each text box, the **Apply User Input** link opens the User Input popup to configure or select user inputs for that field.
+The **Site Name & URL** step builds the team's name from **Prefix**, **Title** (required) and **Suffix**, and its site address from **Managed Path** (`sites` or `teams`), **Prefix**, **URL** (required, no `/`) and **Suffix**. **Title Preview** and **URL Preview** show the result. Each text box has an **Apply User Input** link.
 
 ![Apply User Input](images/image097.png)
 
-After adding all required configurations, click **Continue** to move on to **Security & Compliance**.
+The name and URL must not already be used in your tenant. They are checked when you save the container (if they are fixed) or when a request is created (if they use user inputs). See [Name and URL Checks](./create-new-site.md#name-and-url-checks).
 
 ## Security & Compliance
 
-This section lets you define security controls, compliance settings, and regional defaults for SharePoint sites created using this template.
-
 ![Security & Compliance](images/image098.png)
 
-- **Allow external file sharing** — Toggle to restrict external file sharing. OFF by default. When ON, an additional dropdown appears with options: Anyone, New and existing guests, Existing guests, Only people in your organization. A multiline text box also appears to add external domains that are allowed for sharing.
+- **Allow external file sharing** — off by default. When on, choose who files can be shared with under **Select who you want to share to** (**Anyone**, **New and existing guests**, **Existing guests** or **Only people in your organization**). Except for **Only people in your organization**, you can limit sharing to the domains listed under **Allowed External Domains**, one per line.
 
 ![External sharing — domain restrictions](images/image099.png)
 
-- **Is Public** — Toggle to make the team site public or for internal use.
-- **Apply default sensitivity label** — Toggle to set a default sensitivity label. When ON, a dropdown lists site-level sensitivity labels. (Sensitivity labels can only be set at site level.)
-
-![Default sensitivity label](images/image100.png)
+- **Is Public** — when on, the team is visible to everyone in the organisation and anyone can join. When off, the team is private and only invited members can access it.
 
 ### Regional Settings
 
-- **Language** — Specifies the default language for the site interface and regional formatting. Default uses the organisation or tenant default language.
-- **Time Zone** — Defines the default time zone used for calendar events and time-based information. If set to **None**, the site will not have a predefined time zone during creation.
+- **Language** — the default language of the site. By default, your organisation's default language.
+- **Time Zone** — the default time zone. If set to **None**, the site has no predefined time zone.
 
-**Note:** Regional settings (language and time zone) cannot always be fully configured at site creation. If required, they can be updated later via the SharePoint Admin Center: *Site Information > View all site settings > Regional Settings*.
-
-After adding all required configurations, click **Continue** to move on to **Features & Metadata**.
+**Note:** The site locale cannot be set while a site is created. If needed, set it in the SharePoint Admin Center: *Site Information → View all site settings → Regional Settings*.
 
 ## Features & Metadata
 
-The Features & Metadata screen lets you enable built-in SharePoint features and define container-level metadata for all sites created using this template.
-
 ![Features & Metadata](images/image101.png)
 
-### Site Features
+- **Site Features** — tick **Document ID Service** and **Document Sets** to activate them on every new team site. **Document Sets** is needed for content types based on Document Set.
+- **Container Properties** — add internal attributes, such as department or classification, as **Property Name** and **Value** pairs, and click **(+)** to add each one.
 
-Use this section to enable SharePoint features that will be automatically activated for every site created from this template. Both **Document ID Service** and **Document Sets** can be enabled by ticking the check box as required.
-
-### Container Properties
-
-Container Properties allow you to define custom metadata for the site itself:
-
-- **Property Name** — Use the first text box to give a property name such as Department, Project Code, Business Unit, or Classification.
-- **Value** — The corresponding value for the property, such as `Marketing` or `MK-0224`.
-
-Use the **(+)** button to add the property to the list. If no properties are defined, the message **"No properties found"** is displayed. You can add multiple properties.
-
-**Apply User Input** is available for both text boxes to allow values to be provided during the site request instead of being hard-coded in the template.
-
-After adding all required configurations, click **Continue** to move on to **Setup Channels**.
+See [Features & Metadata](./create-new-site.md#features--metadata) in the Create New Site container for details.
 
 ## Setup Channels
 
-The **Setup Channels** screen lets you configure **Microsoft Teams channels** within a team site. Channels help organise conversations, files, and collaboration areas within the provisioned resource.
+This step defines the Microsoft Teams channels created in the new team.
 
 ![Setup channels](images/image102.png)
 
 ### Channels List
 
-This section displays a list of channels that will be created in Microsoft Teams.
+The list shows the channels that will be created. A **General** channel is included by default. Each channel shows how many tabs and folders it has, with an edit icon to change it and a delete icon to remove it. Channel names must be unique and not empty; otherwise you see *Channel names must be unique and non-empty*.
 
-By default, the **General** channel exists in the list and is automatically included in every team. Each channel provides:
-
-- **Edit (Pencil Icon)** — Modify the channel name or configuration.
-- **Delete (Trash Icon)** — Remove the channel from the container.
-
-Click **+ Add Channel** to add a new channel. This opens the Create Channel screen, which lets you define detailed settings for a Microsoft Teams channel within the container — including channel name, tabs, and file storage location.
+Click **+ Add Channel** to open the **Create Channel** screen:
 
 ![Create channel](images/image103.png)
 
 ### General
 
-- **Channel Name** — Enter the name of the channel.
-
-Use **Apply User Input** to set a reusable channel name so it can be set dynamically when creating the request using this template.
+- **Channel Name** — required. For example *Hiring Updates* or *Documentation*. Use **Apply User Input** to let the requester supply the name.
 
 ### Tabs
 
-This section lets you add default tabs to the channel. Provide:
+Tabs are the pages or links users see at the top of a channel. To add a tab, enter its **Name**, choose its **Type** and, for the types that need it, a **Content Url**, then click **+**.
 
-- **Name** — Tab display name.
-- **Type** — Tab type (e.g. Website, DocumentLibrary).
-- **Content URL** — URL or reference content.
-
-Based on the selected value in the Type dropdown, the **Content URL** text box appears next to the dropdown.
-
-| Tab Type | Content URL text box visible? |
+| Tab type | Content Url needed? |
 | --- | --- |
 | WebSite | Yes |
 | DocumentLibrary | Yes |
@@ -187,114 +115,63 @@ Based on the selected value in the Type dropdown, the **Content URL** text box a
 | SharePointPageOrList | No |
 | Custom | No |
 
-After adding Name and the relevant Type, click **+** to add it to the list.
-
-Both Name and Content URL values can be set using **User Input** to make them reusable across requests.
+Tab names and content URLs must be unique within a channel. The name and content URL can both use user inputs.
 
 ### Files & Storage
 
-This section lets you define folder structures within a team channel and control how permissions and labels are applied.
+Defines the folder structure where the channel's files are stored, with the same folder controls as a library: **Inherited** / **Custom Permissions**, **Break Inheritance**, **Apply retention label**, **Import a file (max 100MB)** and **Add a new folder**. See [Folders](./create-new-site.md#folders) for what each control does and which file types can be imported.
 
 ![Files & Storage](images/image104.png)
 
-- **Root Folder (/)** — The path field displays the current folder location within the team channel. `/` represents the root. You can create folders under the root or navigate into existing folders to manage sub-folders.
-
-For each folder, the following actions are available:
-
-- **Inherited** — Indicates the folder inherits Permissions, Sensitivity, or Retention labels from its parent.
-- **Break or Reset Inheritance** — Lets you break or reset permission inheritance.
-
 ![Break or reset inheritance popup](images/image105.png)
-
-Once permission is broken, the changed permission is displayed below the folder path:
 
 ![Folder with broken inheritance](images/image106.png)
 
-- **Apply Retention Labels** — Sets a retention label at the folder. Clicking shows a dropdown with the list of retention labels.
-
 ![Apply retention labels](images/image107.png)
-
-- **Import a File** — Lets you add files to a folder. All imported files are copied into the root directory across all sites created with this template. Files up to 100 MB can be uploaded.
 
 ![Import a file](images/image108.png)
 
-- **Add New Folder** — Creates a new folder under the current path. Folder Name can be fixed or use the **User Input** feature for dynamic values.
-
 ![Add new folder](images/image109.png)
 
-**Note:** Each added folder offers a **Create new folder** option to build a hierarchy. Each sub-folder gets the same management controls.
-
-After selecting all channel configuration, click **Create Channel** to add this channel to the container configuration.
-
-After adding all required configurations, click **Continue** to move on to **Setup Libraries**.
+Click **Create Channel** to add the channel to the container, or **Save Channel** when editing an existing one.
 
 ## Setup Libraries
 
-This screen lets you define which **document libraries** will be automatically created when a new SharePoint site (container) is provisioned using this template.
+This step defines the document libraries created in the team's SharePoint site. A **Documents** library is included by default. Click **Add Library** to add another.
 
 ![Setup libraries](images/image110.png)
 
-### Existing Libraries List
+The library screen has the same sections as in the Create New Site container — see [Setup Libraries](./create-new-site.md#setup-libraries):
 
-This section displays all document libraries that will be created by default for the site, including library name, library path, configured content types, and Edit/Delete actions. By default, a Document Library configuration is always added; it can be edited as needed.
+- **General** — **Library Name** (required) and **Library Path** (optional).
 
-To add a new library, click **Add Library**. The general configuration screen opens.
+  ![Library general](images/image111.png)
 
-![Library general](images/image111.png)
+- **Content Types** — add content types that can be used in a document library and are available in your tenant, and choose the default one. Content types based on Document Set need **Document Sets** under **Features & Metadata**.
+- **Folders** — the folder structure, with permissions, retention labels and imported files.
 
-### General
-
-- **Library Name** — Required text box for the library name.
-- **Library Path** — Optional text box for the library path.
-
-Use the User Input feature for dynamic values.
-
-### Content Types
-
-The Content Type list displays all content types enabled for the library. **Document** is the default content type. The **Default** label cannot be removed.
-
-Use the **Select a Content Type** dropdown to add additional content types. Use the **Delete** icon to remove an unwanted content type.
-
-### Folders
-
-![Folders — root](images/image112.png)
-
-The Folders section uses the same controls as the channel folder structure:
-
-- Root Folder (/)
-- Inherited indicator
-- **Break or Reset Inheritance**
+  ![Folders — root](images/image112.png)
 
   ![Break or reset inheritance popup](images/image113.png)
 
   ![Folder with broken inheritance](images/image114.png)
 
-- **Apply Retention Labels**
-
   ![Apply retention labels](images/image115.png)
-
-- **Import a File**
 
   ![Import a file](images/image116.png)
 
-- **Add New Folder**
-
   ![Add new folder](images/image117.png)
 
-**Note:** Each added folder offers a **Create new folder** option to build a hierarchy.
+- **Advanced Settings** — versioning (**Max Major Versions** 1100 and up to 511 minor versions by default), a default sensitivity label, a retention label and **Enable Content Moderation**.
 
-### Advanced Settings
+  ![Advanced settings](images/image118.png)
 
-This section lets you configure **optional governance, compliance, and content controls** for libraries created using this template.
+Click **Create Library** to add the library, then **Save** to add the container to the template.
 
-![Advanced settings](images/image118.png)
+## Related
 
-- **Enable Versioning** — Toggle, ON by default. Default major versions: 1100.
-- **Enable Minor Versioning** — Toggle, ON by default. Default minor versions: 750.
-- **Apply default sensitivity label** — Toggle, OFF by default.
-- **Apply retention label** — Toggle, OFF by default.
-- **Enable Moderation** — Toggle, ON by default.
-
-After configuring all library settings, click **Create Library** to add it to the container.
-
-Click **Save** to add this container to the template.
+- [Templates](../README.md)
+- [Template Versions](../template-versions.md)
+- [Container — Create New Site](./create-new-site.md)
+- [Container — Add Channels to an Existing Team](./add-channels-to-team.md)
+- [How to Create a Provisioning Template](../../../13-how-to-guides/12-create-a-provisioning-template.md)

@@ -32,8 +32,6 @@ A policy that requires approval needs at least one approver: saving it without o
 
 The next run of the policy replaces the report and **supersedes** its approval, whether it was decided or not. The new report needs its own decision.
 
-Approval requests and decisions are recorded in the [Audit log](../../07-audit-log/README.md).
-
 ## Approve or Reject from the Policy Report
 
 Open the policy report. A banner shows where the approval stands:

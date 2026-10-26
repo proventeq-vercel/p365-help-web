@@ -23,7 +23,11 @@ Archiving takes content that is no longer used out of active SharePoint and OneD
 | **Where you start it** | The **Archive** action of a policy, **Archive selected** on the Obsolete Documents report, or Workspace Inventory | The **M365 Archive** action of a policy, or Workspace Inventory |
 | **Getting content back** | Download or restore in Proventeq365 — one file from its stub link, or in bulk | Reactivate it in Microsoft 365 |
 | **Storage costs** | Billed by your storage provider | Billed by Microsoft for Microsoft 365 Archive |
-| **Prerequisites** | An archive connection with a container; license features **Execute Policy** and **Archive Items** | Microsoft 365 Archive enabled in your tenant with billing set up; license feature **Archive M365** |
+| **Prerequisites** | An archive connection with a container, set up by a Tenant Admin (license feature **Execute Policy**) | Microsoft 365 Archive enabled in your tenant with billing set up |
+| **License features to archive** | **Execute Policy** for the **Archive** policy action; **Archive M365** for Workspace Inventory and **Archive selected** on the Obsolete Documents report | **Execute Policy** for the **M365 Archive** policy action; **Archive M365** for Workspace Inventory |
+| **License features to get content back** | **Archive Items** to open, download and restore archived files | None in Proventeq365 — reactivate in Microsoft 365 |
+
+> **Note:** Despite its name, the **Archive M365** license feature is what enables archiving from Workspace Inventory and the Obsolete Documents report, whichever destination your tenant uses — a Wasabi or Azure Blob Storage connection or Microsoft 365 Archive. Archiving from those screens also needs the **Workspace Admin** role (or **Tenant Admin**).
 
 Both need Proventeq365 deployed in **Read-write** mode. See [Microsoft 365 Prerequisites — Archiving](../12-deployment-prerequisites/02-microsoft-365-prerequisites.md#archiving).
 

@@ -32,6 +32,10 @@ The main section of the page displays a list of all configured templates, one ro
   - **Copy to a new template** — Creates a separate template, as a draft, from the current version.
   - **Delete** — Deletes the template's draft, or the whole template when the draft is its only version. Available only while the template has a draft; published and older versions cannot be deleted.
 
+To find a template, type in the **Search** box above the list. It matches template names, ignoring upper and lower case, across all templates — not only the current page. Type at least three characters; until then the box says *Type at least 3 characters to search*. Clear the box to show every template again.
+
+Click the **Name** or **Created** column header to sort the whole list by that column; click again to reverse the order. The other columns cannot be sorted. Searching or sorting returns you to the first page.
+
 At the bottom right of the list:
 
 - **Rows Per Page** — 5, 10, 15, 20, 25, 30, 50, or 100. Default: 10.
@@ -48,7 +52,7 @@ The **Create New Template** button at the top right of the screen, above the lis
 
 - **Title** — A clear, descriptive name for the template. This name is visible to users when they create a new request. Use a business-friendly name that reflects the purpose of the template. *Example: Project Workspace – Construction.* Required.
 - **Description** — A brief description explaining what the template is used for. Optional.
-- **Template Image** — Use the file import control to upload or select an image (PNG, JPG, or SVG) for the template. The uploaded image displays here, with a Delete icon on hover to remove or replace it. Required.
+- **Template Image** — Use the file import control to upload or select an image (PNG, JPEG, WebP, BMP, AVIF or SVG, up to 5 MB) for the template. The uploaded image displays here, with a Delete icon on hover to remove or replace it. Required.
 
 ### Template Access & Approvals
 
@@ -80,15 +84,15 @@ The **User Inputs** section lets users specify the information required when cre
 
 The following fields are available to add a new user input:
 
-- **Input Key** — Text box for the new user input. After adding, the value is enclosed with `#…#` to indicate it is a parameter, e.g. `#SiteName#`.
+- **Input Key** — Text box for the new user input. Use letters and numbers only — no spaces or special characters. After adding, the value is enclosed with `#…#` to indicate it is a parameter, e.g. `#SiteName#`.
 - **Field Label** — Text box for a simplified name to make the input easy to recognise.
-- **Input Type** — Dropdown to select the input type: Text Field, Team site selection, Hub site selection, SharePoint site selection, User selection, Generate Password.
+- **Input Type** — Dropdown to select the input type: **Text Field**, **Teams Site Selection**, **SharePoint Site Selection**, **Hub Site Selection**, **User Selection** or **Generate Password**.
 - **Default Value** — Text box for the default value. This is only editable for **Text Field** input types; for other types it is read-only.
 - **Add button** — Saves the user input after all required fields are populated.
 
 After adding a user input, the list has the following actions to manage each entry:
 
-- **Edit** — Opens the input for editing; values auto-populate in the bottom controls. After editing, click the `+` icon to save again.
+- **Edit** — Opens the input for editing; values auto-populate in the bottom controls. The key cannot be changed. After editing, click **Save changes**.
 - **Delete** — Removes the user input.
 
 After adding all required details, click **Continue** to be redirected to the screen where you add containers to the template.

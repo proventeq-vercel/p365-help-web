@@ -9,7 +9,7 @@ updated: 2026-10-26
 
 The **Request History** screen lists the provisioning requests you have submitted, newest first, with their approval and provisioning progress. Use it to see whether a request is still waiting for approval, follow it while it is provisioned, open the site it created, or find out why it failed.
 
-Request History is available to anyone whose organisation's license includes the **Provision** feature. Open it from **Self Service** → **Request History**. You are taken here automatically after you submit a request. Test runs of draft templates started by a Tenant Admin are listed here too.
+Request History is available to anyone whose organisation's license includes both the **Provision** and the **Approvals** features. Open it from **Self Service** → **Request History**. You are taken here automatically after you submit a request. Test runs of draft templates started by a Tenant Admin are listed here too.
 
 ![Request History](images/image137.png)
 

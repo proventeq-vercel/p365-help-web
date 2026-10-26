@@ -7,7 +7,7 @@ updated: 2026-10-26
 
 # How to Renew Your Proventeq365 License
 
-Your license controls how long Proventeq365 can be used and which features are enabled. To renew it, open **License**, paste the new license token you received from Proventeq, and click **Upload license**. From 30 days before expiry, Proventeq365 shows a banner with the days remaining; once the license has expired, every page redirects to the License page until a new license is uploaded.
+Your license controls how long Proventeq365 can be used and which features are enabled. To renew it, open **License**, paste the new license token you received from Proventeq, and click **Upload license**. From 30 days before expiry, Proventeq365 shows a banner with the days remaining; once the license has expired, every page shows the **License required** screen until a Tenant Admin uploads a new license there.
 
 ## Before you begin
 
@@ -18,13 +18,13 @@ Your license controls how long Proventeq365 can be used and which features are e
 ## Steps
 
 1. Open **License** in the menu.
-2. Under **License Overview**, check the current **License Status**, the **Valid From** and **Valid To** dates and the **Enabled Features**.
+2. Under **License overview**, check the status badge (**Active**, **Expiring soon** or **Expired**), the **Valid from** and **Valid to** dates and the **Enabled features**.
 3. Under **Upload a new license**, paste the token into **License token (GUID)**.
 4. Click **Upload license**. The message *License uploaded successfully.* confirms the new license.
 
 ## Result
 
-The **License Overview** shows the new validity dates and enabled features. The menu options available in Proventeq365 depend on the modules your license enables.
+The **License overview** shows the new validity dates and enabled features. The menu options available in Proventeq365 depend on the modules your license enables.
 
 ## Related
 

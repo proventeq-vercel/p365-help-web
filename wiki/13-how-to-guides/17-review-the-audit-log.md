@@ -1,13 +1,13 @@
 ---
 title: "How to Review the Audit Log"
-description: "How to find who did what in Proventeq365 — filter the audit log by user, date, action type and entity type, and inspect an entry's raw payload."
+description: "How to find who did what in Proventeq365 — search the audit log by user, filter it by date, action and area, and open an entry's full record."
 type: howto
 updated: 2026-10-26
 ---
 
 # How to Review the Audit Log
 
-The **Audit Log** records user and system activity in Proventeq365 — for example workspace creation, policy execution and archiving — newest first. Filter it by user, date, action type or entity type, then open an entry's details to see the full message and the raw payload.
+The **Audit** screen records user and system activity in Proventeq365 — for example workspace changes, data refreshes, archiving and license uploads — newest first. Search it by user, filter it by date, action or area, then open an entry's details to see the full description and the data captured with it.
 
 ## Before you begin
 
@@ -16,14 +16,16 @@ The **Audit Log** records user and system activity in Proventeq365 — for examp
 ## Steps
 
 1. Open **Audit log** in the menu.
-2. Filter the log on the **User**, **Date**, **Action Type** (for example *Create*, *Complete*, *Archive*) or **Entity Type** (for example *Workspace*, *Policy*, *Archive*) column.
-3. Click **Details** on an entry to open the **Audit Details** panel.
-4. Review the **Message**, and note the **Audit ID** and **Payload ID** if you need to reference the event, for example in a support request.
-5. Check **Payload Details** for the raw JSON data captured when the action took place.
+2. To find one person's activity, type at least three characters of their name in the **Search** box above the table.
+3. To narrow the period, use the filter in the **Date** column header and choose a start and end date.
+4. To find a kind of activity, use the filters in the **Action** column header (for example **Created**, **Removed**, **Archived**) or the **Area** column header (for example **Workspace**, **Data refresh**, **License**) and tick the values you need.
+5. Click **Details** on an entry to open the **Activity details** panel.
+6. Read the **Description**, and note the **Record ID** if you need to reference the entry, for example in a support request.
+7. Check **Additional details** for the full data captured when the action took place.
 
 ## Result
 
-You can see who performed an action, when, on which object, and with which data.
+You can see who performed an action, when, in which area, and with which data. The line below the table shows how many entries match your filters.
 
 ## Related
 

@@ -23,7 +23,7 @@ To see how files are shared by email, create a workspace of the **Exchange Monit
 4. On the **Configuration** step, set:
    - **Email Folder** — the folder to analyse, for example *Sent Items*.
    - **Internal Domains** — your internal email domains.
-   - **Email Retention in months** — enter `0` for no limit, or for example `12` to analyse the last 12 months.
+   - **Email retention in months** — enter `0` for no limit, or for example `12` to analyse the last 12 months.
    - Optionally, the **Exclude addresses starting with**, **containing** and **ending with** rules, for example `noreply` or `system`.
 5. Click **Next**, add the users who should have access to the workspace, and click **Create Workspace**.
 6. When the scan has completed, open the [Email Report](../11-exchange-monitoring/email-report.md) and the [Link Report](../11-exchange-monitoring/link-report.md).

@@ -1,58 +1,72 @@
 ---
 title: "External Users"
-description: "Identify, review, and manage external users who have access to your Microsoft 365 environment."
+description: "See which external users can reach your SharePoint sites, which domains they come from and which sites each one can access, then remove, disable or enable them."
+type: article
+updated: 2026-10-26
 ---
 
 # External Users
 
-The **External Users** screen helps you identify, review, and manage external users who have access to your Microsoft 365 environment. It provides visibility into who the external users are, which domains they belong to, and how many sites they can access, enabling you to reduce security and oversharing risks.
+The **External Users** report shows the users from outside your organisation who have access to content in the workspace. It tells you who they are, which domains they come from and how many sites each one can reach, lists those sites, and lets you remove, disable or enable external users.
+
+Open it from **Reports** → **Security & Oversharing** → **External Users**. The report is available in **Microsoft 365 Governance** workspaces.
 
 ![External Users](images/image045.png)
 
-## Overview
+## Who Can Use It
 
-At the top of the page, a high-level summary card displays counts:
+- Any user with a role on the workspace (**Workspace User** or higher) can view the report.
+- Your license must include the **Permissions Report** and **Users Report** features. Without them the menu item is hidden.
+- Removing, disabling and enabling users needs the **Workspace Admin** role (or **Tenant Admin**). Other users see no **Actions** button and no checkboxes.
 
-- **External Users** — Total number of external (non-internal) users with access to your environment.
-- **External Domains** — Number of unique external email domains (such as `gmail.com` or `outlook.com`).
-- **Total Site Access** — Total number of site access relationships across all external users.
+## Summary Cards
 
-## External Users (Chart)
+- **External Users** — the number of external users with access to the workspace.
+- **External Domains** — the number of distinct email domains they come from, such as `gmail.com` or `outlook.com`.
+- **Total Site Access** — the number of site accesses across all external users. A user who can reach three sites counts three.
 
-Shows external users ranked by the number of sites they can access. Each bar represents an individual external user. The number at the end of the bar indicates how many sites that user can access. Users with greater access are highlighted more prominently, helping you spot higher-risk users quickly. Use the **Search external users** box to find a specific user by name or email.
+## External Users and External Domains
 
-## External Domains
+Two panels rank the users and the domains by site access. Each has a search box: **Search external users** and **Search domains**.
 
-Shows external domains ranked by site access. Each bar represents a domain (for example, `gmail.com`, `outlook.com`). The value indicates how many site access permissions originate from that domain. This helps identify domains with widespread access across your environment. Use the **Search domains** box to focus on a specific external domain.
+- **External Users** — each bar is a user, with the number of sites they can reach. Click a user to open the [Security & Oversharing](../security-oversharing/README.md) report on its **External** tab, filtered to that user's permissions.
+- **External Domains** — each bar is a domain, with the number of site accesses from it. Click a domain to filter the cards and the table to that domain; click it again to remove the filter. The filter appears as a chip next to **Active filters**; remove it, or click **Clear all**.
 
 ## External Users Table
 
-The table at the bottom of the screen provides detailed, actionable information for each external user.
+The table lists one row per external user, 50 rows per page (50, 100, 250 or 500).
 
-- **Expand** — Click to view more details about the sites and permissions assigned to the user.
-- **Checkbox** — Select one or multiple records to remove or disable users.
-- **User Name** — The external user's name and email address.
-- **Access Type** — How the user was granted access (for example, direct permission or sharing).
-- **Organization** — The user's email domain, helping identify where external access originates.
-- **Site Count** — The number of SharePoint sites the user can access.
-- **Status** — Whether the external user account is currently enabled or disabled.
+- **User Name** — the user's name and email address.
+- **Organization** — the user's email domain. **No Domain Found** when the domain is not known.
+- **Status** — **Active**, **Disabled** or **Deleted**.
+- **Sites** — the number of sites the user can reach, with a **View** link that opens the sites panel.
+- **>** — opens the Security & Oversharing report filtered to the user's permissions, the same as clicking the user in the chart.
 
-The table supports sorting and filtering on all columns.
+Use the search box above the table to find a user by name or email address. Click the **User Name** or **Organization** header to sort by it.
 
-Three action buttons are displayed above the table for bulk actions:
+## Sites Panel
 
-- **Remove User** — Completely removes the external user's access from all sites.
-- **Disable User** — Temporarily blocks access without deleting the user.
-- **Enable User** — Restores access for a previously disabled external user.
+Click **View** in the **Sites** column to see the sites an external user can access.
 
-At the bottom right of the table:
+The panel shows the user's name and email address, and lists each site with its type icon and name, which opens the site, and how the user was granted access, for example **Direct** or **Specific people**. Use **Search sites** to find a site. The number of sites is shown at the bottom of the panel.
 
-- **Rows Per Page** — 5, 10, 15, 20, 25, 30, 50, or 100. Default: 10.
-- **Total Record Count** — Range and total record count.
-- **Next/Previous Navigation** — Arrow icons to navigate.
+## Removing, Disabling and Enabling Users
 
-Expand a row to see the access type detail in scanned sites:
+1. Select one or more users with the checkboxes. Users with the status **Deleted** cannot be selected.
+2. Click **Actions** above the table to open **Bulk actions**, and choose:
+   - **Remove User** — removes the user from your tenant. *The user may still appear in the UI temporarily and will be removed after the next data refresh.*
+   - **Disable User** — blocks the user from signing in, without deleting the account. Applies only to selected users who are not already disabled.
+   - **Enable User** — lets a disabled user sign in again. Applies only to selected users who are not already active.
+3. Confirm the action in the dialog.
 
-![External Users — expanded row](images/image046.png)
+When the request is accepted, a message such as **External user removal queued.** appears and the user's **Status** changes to **Deleted**, **Disabled** or **Active**. A removed user leaves the report after the next data refresh. You can act on up to 100 users at a time. The actions apply only to guest accounts in your Microsoft Entra ID.
 
-For each row, the **>** icon at the end of the row opens the detailed Security & Oversharing report.
+> **Important:** **Remove User** deletes the guest account from your Microsoft Entra ID, which takes away all of that user's access in your tenant, not only the access in this workspace. Check with the site owners before you remove external collaborators.
+
+## Related
+
+- [Security & Oversharing](../security-oversharing/README.md)
+- [App Permissions](../app-permissions/README.md)
+- [How to Manage External User Access](../../13-how-to-guides/10-manage-external-user-access.md)
+- [Error Messages: Policies and Remediation](../../15-error-catalog/03-policies-and-remediation.md#permissions-and-external-users)
+- [License](../../08-license/README.md)

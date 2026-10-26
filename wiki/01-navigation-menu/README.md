@@ -1,6 +1,8 @@
 ---
 title: "Navigation Menu"
 description: "The Proventeq365 menu explained: Dashboard, Reports, Self Service and Manage, plus Actions, License, Audit log and Settings, and who sees which items."
+type: article
+updated: 2026-10-26
 ---
 
 # Navigation Menu
@@ -49,4 +51,15 @@ At the bottom of the menu:
 
 The **bell** icon at the top of the page opens your notifications. See [Notification](../09-notification/README.md).
 
-Menu options shown in the navigation depend on the features your license includes and on your role. For example, **Workspaces**, **Connections**, **Templates**, **License**, **Audit log** and **Settings** are shown to Tenant Admins only.
+Menu options shown in the navigation depend on the features your license includes and on your role. For example, **Workspaces**, **Connections**, **Templates**, **License**, **Audit log** and **Settings** are shown to Tenant Admins only. If a screen isn't included in your license, see [License](../08-license/README.md#license-features).
+
+## Screen Help
+
+Most screens have a **?** icon next to the description under the page title. Click it to open a short explanation of the screen. Click **See more** in that window to open the matching page of this help site in a new browser tab. If a screen has no page of its own, **See more** opens the help site's home page.
+
+## Related
+
+- [License](../08-license/README.md)
+- [Audit Log](../07-audit-log/README.md)
+- [Settings](../06-settings/README.md)
+- [Notification](../09-notification/README.md)

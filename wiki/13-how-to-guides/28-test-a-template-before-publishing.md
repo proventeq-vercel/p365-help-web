@@ -11,7 +11,7 @@ A **test run** provisions a request from a template's draft version, before the 
 
 ## Before you begin
 
-- You need the **Tenant Admin** role, and your license must include the **Provision** feature.
+- You need the **Tenant Admin** role, and your license must include the **Provision** and **Approvals** features. A test run is submitted as a request, which needs **Approvals**.
 - The template must have a **Draft** version. To start one for a published template, see [How to Update a Published Template](./27-update-a-published-template.md).
 - Choose names and values you can recognise and remove afterwards — the test creates real sites, teams or users.
 - If the template requires approval, an approver must approve the test run before it is provisioned.

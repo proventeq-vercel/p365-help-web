@@ -1,77 +1,79 @@
 ---
 title: "Dashboard — Security & Oversharing"
-description: "A quick summary of content sharing risks across your Microsoft 365 environment to identify risk levels at a glance and decide where investigation or remediation is required."
+description: "The dashboard's Security & Oversharing tab: risk totals and cards for broad sharing, high-level access and permission complexity, each opening the filtered report."
+type: article
+updated: 2026-10-26
 ---
 
 # Dashboard — Security & Oversharing
 
-The **Security & Oversharing** overview screen provides a quick summary of **content sharing risks** across your Microsoft 365 environment. It helps you understand how securely information is shared and where potential exposure exists.
+The **Security & Oversharing** tab of the dashboard summarises the content sharing risks in your workspace. It shows how many risky permissions there are at each severity, and groups the most common sharing and permission problems into cards so you can see at a glance where to investigate or remediate.
 
-This view is designed to help you **identify risk levels at a glance** and decide where further investigation or remediation is required.
+Open it from the **Security & Oversharing** tab at the top of the [Dashboard](./README.md). The page is headed **Security & Oversharing Overview**.
 
 ![Security & Oversharing — overview](images/image031.png)
 
 ## Risk Summary
 
-The **Risk Summary** section categorises shared content into three risk levels based on how widely and securely it is shared.
+The **Risk Summary** cards show how many permissions on documents in the workspace are rated at each severity. How a severity is assigned is described in [Severity Allocations](../../appendix/severity-allocations.md).
 
-**High Risk** — Represents content with the highest exposure risk. Typically includes:
+- **High Risk** — the greatest exposure, such as anonymous sharing links and links shared with specific external users. Review these first.
+- **Medium Risk** — sharing links that reach everyone in your organisation.
+- **Lower Risk** — access limited to specific internal users or groups. Keep an eye on it so sharing does not grow unintentionally.
 
-- Anonymous sharing links.
-- Unrestricted external sharing.
-- Highly permissive access settings.
+## How the Cards Work
 
-High-risk items are most likely to lead to data leaks or compliance issues and should be reviewed urgently.
+The cards in the three sections below each show a short definition, a count and a status. Click a card to open the [Security & Oversharing](../../04-reports/security-oversharing/README.md) report filtered to the items the card counts; the filter appears as a chip with the card's name, which you can remove.
 
-**Medium Risk** — Content with elevated exposure but with some access controls; often shared externally with known users or with limited safeguards. Medium-risk items may still violate internal policies and should be reviewed and tightened where needed.
+The status depends on the count and on the share of the workspace's items (or sites, for site cards) that it represents:
 
-**Lower Risk** — Content shared in a controlled and generally acceptable manner. Access is typically limited to specific internal users or groups. While lower risk, these items should still be monitored to ensure sharing does not expand unintentionally.
+- **No Exposure Detected** — the count is zero.
+- **Review Recommended** — less than 30% of items are affected.
+- **Action Required** — 30% to less than 60%.
+- **Immediate Action Required** — 60% or more.
 
 ## Broad Sharing
 
-The **Broad Sharing** section highlights content that may be exposed to **large or unintended audiences** within or outside your organisation. This view helps you quickly identify files that are shared too widely and may pose **security or compliance risks**.
+Content exposed to large or unintended audiences.
 
 ![Broad sharing](images/image032.png)
 
-### Sharing Risk Categories
-
-Each category is displayed with a count of affected documents and a status of **Review Recommended** or **Action Required**:
-
-- **Public or Anyone Links** — Files accessible by anyone with the link, without sign-in.
-- **Organisation-Wide Sharing** — Files shared with groups such as "Everyone" or "All Users".
-- **External User Access** — Files shared with guest users outside your organisation.
-- **Excessive Sharing Activity** — Files with more than 10 active sharing links.
-- **Forwardable Links** — Files with links that can be forwarded beyond the intended recipients.
-
-Each card shows a recommended action — **No Exposure Detected**, **Review Recommended**, **Immediate Action Required**, or **Action Required** — based on the identified counts.
+- **Public or Anyone Links** — files shared using "Anyone" access, so anyone with the link can open them without signing in.
+- **Organization Wide Sharing** — files shared with all internal users.
+- **External User Access** — files shared directly with external guests.
+- **Excessive Sharing Activity** — files with more than 10 active sharing links, including links shared with specific people.
+- **Forwardable Links** — files with links that can be forwarded beyond the intended recipients.
 
 ## High-Level Access
 
-The **High-Level Access** section highlights content with elevated or widespread modification rights. This view helps you identify files, folders, or sites where users may have more control than necessary, which increases the risk of accidental data changes, misuse, or compliance issues.
+Content with elevated or widespread modification rights.
 
 ![High-level access](images/image033.png)
 
-### Access Risk Categories
-
-- **Large Audience Access** — Files or folders accessible by large groups or audiences (more than 20 users).
-- **Edit & Full Control Rights** — Files with excessive edit or full control permissions.
-- **Deep Permission Inheritance** — Files with complex permission structures inherited across many items (typically 100+ items).
-- **AI Agents in Sites** — SharePoint AI agents in use across sites that may incur additional cost or risk.
-
-Each card shows a recommended action — **No Exposure Detected**, **Review Recommended**, **Immediate Action Required**, or **Action Required** — based on the identified counts.
+- **Large Audience Access** — files or folders accessible by more than 20 users.
+- **Edit & Full Control Rights** — files where users have edit or higher permissions.
+- **Deep Permission Inheritance** — folders and libraries with their own permissions that more than 100 documents inherit. The count is the number of these locations, and it matches what the report lists when you click the card.
+- **AI Agents in Sites** — AI agents deployed across SharePoint sites.
 
 ## Permission Complexity
 
-The **Permission Complexity** section highlights inconsistent, overly complex, or inefficient permission structures across your Microsoft 365 environment. Complex permissions make access harder to manage, increase security risk, and often lead to unintentional oversharing.
+Inconsistent or inefficient permission structures.
 
 ![Permission complexity](images/image034.png)
 
-### Permission Complexity Indicators
+- **Large Member Sites** — sites with more than 25 users.
+- **Highly Shared Sites** — sites where more than 25% of files are shared.
+- **Direct Permission Usage** — sites where many files use custom permissions granted to individuals rather than groups.
+- **Unique File Permissions** — files with access granted to specific individual users only.
+- **Redundant Custom Permissions** — files and folders that stopped inheriting permissions but whose own permissions are identical to those of a folder, library or site above them. An item is flagged only when every permission found on it could be resolved, so incomplete data does not produce a false match.
 
-- **Large Member Sites** — Number of SharePoint sites with very large memberships (typically more than 25 users).
-- **Highly Shared Sites** — Number of SharePoint sites with unusually high sharing activity (typically where more than 25% of files are shared).
-- **Direct Permission Usage** — Number of SharePoint sites that rely heavily on permissions assigned directly to individuals instead of groups (typically using custom, non-group permissions).
-- **Unique File Permissions** — Files where each has its own custom permission set (permissions granted to specific individual users).
-- **Redundant Custom Permissions** — Files with unnecessary permission customisations that add complexity without benefit (files with custom permissions identical to their parent).
+> **Note:** Redundant custom permissions are fixed by restoring inheritance, not by removing permissions. When you open the report from this card, its permission removal actions are disabled.
 
-Each card shows a recommended action — **No Exposure Detected**, **Review Recommended**, **Immediate Action Required**, or **Action Required** — based on the identified counts.
+## Related
+
+- [Dashboard — Overview](./README.md)
+- [Security & Oversharing](../../04-reports/security-oversharing/README.md)
+- [External Users](../../04-reports/external-users/README.md)
+- [App Permissions](../../04-reports/app-permissions/README.md)
+- [Severity Allocations](../../appendix/severity-allocations.md)
+- [How to Remove Overshared Permissions](../../13-how-to-guides/09-remove-overshared-permissions.md)

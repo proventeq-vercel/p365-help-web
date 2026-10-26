@@ -1,32 +1,48 @@
 ---
 title: "Container — Replicate an Existing Site"
-description: "Create a new SharePoint container by replicating the structure of an existing SharePoint site (structure and configuration only — not content or permissions)."
+description: "Configure a template container that creates a new SharePoint site by copying the structure of an existing site — lists, libraries, pages and columns, but not files or permissions."
+type: reference
+updated: 2026-10-26
 ---
 
 # Container — Replicate an Existing Site
 
-This container creates a new SharePoint container by replicating the structure of an existing SharePoint site. It helps you quickly provision new sites with a familiar layout and configuration while avoiding manual setup.
+This container creates a new SharePoint site by copying the structure of an existing site, so new sites start with a familiar layout without manual setup. To add it, open a template's **Containers** screen, click **+ Add**, choose **Start with a SharePoint Site** and then **Replicate an existing site**.
 
-Only the structure and configuration of the source site are replicated — **not its content or permissions**.
+Configuring containers needs the **Tenant Admin** role, and your license must include the **Provision** feature. You can change containers only in a **Draft** version of a template; a container of a published or older version opens read-only. See [Template Versions](../template-versions.md#version-history).
 
 ![Replicate an existing site](images/image088.png)
 
 ## Select Source
 
-This section lets you select the existing SharePoint site that will act as the **base (source)** for the new container.
+Choose the site to use as the base for the new site:
 
-- **SharePoint Site** — Search field to find and select an existing SharePoint site. The selected site defines the structure that will be copied.
-- **Set site using a user input** — Enable this toggle if the source site should be provided dynamically during request submission instead of being fixed in the template.
+- **SharePoint Site** — type at least three characters to search for the site and pick it from the results. Without a source site you see *You need to specify a site or use site as param*.
+- **Set site using a user input** — turn on to let the requester choose the source site. The field becomes an **Apply User Input** button that takes one input of type **SharePoint Site Selection** or **Teams Site Selection**. See [Using User Inputs](./create-new-site.md#using-user-inputs).
+
+## What Is Copied
+
+Only the source site's structure is replicated:
+
+- **What will be copied:** **Lists & libraries**, **Pages & site structure** (including navigation), and **Column settings & metadata**, such as site columns and content types.
+- **What won't be copied:** **Files & documents**, **Permissions & members** and **Site activity**. The new site gets no list items and none of the source site's permission settings on lists, libraries, folders or pages. The source site's branding is not copied either.
 
 ## Site Name and Web Address
 
-This section lets you define how the new SharePoint site (container) will be named and how its URL will be created. These settings ensure each site has a clear identity and a unique, easy-to-find web address.
+- **Title** — required. The display name of the new site.
+- **URL** — required. The part of the address after `/sites/`.
 
-- **Title** — The display name of the SharePoint site.
-- **URL** — The unique web address for the SharePoint site.
-
-Use the **Apply User Input** functionality to define Title and URL to be entered dynamically during the request process.
+Both can use **Apply User Input** with **Text Field** inputs, so the requester supplies them.
 
 ![Site name and web address](images/image089.png)
 
-Click **Save** to add this container to the template. Click **Back** to discard the container addition.
+The new site's name and URL must not already be used in your tenant. They are checked when you save the container (if they are fixed) or when a request is created (if they use user inputs). See [Name and URL Checks](./create-new-site.md#name-and-url-checks).
+
+Click **Save** to add the container to the template.
+
+## Related
+
+- [Templates](../README.md)
+- [Container — Create from a Template File](./create-from-template-file.md)
+- [Container — Create New Site](./create-new-site.md)
+- [Template Versions](../template-versions.md)

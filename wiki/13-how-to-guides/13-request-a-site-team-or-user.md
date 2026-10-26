@@ -11,6 +11,7 @@ To get a new SharePoint site, Microsoft Team, library, channel or user account t
 
 ## Before you begin
 
+- Your license must include the **Provision** and **Approvals** features. **Approvals** is needed to submit and list requests, even for templates that do not require approval.
 - A **Published** template must be available to you. If you can't see the template you need, ask your Proventeq365 administrator; templates can be limited to selected users.
 
 ## Steps

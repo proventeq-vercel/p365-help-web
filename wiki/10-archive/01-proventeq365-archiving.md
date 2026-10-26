@@ -19,10 +19,11 @@ Archiving from Workspace Inventory and the Obsolete Documents report doesn't use
 
 ## What You Need
 
-- An archive connection with a container. See [Connections](../02-manage/connections/README.md) and [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md).
+- An archive connection with a container. A Tenant Admin adds it on **Connections**, which needs the **Execute Policy** license feature. See [Connections](../02-manage/connections/README.md) and [How to Add an Archive Connection](../13-how-to-guides/06-add-an-archive-connection.md).
 - Proventeq365 deployed in **Read-write** mode, so it can change content. See [Deployment Mode](../12-deployment-prerequisites/02-microsoft-365-prerequisites.md#deployment-mode).
-- **Tenant Admin** to create and run the policy; **Workspace Admin** (or Tenant Admin) to start a manual archive from the policy report.
-- License features: **Execute Policy** to run actions, and **Archive Items** to open archived files and restore them.
+- For the **Archive** action of a policy: **Tenant Admin** to create and run the policy, **Workspace Admin** (or Tenant Admin) to start a manual archive from the policy report, and the **Execute Policy** license feature.
+- For Workspace Inventory and **Archive selected** on the Obsolete Documents report: **Workspace Admin** (or Tenant Admin), the **Archive M365** license feature, and a default destination chosen on [Archiving Connections](../02-manage/connections/README.md#archiving-connections). Despite its name, **Archive M365** enables these screens for storage-connection archiving too.
+- **Archive Items** license feature to open archived files, download them and restore them.
 
 ## How Archiving Works
 

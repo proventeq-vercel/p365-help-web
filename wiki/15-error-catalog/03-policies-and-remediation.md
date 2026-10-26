@@ -102,7 +102,7 @@ Messages you may see when creating or running a governance policy, or when an ac
 ### Error queueing permissions removal.
 
 **Where:** Security & Oversharing report.
-**Fix:** Try again. You need the **Workspace Admin** role and the **Remove Permissions** license feature.
+**Fix:** Try again. You need the **Workspace Admin** role and the **Execute Policy** license feature.
 
 ### A removal is already in progress.
 

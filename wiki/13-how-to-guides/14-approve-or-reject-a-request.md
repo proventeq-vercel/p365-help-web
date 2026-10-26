@@ -11,6 +11,7 @@ When a template has **Require Approval Before Provisioning** turned on, every re
 
 ## Before you begin
 
+- Your license must include the **Approvals** feature.
 - You must be one of the approvers named on the template. Approval is single-level: the **first** approver to decide completes the approval, and later decisions don't change it.
 - Approvers are notified when a request is raised and reminded once a day, up to three notifications in total.
 

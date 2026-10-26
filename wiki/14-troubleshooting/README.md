@@ -110,7 +110,7 @@ Proventeq365 removes direct permissions and sharing links. Access that is inheri
 
 ### Removing permissions or external users does nothing
 
-You need the **Workspace Admin** role, and your license must include the **Remove Permissions** feature (and **Disable Guests** to disable or enable external users). Permission removal also needs the **read-write** permission set — see [Deployment Mode](../12-deployment-prerequisites/02-microsoft-365-prerequisites.md#deployment-mode). The reports change after the next data refresh.
+You need the **Workspace Admin** role. Removing permissions also needs the **Execute Policy** license feature. Permission removal also needs the **read-write** permission set — see [Deployment Mode](../12-deployment-prerequisites/02-microsoft-365-prerequisites.md#deployment-mode). The reports change after the next data refresh.
 
 ## Connections
 

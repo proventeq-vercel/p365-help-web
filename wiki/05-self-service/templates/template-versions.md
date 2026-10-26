@@ -53,7 +53,7 @@ While a template has a draft, its row on the **Templates** screen shows **Test r
 
 Fill in the request name and user inputs and click **Start Test Run**. The test run creates real sites, teams or users in Microsoft 365, exactly as a normal request would. It is listed in your **Request History**, where you can follow it and check any provisioning errors. Clean up anything it created that you do not want to keep.
 
-Only Tenant Admins can start a test run, and only for a draft. Users cannot request a draft.
+Only Tenant Admins can start a test run, and only for a draft. Users cannot request a draft. Because a test run is submitted as a request, your license must include the **Approvals** feature as well as **Provision**.
 
 ## Publish and Unpublish
 

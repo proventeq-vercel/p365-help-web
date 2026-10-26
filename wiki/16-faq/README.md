@@ -87,6 +87,14 @@ Yes. The **App Permissions** report lists every app and service principal with a
 
 No. Proventeq365 can revoke only the grants an app holds on specific sites. Application and delegated permissions are held in Microsoft Entra ID and must be removed there. See [How to Review Third-Party App Access](../13-how-to-guides/18-review-third-party-app-access.md).
 
+### Why can't I remove access that someone has through a group?
+
+Removing permissions from the Security & Oversharing report takes away only direct grants and sharing links. Access that comes through a group, or that an item inherits from its parent, is kept. Remove the person from the group in Microsoft 365, or remove the group's own grant, instead. See [Removing Permissions](../04-reports/security-oversharing/README.md#removing-permissions).
+
+### Does the Security & Oversharing report show people in nested groups?
+
+Yes, up to three levels below the group that holds the permission. The access panel shows the whole path for each person, for example *via Project Team / Visitors*, and lists each route separately when someone has access in more than one way. See [Access Panel](../04-reports/security-oversharing/README.md#access-panel).
+
 ## Access and roles
 
 ### How do users sign in?
@@ -104,6 +112,10 @@ Any licensed user can raise self-service requests from the templates available t
 ### Why can't a colleague see a workspace?
 
 People see only the workspaces they have a role on. Add them on the workspace's **Users** step. See [How to Give Users Access to a Workspace](../13-how-to-guides/04-give-users-access-to-a-workspace.md).
+
+### Why is a menu item missing, or why do I see "License required"?
+
+Menu items appear only when your role allows the screen and your license includes the feature behind it. If you open a screen your license doesn't cover, for example from a bookmark, Proventeq365 shows the **License required** screen instead. A Tenant Admin can check the **Enabled features** on the License screen. See [License — License Features](../08-license/README.md#license-features).
 
 ## Workspaces and scans
 
@@ -244,6 +256,14 @@ Yes. A test run provisions for real, waits for approval if the template requires
 ### Can another system request sites and teams automatically?
 
 Yes, through the **Public API**. A Tenant Admin creates an app connection under **Settings**; the other system then submits signed provisioning requests and receives the outcome through a signed callback. See [Public API](../06-settings/public-api.md).
+
+### What happens to an account terminated through a template?
+
+The **Terminate User** container disables the account so the user can no longer sign in, and revokes their active sign-in sessions. The account is not deleted. One request can terminate several users. See [Container — Terminate User](../05-self-service/templates/containers/terminate-user.md).
+
+### Why can't I choose a content type for a library?
+
+The **Select a Content Type** list offers only content types that can be used in a document library and are available in your tenant — the built-in ones and those published from your content type hub. Content types based on Document Set stay greyed out until you tick **Document Sets** under **Features & Metadata**. See [Content Types](../05-self-service/templates/containers/create-new-site.md#content-types).
 
 ## License and notifications
 

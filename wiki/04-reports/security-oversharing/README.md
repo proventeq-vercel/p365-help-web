@@ -1,135 +1,137 @@
 ---
 title: "Security & Oversharing"
-description: "Detailed view of sharing and permission-related risks. Identify overexposed content, understand who has access, and prioritise remediation by severity."
+description: "Find overshared sites, folders and files, see everyone who can reach an item and by which route, and remove direct grants and sharing links from the report."
+type: article
+updated: 2026-10-26
 ---
 
 # Security & Oversharing
 
-The **Security & Oversharing** screen provides a detailed view of sharing and permission-related risks across your Microsoft 365 environment. It helps you identify overexposed content, understand who has access, and prioritise remediation based on risk severity.
+The **Security & Oversharing** report shows who can reach the content in your workspace and how risky that access is. It counts the risky permissions, breaks them down by access type, site, principal and permission level, and lists every site with the folders and files inside it that have their own permissions. For any item you can see everyone who has access, the whole path through which each person gets it, and remove direct grants and sharing links you no longer want.
+
+Open it from **Reports** → **Security & Oversharing**. The menu item expands to the [External Users](../external-users/README.md) and [App Permissions](../app-permissions/README.md) reports. The report is available in **Microsoft 365 Governance** workspaces.
 
 ![Security & Oversharing](images/image042.png)
 
-## User Scope Tabs
+## Who Can Use It
 
-At the top of the screen you can view the report by user category:
+- Any user with a role on the workspace (**Workspace User** or higher) can view the report.
+- Your license must include the **Permissions Report** feature.
+- Removing permissions needs the **Workspace Admin** role (or **Tenant Admin**), and your license must include **Execute Policy**. Without **Execute Policy**, the table has no **Actions** button and the access panel cannot remove access.
 
-- **All Users** — Displays permission data for both internal and external users. Selected by default.
-- **External Users** — Filters the report to show only permissions granted to users outside the organisation.
-- **Internal Users** — Filters the report to show only permissions granted to users within the organisation.
+## What the Report Covers
 
-Selecting a tab refreshes the summary cards, analysis widgets, and detail table to reflect the chosen user category.
+- **Items with their own permissions** — the table lists sites, and the libraries, folders and files inside them that have unique permissions. Items that inherit their permissions are covered by the parent they inherit from.
+- **People in groups** — group membership is expanded up to three levels below the group that holds the permission, so a person who gets access through a group inside another group is listed.
+- **Applications** — apps that were granted access to individual sites appear as principals with the **Application** object type. An app that is not registered as internal in your Microsoft Entra ID counts as external. These rows need the **Application site grants** discovery stage; see [App Permissions](../app-permissions/README.md#where-the-data-comes-from).
+- **Sharing links** — each link is a principal of its own: **Anyone with the link**, **Edit link** or **View link** (organisation-wide links), or **Sharing link** (links for specific people). Links that block download are listed with the **Restricted View** permission.
+- **Unidentified principals** — access held by an account that could not be resolved is shown as **Unknown user**, **Unknown external user** or **Deleted user**, rather than left out.
+- **Limited Access** — SharePoint adds this system level on parent folders and sites so people can reach an item shared further down. It gives no access to content, so the report does not list it.
 
-## Permission Risk Summary
+## Scope Tabs
 
-The summary section shows aggregate counts across four categories, presented as interactive cards.
+The tabs at the top scope everything on the page — the cards, the breakdown panels and the table:
 
-- **Documents** — Total number of documents evaluated for permission risk.
-- **High** — Count of permissions in a document classified as high risk.
-- **Medium** — Count of permissions in a document classified as medium risk.
-- **Low** — Count of permissions in a document classified as low risk.
+- **All** — access held by anyone. Selected by default.
+- **External** — access held by external users, and by apps that count as external.
+- **Internal** — access held by people, groups and apps inside your organisation.
 
-Each card is interactive and functions as a filter. Selecting a card filters the analysis widgets and the detail table accordingly, and the applied filter appears at the top of the page next to the header text **Permissions**.
+The tab you choose is kept in the page address, so it survives a reload and you can bookmark or share the filtered view.
 
-**Note:** Multiple filters can be applied. They appear at the top of the page with a remove icon and can be removed individually.
+## Summary Cards
 
-## Permission Analysis Widgets
+- **Documents** — the number of distinct documents in the report. A document with several risky permissions is counted once.
+- **High**, **Medium**, **Low** — the number of permissions rated at that severity. Click a card to filter the page by that severity; you can select more than one. Click it again to remove the filter.
 
-Below the Permission Risk Summary, five interactive widgets display permission data across different dimensions. Each widget contains a search box and shows items ranked by affected file count. Selecting an entry in any widget filters the other widgets and the detail table to that selection.
+Each card carries a short note saying what it counts. How a severity is assigned is described in [Severity Allocations](../../appendix/severity-allocations.md).
 
-### Type
+## Breakdown Panels
 
-Shows permission data distributed by access type. Common values include:
+Five panels sit next to the cards. Each one ranks its entries by count and has a search box. Click an entry to filter the whole page, including the table; click it again to remove the filter. Active filters appear as chips next to **Active filters** at the top of the page; remove one chip, or click **Clear all**.
 
-- **Indirect** — Files accessible indirectly through group or inherited permissions.
-- **Direct** — Files granted with explicit (direct) permissions.
-- **SharingLink.Specific** — Files shared through a link targeted to specific people.
-- **SharingLinks.AnonymousEdit** — Files shared through an anonymous link with edit rights.
-- **SharingLinks.AnonymousView** — Files shared through an anonymous link with view rights.
-- **SharingLinks.OrganizationEdit** — Files shared through an organisation-wide link with edit rights.
-- **SharingLinks.OrganizationView** — Files shared through an organisation-wide link with view rights.
+- **Type** — how access is granted: **Direct**, **Indirect** (through a group or inherited from a parent), **Specific people**, and sharing link types such as **Anonymous edit link**, **Anonymous view link**, **Organization edit link** or **Organization view link**.
+- **Site** — the sites the permissions are on.
+- **Users/Groups/Applications** — who has access: users, groups and applications, ranked by count.
+- **Object type** — the kind of principal, for example **Person**, **SharePointGroup**, **DomainGroup**, **SharingLink** or **Application**.
+- **Permission** — the permission levels granted, for example **Full Control**, **Edit**, **Contribute**, **Read** or **Restricted View**.
 
-### Site
+## Site Permissions Table
 
-Shows permission data grouped by site (SharePoint, OneDrive, or Teams). Each entry lists the site name alongside its associated file count.
+![Security & Oversharing — table](images/image043.png)
 
-### Users/Groups
+The table below the panels lists one row per site that matches the current tab and filters. Expand a site to list the items inside it that have their own permissions, and a **Site members** row for the site's own access list. Hover a column header to see what the column means.
 
-Shows permission data grouped by user or group, listing the number of files each principal has access to. Both individual users and SharePoint or domain groups are included.
+- **Name** — the item's type icon and name, which opens the item in SharePoint. Next to the name:
+  - On a file, the number of members who can reach it (for example **8 Members**) and, if any, how many of them are high risk (**5 High Risk**).
+  - On a folder, library or **Site members** row, the number of documents these permissions reach (for example **1,125 Affected Files**). Click the pill to open the access panel.
+- **Permission** — the permission level held on the site itself. Inside a site the level belongs to each person or group rather than to the item, so the column is blank there; open the row to see who holds what.
+- **Risk** — **High**, **Medium** or **Low**, based on who can reach the item and how broadly it is shared.
 
-### Object Type
+Sites are shown 50 per page (25, 50 or 100). An expanded site loads its items a page at a time: click **Load more items** at the end of the list to see the next page; the count beside it shows how many have loaded, for example "50 of 230 items". A site with nothing to list shows **No items with unique permissions**.
 
-Shows the type of principal holding the permission:
+Above the table:
 
-- **Person** — Permissions assigned directly to individual user accounts.
-- **SharePointGroup** — Permissions assigned to a SharePoint group.
-- **DomainGroup** — Permissions assigned to a domain security group defined in Active Directory.
-- **DomainMember** — Permissions assigned to a domain member account.
-- **SharingLink** — Permissions granted through a sharing link.
+- **Search** — find items whose address, site name or principal name contains the text you type (at least 3 characters). The search term also appears as a filter chip.
+- **Refresh** — reload the table.
+- **Export** — download every permission that matches the current tab, filters and search as a CSV file, one row per grant, with the item address, site, principal name and email, object type, whether the principal is external, how access is granted, the permission level and the severity. Large exports can take several minutes; keep the tab open until the file downloads.
+- **Actions** — remove permissions (see [Removing Permissions](#removing-permissions)).
 
-### Permission
+## Access Panel
 
-Shows the permission level granted across files:
+Click a file, folder or **Site members** row, or an **Affected Files** pill, to open the panel that shows everyone who can reach the item.
 
-- **Edit** — Users can view, add, update, and delete items.
-- **Full Control** — Users have complete control of the site or item.
-- **Read** — Users can only view items.
-- **Contribute** — Users can view, add, and update items.
-- **Restricted View** — Users can view pages and documents but cannot download.
+![Access panel for a file](images/image044.png)
 
-## Table View
+The header shows the item's type icon and name, which opens the item, and the number of members, for example **8 Members**, with the number of high-risk members, for example **5 High Risk**. Below it are the **Site**, with a link to the site, and the number of **Affected Files**.
 
-When you switch to **Table view**, the report displays data as shown below.
+Use **Search members** to find a person, group or link, and the **High**, **Medium** and **Low** buttons to show only members at that risk; you can select more than one.
 
-![Security & Oversharing — table view](images/image043.png)
+The list has four columns: **Name**, **Risk**, **Granted via** (for example **Direct**, **Indirect** or **Specific people**) and **Permission**. People with direct access are listed first, then people with indirect access, and sharing links last. Each person, group or link appears once.
 
-The table at the bottom of the screen lists permission assignments that match the currently applied filters. Columns:
+- **Groups and sharing links** show how many members they have, for example **2 Members**, and how many of them are high risk. Click the pill to open the members. A path at the top of the panel shows where you are; click a step, or the back arrow, to go back. A group or link with no members found shows **No members discovered** and cannot be opened.
+- **Access path** — a person who gets access through a group shows the whole path, for example *via Project Team / Visitors*. Click a step in the path to open that group or sharing link.
+- **Several routes** — when someone has access in more than one way, each route is listed on its own line with its own risk, **Granted via** and permission. Each route shows the highest permission it grants and the highest risk among its grants. **Direct access** marks a grant made to the person directly; **Unresolved access path** groups access whose route could not be worked out, and is listed last. Two routes are shown at first; click **+N** to see the rest and **Show fewer** to collapse them.
 
-- **Expand (chevron)** — Expands the row to show the specific permissions applied to the item.
-- **Checkbox** — Selects one or more rows for bulk action via **Remove selected permissions**.
-- **Type icon** — Visual indicator of the principal type (user, group, sharing link, etc.).
-- **Name** — Name of the site, user, or group associated with the permission.
-- **Permission** — The permission level granted (for example, Full Control, Edit, or Read).
-- **Granted via** — How the permission was granted — directly, through a group, or by inheritance.
-- **Risk** — Severity rating for the permission (High, Medium, or Low), colour-coded.
-- **Affected Files** — The number of files impacted by this permission assignment.
+The total number of members is shown at the bottom of the panel.
 
-The table supports sorting on Name, Permission, Granted via, and Risk. A filter is available for the Name column.
+### Removing Access from the Panel
 
-Two action buttons are displayed above the table for bulk remediation:
+Checkboxes appear in the item's own access list and inside a **Specific people** sharing link, where they let you remove people who have redeemed the link.
 
-- **Remove scoped permissions** — Removes all permissions matching the currently applied filters (scope). Use this to remediate an entire category of risk in one action.
-- **Remove selected permissions** — Removes only the permissions for rows selected via checkbox. Enabled once at least one row is selected.
+1. Tick the people, groups, links or individual routes to remove.
+2. Click **Remove selected (N)**, where N is the number of routes you ticked.
+3. Check the summary in the **Remove Access to Files** dialog and click **Remove Access (N)**.
 
-At the bottom right of the table:
+Only direct grants and sharing links can be removed. The checkbox is disabled, with a tooltip explaining why, for:
 
-- **Rows Per Page** — 5, 10, 15, 20, 25, 30, 50, or 100. Default: 10.
-- **Total Record Count** — Range and total record count.
-- **Next/Previous Navigation** — Arrow icons to navigate.
+- Indirect access — remove it from the parent group or sharing link instead.
+- Access that comes through a sharing link — manage the link itself.
+- An **Unresolved access path** — the report could not work out how the access is granted.
 
-Expanding any row reveals the individual permissions applied to that item; each permission can also be selected for removal via its checkbox. Click on any document to see the detail side panel.
+## Removing Permissions
 
-## File Access & Risk Details Panel
+Removing a permission changes access in Microsoft 365 and cannot be undone. Check with the content owner before removing access people may still need.
 
-This panel provides a detailed view of who has access to a specific file, what permissions they have, and the risk level associated with that access. It helps you quickly identify oversharing, especially external or high-risk access.
+Click **Actions** above the table to open **Bulk actions**:
 
-![File access & risk details side panel](images/image044.png)
+- **Remove scoped permissions** — revoke every permission that matches the current tab, filters and search. Disabled while rows are ticked; clear the ticks first. Confirm *You're about to remove all scoped permissions.*
+- **Remove selected permissions** — revoke the permissions on the rows you ticked. Expand a site and tick the folders and files to remove; sites themselves cannot be ticked. Ticks are kept when you collapse a site, and cleared when you change a filter, the search or the tab, and after a removal.
 
-At the top of the panel:
+Both actions remove only direct grants and sharing links. Inherited access and access through a group are kept; change the group membership in Microsoft 365 or break inheritance on the item instead.
 
-- **Members** — Total number of users and groups who currently have access to the file. *Example: 8 Members*
-- **Risk Indicator** — How many of those members are considered **High Risk**. *Example: 5 High Risk*
-- **Site** — The SharePoint site where the file is stored. *Example: SummitNationalBankUK*
-- **Affected Files** — How many files are impacted by the listed permissions.
+Before **Remove selected permissions** runs, the **Remove Access to Files** dialog shows what will be removed — the number of permission records, files and locations, the users, groups, applications or sharing links affected, and the access types and permission levels — counting only the grants the removal actually takes. A warning appears when some users have **Full Control** access. If nothing in the selection can be removed, the dialog says so and the **Remove Access** button is disabled.
 
-The main section lists all users and groups who have access to the selected file.
+When the request is accepted, the message **Permissions removal queued.** appears and the removal runs in the background. While it runs, the actions are disabled with *A removal is already in progress.* Check the report after the next data refresh to confirm the permissions are gone.
 
-- **Name** — The user, group, or email address that has access. Groups (such as Owners, Members, or Visitors) can be expanded to see how many users they contain.
-- **Risk** — Risk is highlighted with colour indicators:
-  - **Low** — Typically internal users or standard SharePoint groups.
-  - **High** — Usually external users or access granted via sharing links.
-- **Granted Via** — How access was provided, e.g. **Direct**, **SharingLink.Specific**.
-- **Permission** — The level of access, e.g. **Full Control**, **Edit**, **Read**, **Contribute**.
+> **Note:** When you open the report from the **Redundant Custom Permissions** card on the dashboard, both actions are disabled: *Redundant custom permissions need a restore inheritance action, not permission removal.*
 
-At the bottom of the panel, the **Remove Access for all members** action revokes access for every listed user and group.
+## Related
 
-**Note:** Permission risk in the reports is categorised based on how the documents are being shared with different users. For more information, see [Severity Allocations](../../appendix/severity-allocations.md).
+- [External Users](../external-users/README.md)
+- [App Permissions](../app-permissions/README.md)
+- [Dashboard — Security & Oversharing](../../03-main/dashboard/security-oversharing.md)
+- [How to Remove Overshared Permissions](../../13-how-to-guides/09-remove-overshared-permissions.md)
+- [Severity Allocations](../../appendix/severity-allocations.md)
+- [Error Messages: Policies and Remediation](../../15-error-catalog/03-policies-and-remediation.md#permissions-and-external-users)
+- [License](../../08-license/README.md)
+- [Troubleshooting — The reports show old data and a warning banner](../../14-troubleshooting/README.md#the-reports-show-old-data-and-a-warning-banner)

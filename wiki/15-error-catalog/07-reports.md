@@ -1,13 +1,13 @@
 ---
 title: "Error Messages: Reports"
-description: "What Proventeq365 report messages mean and how to fix them — Storage Optimisation overview, Site Engagement and App Permissions, including “Version history has not been discovered”, “Tenant entitlement unavailable” and load errors."
+description: "What Proventeq365 report messages mean and how to fix them — Storage Optimisation, the ROT reports, Site Engagement and App Permissions, including load errors and missing data."
 type: reference
 updated: 2026-10-26
 ---
 
 # Error Messages: Reports
 
-Messages you may see on the Storage Optimisation overview, Site Engagement and App Permissions reports. Messages that say a section *couldn't load* come with a **Try again** button. For the stale-data banner and *Data scan failed*, see [Workspaces and Data Refresh](./02-workspaces-and-data-refresh.md#data-refresh).
+Messages you may see on the Storage Optimisation overview, the Duplicate, Obsolete and Trivial documents reports, Site Engagement and App Permissions. Messages that say a section *couldn't load* come with a **Try again** button. For the stale-data banner and *Data scan failed*, see [Workspaces and Data Refresh](./02-workspaces-and-data-refresh.md#data-refresh).
 
 ## Storage Optimisation overview
 
@@ -87,8 +87,24 @@ Messages you may see on the Storage Optimisation overview, Site Engagement and A
 **Cause:** the removal could not be queued. Revoking needs the **Workspace Admin** role and the **Remove Apps** and **Execute Policy** license features.
 **Fix:** Check your role and license, then try again.
 
+## Duplicate, Obsolete and Trivial Documents
+
+### We couldn't load this report. Please try again.
+
+**Where:** Duplicate, Obsolete or Trivial documents report, in place of the content.
+**Fix:** Click **Try again**. If it persists, check that the workspace's last data refresh completed.
+
+### Error queueing trivial data removal
+
+**Where:** after **Remove all trivial data** or **Remove selected trivial data** on the Trivial documents report.
+**Cause:** the removal could not be started. Removing trivial data needs the **Workspace Admin** role (or **Tenant Admin**) and the **Execute Policy** license feature.
+**Fix:** Check your role and license, then try again.
+
 ## Related
 
 - [Storage Optimisation Overview](../04-reports/storage-optimization/README.md)
+- [Duplicate Documents Report](../04-reports/duplicate-documents-report/README.md)
+- [Obsolete Documents Report](../04-reports/obsolete-documents-report/README.md)
+- [Trivial Documents Report](../04-reports/trivial-documents-report/README.md)
 - [Site Engagement](../04-reports/site-engagement/README.md)
 - [App Permissions](../04-reports/app-permissions/README.md)

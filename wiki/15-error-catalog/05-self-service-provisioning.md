@@ -105,7 +105,7 @@ When a request ends with the status **Provisioning failed**, open it from **Requ
 
 ### Title is required / Image must be imported
 
-**Fix:** Enter a **Title** and import a template image (PNG, JPG or SVG).
+**Fix:** Enter a **Title** and import a template image (PNG, JPEG, WebP, BMP, AVIF or SVG, up to 5 MB).
 
 ### Input key can only contain letters and numbers — no spaces or special characters
 
@@ -157,6 +157,41 @@ When a request ends with the status **Provisioning failed**, open it from **Requ
 ### This template already has a draft (version N). Publish or delete it before starting another.
 
 **Fix:** Open the existing draft, or delete it before starting a new one.
+
+### Some required fields are missing. Please review the highlighted steps.
+
+**Where:** when you click **Save** in a container.
+**Fix:** Open each step marked with an error in the container's left menu and correct the highlighted fields.
+
+### Invalid User Input
+
+**Cause:** the field refers to a user input that no longer exists, or to an input of the wrong type — for example a **Text Field** input where a **User Selection** input is needed.
+**Fix:** Use **Apply User Input** to choose a matching input, or create one with **Add & insert**. See [Using User Inputs](../05-self-service/templates/containers/create-new-site.md#using-user-inputs).
+
+### Enable Document Sets under Features & Metadata.
+
+**Where:** next to a greyed-out content type in **Select a Content Type**.
+**Fix:** Tick **Document Sets** under **Site Features** on the container's **Features & Metadata** step, then add the content type.
+
+### Content Types could not be loaded. Reopen this container to try again. Existing selections will be validated on the server when you save.
+
+**Fix:** Close the container and open it again. Content types already in the library are kept and checked when you save.
+
+### This content type is not supported by target list/library type 101.
+
+**Cause:** the content type cannot be used in a document library.
+**Fix:** Remove the content type from the library.
+
+### The selected file type (…) is not supported. Supported file formats are ….
+
+**Also shown as:** *The selected file has no extension. Supported file formats are ….*
+**Where:** when you import a file into a folder, or upload a PnP template file.
+**Fix:** Choose a file of one of the listed types. A PnP template must be an `.xml` file.
+
+### You need to upload a template file / You need to specify a site or use site as param
+
+**Where:** **Create from a template file** and **Replicate an existing site** containers.
+**Fix:** Upload the PnP template file, or pick the source site — or turn on **Set site using a user input** and choose a site input.
 
 ## Template versions and test runs
 

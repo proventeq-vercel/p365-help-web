@@ -14,7 +14,7 @@ Messages you may see when creating or editing a workspace, or when a data refres
 ### Data scan failed — Something went wrong during the last scan
 
 **Where:** in place of the dashboard or a report.
-**Cause:** the latest data refresh of the workspace failed, and there is no earlier completed refresh to show.
+**Cause:** on the dashboard, the latest data refresh of the workspace failed. The dashboard shows this card even when an earlier refresh completed; the reports then keep showing that earlier data with the banner below. On a report, the latest refresh failed and there is no earlier completed refresh to show.
 **Fix:** Open **Manage** → **Workspaces** → **View runs**, open the failed run and check its **Issues** tab. If the failure happened while the data was being processed, click **Retry**. Otherwise start a new refresh with **Refresh data**. If it fails again, contact Proventeq support.
 
 ### The latest data refresh failed, so the figures shown come from an earlier refresh and may not be accurate.

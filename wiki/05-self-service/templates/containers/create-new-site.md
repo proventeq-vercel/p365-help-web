@@ -1,233 +1,233 @@
 ---
 title: "Container — Create New Site"
-description: "Creates a brand-new SharePoint site with predefined settings, library structure, access, and appearance."
+description: "Configure a template container that creates a new SharePoint site: site type, branding, hub site, owners, naming rules, sharing, features, libraries and folders."
+type: reference
+updated: 2026-10-26
 ---
 
 # Container — Create New Site
 
-This container creates a brand-new SharePoint site with predefined settings, library structure, access, and appearance.
+This container creates a brand-new SharePoint site with predefined settings, library structure, access and appearance. To add it, open a template's **Containers** screen, click **+ Add**, choose **Start with a SharePoint Site** and then **Create a new site**.
 
-When this container is selected, a screen with a left-side menu opens. The left-side menu represents a step-by-step configuration flow for defining how a SharePoint container is provisioned when the template is used. Each section groups related settings and ensures a structured, governed setup process. The menu also indicates progress through the configuration lifecycle.
+Configuring containers needs the **Tenant Admin** role, and your license must include the **Provision** feature. You can change containers only in a **Draft** version of a template. When you open a container of a published or older version, it is read-only and a notice offers **Edit in a draft** (or **Continue the open draft**). See [Template Versions](../template-versions.md#version-history).
 
-## Configuration
+The container opens with a menu of steps on the left: **Configure Container**, **Naming & URL**, **Security & Compliance**, **Features & Metadata** and **Setup Libraries**. Click **Continue** to check the current step and move to the next one. Each step in the menu is marked as complete or as having errors, and you can click a step to go back to it. **Save** appears on the last step: it checks every step, and if something is missing it opens the first step with an error and shows *Some required fields are missing. Please review the highlighted steps.*
 
-This configuration section lets you do the following:
+On the first step of a container you have just added, the back button reads **Cancel**. Clicking it asks *Discard container?* — choose **Discard** to remove the unsaved container, or **Keep editing**.
+
+## Using User Inputs
+
+Most fields can take a value from a [user input](../README.md#user-inputs) instead of a fixed value, so the person raising a request supplies it. There are two kinds of field:
+
+- **Text fields** (site title and URL parts, library names, folder names, property values and so on) have an **Apply User Input** link. The input you choose is added to the end of the field as its `#Key#` tag, so you can combine fixed text with inputs, for example `Project-#ProjectCode#`. These fields take **Text Field** inputs; the **Password** field of the [Create User](./create-user.md) container also takes **Generate Password** inputs.
+- **Selection fields** with a *Set … using a user input* toggle (the hub site, owners, members and visitors) take exactly one input. When the toggle is on, the field becomes a single **Apply User Input** button: choosing an input replaces any earlier one, and **×** clears it. You cannot type into the field. Only inputs of the matching type are offered — for example **User Selection** for owners.
+
+**Apply User Input** opens the **User Inputs** dialog:
+
+![Apply User Input](images/image074.png)
+
+- The list shows the template's user inputs of the types this field accepts. Click **Select** on a row to insert it into the field.
+- To create an input and insert it in one go, fill in **Input Key**, **Field Label**, **Input Type** and, for a **Text Field** input, **Default Value (Optional)**, then click **Add & insert**. The input is saved to the template straight away. When the template has no matching inputs yet, the dialog says *No user inputs yet — create one below and it will be inserted straight into the field.*
+- The **Input Key** can contain only letters and numbers. Otherwise you see *Input key can only contain letters and numbers — no spaces or special characters*.
+- Use the edit icon to change an input's label, type or default value, then click **Save changes**. The key itself cannot be changed, because template fields already refer to it. Use the delete icon to remove an input from the template.
+
+If a field refers to an input that no longer exists, or to an input of the wrong type, it shows *Invalid User Input*.
+
+## Configure Container
+
+The first step, titled **Configure your new sharepoint site**, sets the site's type, appearance, hub site and default access.
 
 ![Create new site — Configuration step](images/image070.png)
 
-### Configure Your New SharePoint Site
+### Site Type and Branding
 
-This section allows you to configure the site's type and appearance:
-
-- **Site Type** — Dropdown for the type of SharePoint site. Options: Communication Site, Team site (with Microsoft 365 group), Team site (without Microsoft 365 group).
-- **Site Theme** — Dropdown to select the visual theme for the SharePoint site.
-- **Site Logo** — File import control. You can drag and drop an image or use the standard file selection feature. Once imported, a preview appears; hover to reveal a Delete icon to replace the image. Required. Supported formats: PNG, JPG, SVG.
+- **Site Type** — the kind of SharePoint site to create: **Communication Site**, **Team Site (With Microsoft365 Group)** (the default) or **Team Site (Without Microsoft365 Group)**. Choose a communication site for broadcasting information, and a team site for collaborative work.
+- **Site Theme** — the colour palette and visual style of the site. Required: without it you see *Please select a theme*.
+- **Site Logo** — optional. The logo replaces the default SharePoint logo in the site header. Drag an image onto the box or click to browse. PNG, JPEG and SVG files up to 5 MB are accepted. Once imported, a preview appears; hover over it to reveal the delete icon if you want to replace it.
 
 ### Hub Site
 
-This section allows you to associate the new site with an existing Hub Site.
+Associates the new site with an existing hub site, so it shares the hub's navigation, branding and search. See [Hub Site](../../../appendix/README.md#hub-site).
 
 ![Hub site configuration](images/image071.png)
 
-When the **Connect to Hub site** toggle is ON, the following controls appear:
+Turn on **Connect to a Hub Site**, then either:
 
-- **Associated Hub Site** — Text box to search for the hub site to associate with the SharePoint site. See [Hub Site](../../../appendix/README.md#hub-site) for more information.
-- **Set site using Params** — Toggle to set the hub site using a user input. OFF by default. When ON, an **Apply User Input** link appears below the search box. Click it to open the User Input popup and add a dynamic user input so this can be reused for every request.
+- Type at least three characters of the hub site's name and pick it from the list, or
+- Turn on **Set site using a user input** and use **Apply User Input** to choose a **Hub Site Selection** input, so the requester picks the hub site.
 
-**Note:** When configuring user input for this field, only the **Hub site selection** input type is available for selection.
+You must pick a hub site from the list. If you type a name without choosing a result, the field shows *Choose a hub site from the list, or insert a hub site user input*. Turning **Connect to a Hub Site** off clears the selection.
 
 ### Default Site Access
 
-This section lets you define who will have access to new sites (containers) created using this template. You can predefine access for Owners, Members, and Visitors.
+Defines who gets access to every site created from this template:
 
-Each site created using this template includes three permission levels:
-
-- **Owners (Full Control)** — Full administrative control over the site, including managing users, settings, and content. At least one owner is required, so this section is required to move ahead with configuration.
-- **Members (Edit)** — Can create, edit, and manage content within the site but do not have full administrative permissions.
-- **Visitors (Read)** — Read-only access; can view content without making changes.
+- **Owners** (**Full Control**) — full control of the site, including users, settings and content. At least one owner is required; otherwise you see *Owner is required*.
+- **Members** (**Edit**) — can create, edit and manage content, without full control.
+- **Visitors** (**Read**) — can view content only.
 
 ![Default site access](images/image072.png)
 
-Each permission level shares the following functionality:
+For each group, either:
 
-- **Search** — Search box to add users by name or email address. Added users appear in the list. Users can also be configured using user input — toggle ON **Set using user input** to reveal the **Apply User Input** link. Click it to open the User Input popup and add a dynamic user input so this can be reused for every request.
-
-**Note:** When configuring user input for this field, only the **User Selection** input type is available for selection.
-
-After adding all required configurations, click **Continue** to move on to **Naming & URL**. Click **Back** to cancel container configuration.
+- Search for people by name or email (type at least three characters) and pick them from the results, or click **Upload CSV** to add several people from a CSV file with one email address per line. Added people appear in the list below, with a delete icon.
+- Turn on **Set owners using a user input** (or **Set members using a user input**, **Set visitors using a user input**) and use **Apply User Input** to choose one **User Selection** input. The requester then picks the people. An owners input counts as the required owner.
 
 ## Naming & URL
 
-This configuration section lets you define consistent rules for how new sites are named and how their web addresses (URLs) are generated.
+The **Site Name & URL** step sets rules that give every new site a consistent name and a unique web address.
 
 ![Naming & URL](images/image073.png)
 
 ### Site Name
 
-The Site Name section controls how the display name of the new site appears in Microsoft 365.
+- **Prefix** — optional text placed before the title, for example `Project - `.
+- **Title** — required. Usually a user input, so each request gets its own name. Without it you see *Title is required*.
+- **Suffix** — optional text placed after the title, for example ` - 2026`.
 
-- **Prefix** — Optional Title prefix used while creating the site collection. Useful when multiple sites need a standard prefix, e.g. `Project - <site title>`.
-- **Title** — The required title used while creating the site collection.
-- **Suffix** — Optional Title suffix, e.g. `Project - <site title> - 2025`.
-
-The **Title Preview** shows how the final site name will look once prefix, title, and suffix are combined.
+The title, prefix and suffix can each be up to 255 characters. **Title Preview** shows the combined name.
 
 ### Web Address (URL)
 
-The Web Address (URL) section defines how the site's URL is constructed. Each site URL must be unique.
+- **Managed Path** — the base path of the site address: `sites` or `teams`.
+- **Prefix** — optional text placed before the URL part, up to 32 characters.
+- **URL** — required, up to 64 characters. Enter only the part after the managed path: for `https://contoso.sharepoint.com/sites/Governance`, enter `Governance`. The URL cannot contain `/`.
+- **Suffix** — optional text placed after the URL part, up to 32 characters.
 
-- **Managed Path** — The base path used for the site URL. Options: `/sites/`, `/teams/`.
-- **Prefix** — Optional URL prefix, e.g. `Governance<URL>`.
-- **URL** — Required text box for the site URL. Example: if the target URL is `http://demo.sharepoint.com/sites/Governance`, enter `Governance` in this text box.
-- **Suffix** — Optional URL suffix, e.g. `Governance<URL>2025`.
+**URL Preview** shows the complete address, for example `sharepoint.com/sites/project-hr-2026`.
 
-The **URL Preview** displays how the complete site address will appear, for example: `sharepoint.com/sites/project-hr-2026`. Use this to verify correctness and uniqueness before the site is created.
+Every text box has an **Apply User Input** link. See [Using User Inputs](#using-user-inputs).
 
-Below each text box, the **Apply User Input** link opens the User Input popup to configure user inputs or select an existing one for that field.
+### Name and URL Checks
 
-![Apply User Input](images/image074.png)
-
-To use a user input, click **Select** and it will be set for that field.
-
-After adding all required configurations, click **Continue** to move on to **Security & Compliance**. Click **Back** to return to the previous section.
+Each site must have a unique name and URL. When the container's name and URL are fixed (they use no user inputs), Proventeq365 checks them against your tenant when you save the container. When they use user inputs, the check runs when a request is created, using the values the requester entered. If a site already exists, the save or the request is stopped with a message such as *A SharePoint site with the name '…' already exists. Please choose a different site name.* or *The SharePoint site URL '…' is already in use. Please modify the site name or URL configuration.* See [Error Messages: Self-Service Provisioning](../../../15-error-catalog/05-self-service-provisioning.md#raising-a-request).
 
 ## Security & Compliance
 
-This screen lets you define security controls, compliance settings, and regional defaults for SharePoint sites created using this template.
+This step sets sharing limits and regional defaults for sites created from this template.
 
-### Security & Compliance
+### Allow External File Sharing
 
-- **Allow external file sharing** — A toggle to restrict external file sharing of documents and folders. OFF by default. When ON, an additional dropdown appears with options: Anyone, New and existing guests, Existing guests, Only people in your organization. A multiline text box also appears to add external domains that are allowed for sharing.
+**Allow external file sharing** is off by default. When you turn it on, site owners can share files with guests outside your organisation, and two more fields appear:
 
 ![External sharing — toggle ON, dropdown](images/image075.png)
 
+- **Select who you want to share to** — **Anyone**, **New and existing guests**, **Existing guests** or **Only people in your organization**.
+- **Allowed External Domains** — shown for every option except **Only people in your organization**. Enter each allowed domain on a new line, for example `partnerco.com`. Sharing is then possible only with users from the listed domains.
+
 ![External sharing — domain restrictions](images/image076.png)
-
-- **Apply default sensitivity label** — Toggle to set a default sensitivity label for sites created using this template. When ON, a dropdown lists site-level sensitivity labels. (Sensitivity labels can only be set at site level.)
-
-![Default sensitivity label](images/image077.png)
 
 ### Regional Settings
 
-- **Language** — Specifies the default language for the site interface and regional formatting. Default uses the organisation or tenant default language. If needed, a specific language can be selected.
-- **Time Zone** — Defines the default time zone used for calendar events and time-based information. If set to **None**, the site will not have a predefined time zone during creation.
+- **Language** — the default language of the site. By default the site uses your organisation's default language.
+- **Time Zone** — the default time zone for calendar events and dates. If set to **None**, the site has no predefined time zone.
 
-**Note:** Regional settings (language and time zone) cannot always be fully configured at site creation. If required, they can be updated later via the SharePoint Admin Center: *Site Information > View all site settings > Regional Settings*.
-
-After adding all required configurations, click **Continue** to move on to **Features & Metadata**.
+**Note:** The site locale cannot be set while a site is created. If needed, set it in the SharePoint Admin Center under the site's settings: *Site Information → View all site settings → Regional Settings*.
 
 ## Features & Metadata
 
-The Features & Metadata screen lets you enable built-in SharePoint features and define container-level metadata for all sites created using this template.
+This step turns on built-in SharePoint features and adds metadata to every site created from this template.
 
 ![Features & Metadata](images/image078.png)
 
 ### Site Features
 
-Use this section to enable SharePoint features that will be automatically activated for every site created from this template. Both **Document ID Service** and **Document Sets** can be enabled by ticking the check box as required.
+Tick the features to activate on every new site:
+
+- **Document ID Service** — gives every document a permanent ID, even if it is moved or renamed.
+- **Document Sets** — lets users group related files and manage them as one set. Required for content types based on Document Set; see [Content Types](#content-types).
 
 ### Container Properties
 
-Container Properties allow you to define custom metadata for the site itself. These properties help categorise, manage, and report on sites across the organisation.
+Container properties are internal attributes of the site — such as department, owner or classification — that help you manage and report on sites.
 
-- **Property Name** — Use the first text box to give a property name such as Department, Project Code, Business Unit, or Classification.
-- **Value** — Based on the Property Name, use the second text box to enter its corresponding value, such as `Marketing` or `MK-0224`.
+- **Property Name** — for example `Department` or `Project Code`.
+- **Value** — for example `Marketing` or `MK-0224`.
 
-Use the **(+)** button to add the property to the list. If no properties are defined, the message **"No properties found"** is displayed. You can add multiple properties. Each property defined here will be associated with all sites created using this template.
-
-**Apply User Input** is also available for both text boxes to allow values to be provided during the site request instead of being hard-coded in the template.
-
-After adding all required configurations, click **Continue** to move on to **Setup Libraries**.
+Click **(+)** to add the property to the list. Both the name and the value are required, and a property name can be used only once. Both text boxes accept user inputs, so the value can be supplied with each request.
 
 ## Setup Libraries
 
-This screen lets you define which **document libraries** will be automatically created when a new SharePoint site (container) is provisioned using this template. This ensures every site starts with a consistent library structure aligned with business and governance requirements.
-
-All configurations defined here are saved as part of the template and applied during site creation.
+This step defines the document libraries created in every new site. They are saved with the template and applied when the site is provisioned.
 
 ![Setup libraries](images/image079.png)
 
-### Existing Libraries List
+The list shows each library with its name, path and content types, and an edit and a delete icon. A **Documents** library (path `/Shared Documents/`) is included by default; you can edit it. Library names must be unique and not empty; otherwise you see *Library names must be unique and non-empty*.
 
-This section displays all document libraries that will be created by default for the site. For each library, you can see:
-
-- Library name (for example, `Documents`).
-- Library path (for example, `/Shared Documents/`).
-- Configured content types associated with the library.
-- Actions to **Edit** library settings (Edit icon) or **Delete** the library from the template (Delete icon).
-
-By default, the Document Library configuration is always added with default settings. You can edit it as required.
-
-To add a new library, click **Add Library**. The following screen opens:
+Click **Add Library** to open the **Create Library** screen:
 
 ![Add library](images/image080.png)
 
 ### General
 
-This section defines the **name** and **location** of the document library:
+- **Library Name** — required.
+- **Library Path** — optional.
 
-- **Library Name** — Text box for the library name. **Required**.
-- **Library Path** — Text box for the library path. Optional.
-
-Use the User Input feature to provide the library name and path dynamically during the site creation request instead of fixing them in the template.
+Both accept user inputs, so the library name and path can be supplied with each request.
 
 ### Content Types
 
-This section lets you configure what types of content users can create within this library.
+Controls which types of content users can create in the library. The table lists the library's content types; **Document** is there by default and is the default type.
 
-The Content Type list displays all content types enabled for the library. **Document** is shown as the default content type. The **Default** label indicates which content type is set as default — that one cannot be removed.
+- Use **Select a Content Type** to add a content type. The list offers only content types that can be used in a document library and are available in your tenant — the built-in ones and those published from your tenant's content type hub. Content types already in the library are not offered again.
+- Content types based on **Document Set** are greyed out, with the note *Enable Document Sets under Features & Metadata.*, until you tick **Document Sets** under [Site Features](#site-features).
+- Click **Set as Default** on a row to make it the default type. The default type is marked **Default** and cannot be removed while it is still available.
+- Use the delete icon to remove a content type.
 
-Use the **Select a Content Type** dropdown to add additional content types. After selecting a content type, choose whether it should be the default. Once added, the content type is removed from the dropdown so it cannot be added again.
+If a content type in the library is no longer available — for example, it was unpublished from the content type hub — an error appears on its row, such as *This content type is not available as a published content type in the tenant's hub. Publish it or remove it from the library configuration.* Remove it or publish it again. Proventeq365 repeats this check when you save the container, publish the template and create a request.
 
-Use the **Delete** icon to remove an unwanted content type from the library.
+If the list cannot be loaded, you see *Content Types could not be loaded. Reopen this container to try again. Existing selections will be validated on the server when you save.*
 
 ### Folders
 
-This section lets you define folder structures within a document library and control how **permissions** and **labels** are applied to those folders.
+Defines the folder structure created in the library, with permissions and labels.
 
 ![Folders — root](images/image081.png)
 
-- **Root Folder (/)** — The path field displays the current folder location within the library. `/` represents the root of the document library. You can create folders under the root or navigate into existing folders to manage sub-folders. Folders created here are automatically set up when the library is provisioned using this template.
+The path field shows the current location: `/` is the root of the library. Create folders under the root, or open a folder to manage its sub-folders. Each folder has these controls:
 
-For each folder, the following actions are available:
-
-- **Inherited** — Indicates that the folder currently inherits Permissions, Sensitivity, or Retention labels from its parent (for example, the library or parent folder).
-- **Break or Reset Inheritance** — Lets you break or reset permission inheritance for the folder. Clicking opens a popup to manage inheritance.
+- **Inherited** — the folder takes its permissions from its parent (the library or a parent folder). A folder with its own permissions shows **Custom Permissions** instead.
+- **Break Inheritance** — opens the **Break Permission Inheritance** dialog. Existing permissions are copied to the folder, and you then manage its access separately. Once broken, the folder lists its own permissions; use **Reset Inheritance** to go back.
 
 ![Break or reset inheritance popup](images/image082.png)
 
-Once permission is broken using the popup, the changed permission is displayed below the folder path:
-
 ![Folder with broken inheritance](images/image083.png)
 
-- **Apply Retention Labels** — Sets a retention label at the folder. Clicking the icon shows a dropdown with the list of retention labels.
+- **Apply retention label** — sets a retention label on the folder. Choose the label from the list.
 
 ![Apply retention labels](images/image084.png)
 
-- **Import a File** — Lets you add files to a folder. All imported files are copied into the root directory across all sites created with this template. Clicking the icon opens a file import browser. Files up to 100 MB can be uploaded. After successful upload, the file appears in the section with options to apply a retention label or remove it using the Delete icon.
+- **Import a file (max 100MB)** — adds a file to the folder. The file is uploaded to that folder in every site created from the template. Files can be up to 100 MB. The accepted types are listed under the folder (*Accepted file types: …*): `.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`, `.bmp`, `.avif`, `.svg`, `.pdf`, `.doc`, `.docx`, `.xls`, `.xlsx`, `.ppt`, `.pptx`, `.odt`, `.ods`, `.odp`, `.txt`, `.csv` and `.xml`. Any other file is refused with *The selected file type (…) is not supported. Supported file formats are …*. An imported file can have its own retention label, or be removed with the delete icon.
 
 ![Import a file](images/image085.png)
 
-- **Add New Folder** — Creates a new folder under the current path. You provide a Folder Name — either a fixed name or one using the **User Input** feature for dynamic content.
+- **Add a new folder** — creates a folder under the current path. The folder name can be fixed text or use a user input.
 
 ![Add new folder](images/image086.png)
 
-**Note:** For each added folder, the **Create new folder** option lets you build a folder hierarchy. Each new sub-folder gets the same management controls.
+Each folder you add has the same controls, so you can build a folder hierarchy.
 
 ### Advanced Settings
 
-This section lets you configure **optional governance, compliance, and content controls** for libraries created using this template. These settings help manage version history, approvals, sensitivity, and retention to meet organisational and regulatory requirements.
-
-All options configured here are applied automatically to content created in the container.
+Optional governance and compliance controls applied to the library.
 
 ![Advanced settings](images/image087.png)
 
-- **Enable Versioning** — Toggle, ON by default. When ON, a text box appears to define the maximum number of major versions allowed in the library. Default: 1100.
-- **Enable Minor Versioning** — Toggle, ON by default. When ON, a text box appears to define the maximum number of minor versions allowed. Default: 750.
-- **Apply default sensitivity label** — Toggle, OFF by default. When ON, a dropdown lists the sensitivity labels available to assign to the library.
-- **Apply retention label** — Toggle, OFF by default. When ON, a dropdown lists the retention labels available to assign to the library.
-- **Enable Moderation** — Toggle, ON by default. Controls the visibility and approval status of items (like documents or list entries) before they are made available to all users.
+- **Enable Versioning** — on by default. Keeps a history of file changes so users can restore earlier versions. **Max Major Versions** defaults to 1100.
+- **Enable Minor Versioning** — on by default, and available only while versioning is on. Keeps draft versions before they are published. **Keep drafts for the following number of major versions** defaults to 511, which is also the maximum (*Max minor version cannot be more than 511*).
+- **Apply default sensitivity label** — off by default. When on, choose a label from **Select default sensitivity label**. The list shows your tenant's sensitivity labels that apply to files; a sub-label is shown with its parent, for example `Confidential \ Finance`. A parent label that has sub-labels cannot be chosen itself.
+- **Apply retention label** — off by default. When on, choose a label from **Select retention label**.
+- **Enable Content Moderation** — on by default. New content must be approved before other users can see it.
 
-After configuring all library settings, click **Create Library** to add it to the container.
+Click **Create Library** to add the library to the container, or **Save Library** when editing an existing one.
 
-After adding all configuration, click **Save** to add the container to the template.
+When the container is complete, click **Save** on the last step to add it to the template.
+
+## Related
+
+- [Templates](../README.md)
+- [Template Versions](../template-versions.md)
+- [Container — Create a New Team](./create-new-team.md)
+- [Container — Add Library to an Existing SharePoint Site](./add-library-to-site.md)
+- [How to Create a Provisioning Template](../../../13-how-to-guides/12-create-a-provisioning-template.md)
+- [Error Messages: Self-Service Provisioning](../../../15-error-catalog/05-self-service-provisioning.md)
