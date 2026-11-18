@@ -13,14 +13,16 @@ Complete these steps before you run the [prerequisites script](./05-run-prerequi
 
 | Access | Where | Why it is needed |
 | --- | --- | --- |
-| **Global Administrator** or **Privileged Role Administrator** | Microsoft Entra ID (your tenant) | To create the app registration and grant **admin consent** to the Microsoft Graph and SharePoint permissions. The script stops with an error if you ask it to grant consent without one of these roles. |
+| **Application Administrator** or **Cloud Application Administrator**, or a suitable higher role | Microsoft Entra ID (app tenant) | To create and configure the app registration(s). The script warns if it cannot confirm an app-management role; app creation may then fail. |
+| **Global Administrator** or **Privileged Role Administrator** | Microsoft Entra ID (app tenant) | Required only when passing `-GrantAdminConsent`. The script stops with an error if that switch is used without one of these roles. |
 | **Owner** on the subscription | Azure subscription | To create the bootstrap resource group and Key Vault, **and** to assign roles on the Key Vault: your own access, the *Appliance Resource Provider* and the *Managed Applications On Behalf Application*. |
 | **Contributor** on the deployed (managed) resource group, and Key Vault access on both the bootstrap and product Key Vaults | Azure subscription | Needed by the post-deployment script to read the Front Door profile and import the certificate into the product Key Vault. |
+| **User Administrator** (or suitable higher role) and Microsoft Graph user-write permissions | Microsoft Entra ID (same tenant only) | Needed only with `-CreateDeployUser`; the script creates a directory user. See [Optional deployment user](./05-run-prerequisites-script.md#optional-deployment-user). |
 | Container registry (ACR) username and password | Provided by Proventeq | The Proventeq365 container images are pulled with these. |
 
-> **Important:** Contributor alone is not enough for the prerequisites script. Contributor cannot create role assignments. If you only have Contributor, you also need **User Access Administrator** on the subscription. Otherwise the Key Vault is created, but the script cannot write the secrets into it.
+> **Important:** Azure role assignments require **Owner** or **User Access Administrator** at the relevant scope. A subscription **Contributor** can create resources but cannot create role assignments; pair Contributor with User Access Administrator if you do not have Owner. The script grants its signed-in identity Key Vault Secrets Officer so it can write secrets.
 
-> **If no one has both roles.** The app registration can be created by an **Application Administrator** or **Cloud Application Administrator** who also has subscription Owner, and a Global Administrator then grants admin consent separately. See [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent).
+> **If consent must be granted separately.** An Application Administrator or Cloud Application Administrator with the required Azure access can run the script without `-GrantAdminConsent`; a Global Administrator or Privileged Role Administrator then grants consent separately. See [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent).
 
 ## Information to Collect
 
@@ -110,21 +112,21 @@ az provider list --query "[?registrationState=='Registered'].namespace" --output
 
 ### Optional feature providers
 
-Three additional providers are required only if the corresponding optional features are in scope for your deployment. Proventeq will confirm which apply to you before the deployment date:
+The prerequisites script also registers `Microsoft.CognitiveServices` when you pass `-DeployFoundry` or `-ConfigureAiAgent`. These providers are not registered automatically by that script; confirm with Proventeq whether they are needed for a separately scoped feature:
 
 | Provider namespace | Required for |
 | --- | --- |
 | Microsoft.Compute | Migrator virtual machines |
-| Microsoft.CognitiveServices | AI Agent |
-| Microsoft.BotService | AI Agent |
+| Microsoft.BotService | Only if required by the agreed AI feature deployment |
 
-None of the three is needed for a standard deployment.
+`Microsoft.CognitiveServices` is conditional as described above; the other two are not part of the prerequisites script's provider-registration list.
 
 ## Confirm Subscription Quota
 
-**What this does:** Confirms your subscription can actually allocate the resources Proventeq365 requires. New or lightly-used subscriptions frequently have zero quota for one or more of these in a given region.
+**What this does:** The prerequisites script now performs an App Service plan quota preflight. It validates the configured Linux App Service SKU and capacity in `-Location` against the SKU limit and regional **Total Regional VMs** quota. Defaults are `-AppServicePlanSku B3` and `-AppServicePlanCapacity 1`; see [App Service quota check](./05-run-prerequisites-script.md#app-service-quota-check) for result states, failure behavior and remediation. A successful validation does not reserve quota, and deployment-time validation can still fail.
 
-- **App Service Plan** — 1 × B3 Linux, hosting five web apps and two function apps (six web apps if the AI Agent is in scope).
+This check does **not** validate the other resources below. Confirm their quota and sizing separately with Proventeq and Azure before deployment:
+
 - **Azure SQL Database** — one database; the SKU is agreed with Proventeq during sizing.
 - **Container Apps** — one environment plus nine jobs, sized between 0.25 and 2 vCPU. If all nine run concurrently they request up to **12.75 vCPU** and **25.5 GiB** against the Container Apps quota — that is the figure to check.
 - **Storage accounts** — four.

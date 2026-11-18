@@ -1,6 +1,6 @@
 ---
 title: "Microsoft 365 Prerequisites"
-description: "Confirm licensing, choose the deployment mode (Read-only or Read-write), and enable archiving if required, before Proventeq365 is deployed."
+description: "Confirm the SaaS or Hosted deployment mode, ReadOnly or ReadWrite permission profile, licensing, and archiving requirements before deploying Proventeq365."
 ---
 
 # Microsoft 365 Prerequisites
@@ -11,14 +11,27 @@ Confirm that all users affected by the deployment have the appropriate Microsoft
 
 ## Deployment Mode
 
-Confirm with Proventeq which mode Proventeq365 will operate in:
+Confirm both settings with Proventeq. They control different parts of the deployment, and both are required by the prerequisites script.
+
+### Deployment mode
+
+Pass exactly one `-DeploymentMode` value:
+
+| Mode | What it does | Prerequisites script value |
+| --- | --- | --- |
+| SaaS | Creates a multi-tenant sign-in app and a separate multi-tenant platform daemon app. The selected permission profile is applied to the daemon. | `-DeploymentMode SaaS` |
+| Hosted | Uses the legacy single-tenant app registration for sign-in and background access. | `-DeploymentMode Hosted` |
+
+There is no default. The script rejects a missing value. `-ConfigureAiAgent` is currently Hosted-only; do not combine it with `-DeploymentMode SaaS`.
+
+### Permission mode
 
 | Mode | What it does | Prerequisites script value |
 | --- | --- | --- |
 | Read-only | Reports and insights only — no changes made to your environment. | `-PermissionMode ReadOnly` |
 | Read-write | Reports, insights, and the ability to remediate issues. | `-PermissionMode ReadWrite` |
 
-Your chosen mode determines the API permissions the prerequisites script requests. See [API Permissions](./04-entra-app-registration.md#api-permissions) for the full list for each mode.
+There is no default. Your permission mode determines the API permissions requested within the selected deployment mode. See [API Permissions](./04-entra-app-registration.md#api-permissions) for the full lists.
 
 ## Archiving
 

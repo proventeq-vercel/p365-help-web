@@ -11,19 +11,19 @@ description: "What the Proventeq365 prerequisites script creates in Microsoft En
 
 | Item | Detail |
 | --- | --- |
-| App registration | A single-tenant app registration, named by `-ApplicationName` (for example `Proventeq365`). |
+| App registration(s) | `Hosted` creates/reuses one single-tenant app named by `-ApplicationName`. `SaaS` creates/reuses a multi-tenant sign-in app and a separate multi-tenant `<ApplicationName> Platform Daemon` app. |
 | Application ID URI | `api://<application-client-id>` |
 | Delegated scope | `access_as_user` — requested by the Proventeq365 user interface to call its API. |
 | API permissions | The Microsoft Graph and SharePoint permissions for your deployment mode — see [API Permissions](#api-permissions). |
-| Admin consent | Granted during the run when you pass `-GrantAdminConsent` — see [Grant Admin Consent](#grant-admin-consent). |
-| Client secret | Created and written straight into the Bootstrap Key Vault. It is never displayed. |
-| SharePoint certificate | A certificate used for application-only access to SharePoint Online. The public key is added to the app registration and the certificate is stored in the Bootstrap Key Vault; the [post-deployment script](./07-run-post-deployment-script.md) imports it into the product Key Vault. The private key never leaves your Key Vaults. |
-| Redirect URI | Set by the post-deployment script once the Proventeq365 URL is known. |
-| AI agent app registration (optional) | A second app registration named `<ApplicationName> AI Agent`, created only with `-ConfigureAiAgent`. |
+| Admin consent | Granted to the required app(s) during the run when you pass `-GrantAdminConsent` — see [Grant Admin Consent](#grant-admin-consent). |
+| Client secret | Created when missing or when `-ForceNewCert` is used, then written to the Bootstrap Key Vault. It is never displayed. |
+| SharePoint certificate | The public certificate is added to the Hosted app or SaaS daemon app; the private certificate is stored in the Bootstrap Key Vault. The [post-deployment script](./07-run-post-deployment-script.md) imports it into the product Key Vault. |
+| Redirect URI | Set by the post-deployment script once the Front Door URL is known. SaaS also configures the daemon consent callback when its client ID is available. |
+| AI agent app registration (optional) | A separate `<ApplicationName> AI Agent` app, created only with `-ConfigureAiAgent`; this option is Hosted-only in the current script. |
 
 The person who runs the script becomes the Proventeq365 **platform administrator** by default. To nominate someone else, pass their Entra object ID with `-PlatformAdminObjectId`.
 
-> **Re-running is safe.** The script reuses the existing app registration and never removes anything it already has — existing permissions, certificates, scopes and redirect URIs are merged with, not replaced by, what a new run adds. A new client secret and SharePoint certificate are created only when you pass `-ForceNewCert`.
+> **Re-running is designed to be idempotent.** The script reuses matching app registrations, preserves existing API scopes and redirect URIs when it updates them, and appends certificates. Hosted permission updates merge the requested Graph and SharePoint permissions with existing entries. SaaS sets the sign-in app's delegated permissions and the daemon app's application permissions to the selected profile. Secrets are reused when present; `-ForceNewCert` rotates them, and missing secrets are recreated.
 
 ## Grant Admin Consent
 
@@ -52,7 +52,7 @@ az ad app permission admin-consent --id <APP-CLIENT-ID>
 
 ## API Permissions
 
-The script requests the permission set for the deployment mode passed in `-PermissionMode`. See [Deployment Mode](./02-microsoft-365-prerequisites.md#deployment-mode).
+The script requires both `-DeploymentMode` (`SaaS` or `Hosted`) and `-PermissionMode` (`ReadOnly` or `ReadWrite`). See [Deployment Mode](./02-microsoft-365-prerequisites.md#deployment-mode).
 
 - **Application permissions** allow the platform to run its scheduled discovery, reporting and remediation jobs without a user being signed in. These require a one-time **admin consent**.
 - **Delegated permissions** are used only when a user signs in to the Proventeq365 portal.
@@ -60,15 +60,18 @@ The script requests the permission set for the deployment mode passed in `-Permi
 
 > **`Sites.FullControl.All` appears under two APIs — Microsoft Graph and SharePoint — and these are separate permissions, not a duplicate.** Where a mode lists `Sites.FullControl.All` under both, both are required.
 
-> **Changing mode later.** To move from Read-only to Read-write, re-run the prerequisites script with `-PermissionMode ReadWrite` and `-GrantAdminConsent`; the additional permissions are added and consented. Because the script never removes permissions, moving from Read-write to Read-only means removing the extra permissions manually in **API permissions**.
+> **Changing permission mode later.** Re-run with the desired `-PermissionMode` and, when authorized, `-GrantAdminConsent`. Hosted merges requested permissions and does not remove extra permissions when moving to Read-only, so remove unneeded permissions manually in **API permissions**. SaaS sets its sign-in and daemon permission lists to the selected profile; review custom permissions before changing modes.
 
-### Read-only mode permissions
+In `Hosted`, the single app receives the selected Graph application permissions, the selected Graph delegated scopes and the selected SharePoint application permissions. In `SaaS`, the sign-in app receives only `openid`, `profile`, `offline_access` and `User.Read` as Graph delegated permissions; the selected Graph and SharePoint application permissions are assigned to the separate platform daemon app. SaaS ReadWrite uses `Directory.Read.All` (not `Directory.ReadWrite.All`). The script's SaaS updates set these permission lists to the selected profile, so review any custom permissions before changing deployment mode or permission mode.
 
-#### Microsoft Graph (15 permissions)
+### Hosted Read-only mode permissions
+
+#### Microsoft Graph (16 permissions)
 
 | API / Permission | Type | Description | Admin Consent |
 | --- | --- | --- | --- |
 | AuditLog.Read.All | Application | Required to read sign-in activity for users and service principals. Without it the whole request fails, not just that field. | Yes |
+| AuditLogsQuery-SharePoint.Read.All | Application | Requested by the deployment for SharePoint audit queries. | Yes |
 | ChannelMessage.Read.All | Application | Required for Microsoft Teams discovery — reads Teams channel messages. | Yes |
 | Chat.Read.All | Application | Required for Microsoft Teams discovery — reads Teams chats. | Yes |
 | Directory.Read.All | Application | Required to read directory roles and members, service principals, app role assignments and OAuth2 permission grants. | Yes |
@@ -91,13 +94,14 @@ The script requests the permission set for the deployment mode passed in `-Permi
 | Sites.Read.All | Application | Read items in all site collections | Yes |
 | User.Read.All | Application | Read user profiles | Yes |
 
-### Read-write mode permissions
+### Hosted Read-write mode permissions
 
-#### Microsoft Graph (27 permissions)
+#### Microsoft Graph (28 permissions)
 
 | API / Permission | Type | Description | Admin Consent |
 | --- | --- | --- | --- |
 | AuditLog.Read.All | Application | Read all audit log data | Yes |
+| AuditLogsQuery-SharePoint.Read.All | Application | Requested by the deployment for SharePoint audit queries. | Yes |
 | ChannelMessage.Read.All | Application | Required for Microsoft Teams discovery — reads Teams channel messages. | Yes |
 | Chat.Read.All | Application | Required for Microsoft Teams discovery — reads Teams chats. | Yes |
 | Directory.ReadWrite.All | Application | Read and write directory data | Yes |
@@ -131,3 +135,19 @@ The script requests the permission set for the deployment mode passed in `-Permi
 | --- | --- | --- | --- |
 | Sites.FullControl.All | Application | Have full control of all site collections | Yes |
 | User.ReadWrite.All | Application | Read and write user profiles | Yes |
+
+### SaaS mode permissions
+
+The SaaS sign-in app always receives these Microsoft Graph **delegated** permissions, for either permission mode: `openid`, `profile`, `offline_access`, `User.Read`.
+
+The separate platform daemon receives the selected **application** permissions. Its SharePoint permissions are the same as the corresponding Hosted profile above.
+
+| Permission mode | Microsoft Graph application permissions on the daemon |
+| --- | --- |
+| ReadOnly | `AuditLog.Read.All`, `AuditLogsQuery-SharePoint.Read.All`, `ChannelMessage.Read.All`, `Chat.Read.All`, `Directory.Read.All`, `Group.Read.All`, `Mail.Read`, `Organization.Read.All`, `Reports.Read.All`, `SensitivityLabels.Read.All`, `Sites.FullControl.All`, `Sites.Read.All`, `User.Read.All` |
+| ReadWrite | `AuditLog.Read.All`, `AuditLogsQuery-SharePoint.Read.All`, `ChannelMessage.Read.All`, `Chat.Read.All`, `Directory.Read.All`, `Group.Read.All`, `Group.ReadWrite.All`, `InformationProtectionPolicy.Read.All`, `Mail.Read`, `Mail.ReadBasic.All`, `Organization.Read.All`, `RecordsManagement.Read.All`, `RecordsManagement.ReadWrite.All`, `Reports.Read.All`, `SensitivityLabels.Read.All`, `Sites.Archive.All`, `Sites.FullControl.All`, `Sites.Manage.All`, `Sites.Read.All`, `Sites.ReadWrite.All`, `Team.ReadBasic.All`, `User.Read.All`, `User.ReadBasic.All`, `User.ReadWrite.All` |
+
+| Permission mode | SharePoint application permissions on the daemon |
+| --- | --- |
+| ReadOnly | `Sites.Read.All`, `User.Read.All` |
+| ReadWrite | `Sites.FullControl.All`, `User.ReadWrite.All` |
