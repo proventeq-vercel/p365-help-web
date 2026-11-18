@@ -20,7 +20,7 @@ The prerequisites script records the Microsoft 365 tenant in the Bootstrap Key V
 
 The person running the scripts needs both of the following. If no single account holds both, split the work as described in [Admin consent](#admin-consent).
 
-- **Global Administrator** or **Privileged Role Administrator** in the **Microsoft 365 tenant**.
+- **Application Administrator** or **Cloud Application Administrator** (or a suitable higher role) in the **Microsoft 365 tenant** to manage app registrations. Add **Global Administrator** or **Privileged Role Administrator** if this person will pass `-GrantAdminConsent`.
 - **Owner** on the subscription in the **subscription tenant**, plus the other Azure access listed in [Required Access](./03-azure-prerequisites.md#required-access).
 
 ## Signing in
@@ -32,10 +32,10 @@ Because the scripts switch between tenants, you sign in to each tenant with a **
 Add `-AppTenantId` with your Microsoft 365 tenant ID, and set `-CustomerTenantId` and `-SubscriptionId` to the subscription tenant:
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId <SUBSCRIPTION-TENANT-ID> -AppTenantId <M365-TENANT-ID> -SubscriptionId <SUBSCRIPTION-ID> -ResourceGroupName <BOOTSTRAP-RG-NAME> -KeyVaultName <BOOTSTRAP-KV-NAME> -ApplicationName "Proventeq365" -Location <REGION> -PermissionMode ReadWrite -AcrUsername <ACR-USERNAME> -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
+./Proventeq365Prerequisites.ps1 -CustomerTenantId <SUBSCRIPTION-TENANT-ID> -AppTenantId <M365-TENANT-ID> -SubscriptionId <SUBSCRIPTION-ID> -ResourceGroupName <BOOTSTRAP-RG-NAME> -KeyVaultName <BOOTSTRAP-KV-NAME> -ApplicationName "Proventeq365" -Location <REGION> -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername <ACR-USERNAME> -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
 ```
 
-All other options from [Run the Prerequisites Script](./05-run-prerequisites-script.md), such as `-ConfigureAiAgent` or `-PermissionMode ReadOnly`, work the same way.
+`-DeploymentMode` is mandatory; replace `Hosted` with `SaaS` when that is the mode agreed with Proventeq. `-CreateDeployUser` is skipped in cross-tenant deployments. Other options from [Run the Prerequisites Script](./05-run-prerequisites-script.md), such as `-PermissionMode ReadOnly`, work as described there. `-ConfigureAiAgent` is Hosted-only.
 
 ## Admin consent
 
@@ -60,4 +60,4 @@ Add `-AppTenantId` here too, because the redirect URI is updated on the app regi
 ./Proventeq365PostDeployment.ps1 -CustomerTenantId <SUBSCRIPTION-TENANT-ID> -AppTenantId <M365-TENANT-ID> -ResourceGroupName <MANAGED-RG-NAME> -MainAppClientId <APP-CLIENT-ID> -BootstrapKeyVaultId "<BOOTSTRAP-KEY-VAULT-RESOURCE-ID>"
 ```
 
-The [notification mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional) grant, if required, is run in the **Microsoft 365 tenant**.
+The post-deployment script uses the Bootstrap Key Vault's `deploymentMode` tag when `-BootstrapKeyVaultId` is supplied; its own default is `Hosted`. The [notification mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional) grant, if required, is run in the **Microsoft 365 tenant**.

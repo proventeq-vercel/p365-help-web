@@ -9,27 +9,45 @@ description: "Run Proventeq365PostDeployment.ps1 in Azure Cloud Shell after the 
 
 **What this does:** `Proventeq365PostDeployment.ps1` completes the values that only exist once the Marketplace deployment has finished. It:
 
-1. Finds the live Proventeq365 URL (the Azure Front Door hostname).
-2. Sets that URL as the app registration's **SPA redirect URI**, so users can sign in.
-3. Imports the SharePoint certificate from the Bootstrap Key Vault into the **product Key Vault** in the managed resource group.
+1. Verifies the subscription and managed resource group, then discovers the Front Door endpoint when redirect or AI configuration needs its URL. It installs the Azure CLI `cdn` extension if needed and uses the first endpoint returned.
+2. Unless skipped, adds the URL as the main app's SPA redirect URI. In SaaS mode it also adds `/api/onboarding/callback` to the daemon app's web redirect URI when the daemon client ID is available.
+3. Unless skipped, imports the SharePoint certificate from the Bootstrap Key Vault into the product Key Vault. This step is skipped with a warning when no bootstrap ID is supplied.
 4. If the AI agent was deployed, points the AI agent at the Proventeq365 URL.
 
 Run it in the same Cloud Shell session as the prerequisites script, or upload it again if the session has ended (see [Open Azure Cloud Shell](./05-run-prerequisites-script.md#open-azure-cloud-shell-and-upload-the-scripts)). If you have not downloaded it yet: [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1).
 
 > **Before you start:** you need the **App (client) ID** and **Bootstrap Key Vault** resource ID from the [prerequisites script summary](./05-run-prerequisites-script.md#script-output--copy-these-values), and the **managed resource group** name from the [Marketplace deployment](./06-deploy-from-azure-marketplace.md#find-the-managed-resource-group).
 
+The script requires Azure CLI (`az`) 2.53 or later. PowerShell 7 or later is recommended; it also supports Windows PowerShell 5.1 and Azure Cloud Shell.
+
 ## Parameters
 
-| Parameter | Required | Value |
+| Parameter | Required | Default, allowed values and behavior |
 | --- | --- | --- |
-| `-CustomerTenantId` | Yes | Your tenant ID |
-| `-ResourceGroupName` | Yes | The **managed** resource group (`mrg-...`), **not** the bootstrap resource group |
-| `-MainAppClientId` | Yes | **App (client) ID** from the prerequisites script summary |
-| `-BootstrapKeyVaultId` | Yes (recommended) | **Bootstrap Key Vault** resource ID from the prerequisites script summary. Put it in double quotes. Without it the certificate import is skipped. |
-| `-SubscriptionId` | Optional | Skips the subscription selection prompt |
-| `-ConfigureAiAgent` | Optional | Only if the AI agent was deployed |
-| `-SkipSpoCertificate` | Optional | Skips the certificate import, for example when only the redirect URI needs updating |
-| `-ProductKeyVaultName` / `-FrontDoorProfileName` / `-AiAgentWebAppName` | Optional | Set the resource names explicitly when auto-detection finds more than one |
+| `-CustomerTenantId` | Yes | Tenant containing the Azure subscription and managed resource group. |
+| `-AppTenantId` | No | Defaults to `-CustomerTenantId`; use for the app-registration tenant in a cross-tenant deployment. |
+| `-SubscriptionId` | No | Uses the only visible subscription or prompts if several are visible. |
+| `-ResourceGroupName` | Yes | The deployed **managed** resource group (`mrg-...`), not the bootstrap resource group. |
+| `-MainAppClientId` | Yes | App (client) ID from the prerequisites-script summary. |
+| `-PlatformDaemonClientId` | No | SaaS daemon app client ID. If omitted with `-BootstrapKeyVaultId`, reads the value from that vault's `platformDaemonClientId` tag. |
+| `-DeploymentMode` | No | Defaults to `Hosted`; with a valid `deploymentMode` tag, `-BootstrapKeyVaultId` overrides this value. Allowed: `Hosted`, `SaaS`. |
+| `-BootstrapKeyVaultId` | No | Resource ID from the prerequisites-script summary. Required for certificate import and for reading the SaaS mode/daemon ID tags. Put the ID in double quotes. |
+| `-ProductKeyVaultName` | No | Auto-detects the single `Microsoft.KeyVault/vaults` resource in the managed RG; prompts if there are several, or errors in `-NonInteractive` mode. |
+| `-FrontDoorProfileName` | No | Auto-detects the single `Microsoft.Cdn/profiles` resource in the managed RG; prompts if there are several, or errors in `-NonInteractive` mode. |
+| `-SkipFrontendRedirect` | No (default false) | Switch; skips redirect URI updates. Front Door discovery still occurs if `-ConfigureAiAgent` is set. |
+| `-SkipSpoCertificate` | No (default false) | Switch; skips certificate import. |
+| `-ConfigureAiAgent` | No (default false) | Switch; updates the AI agent Web App settings using the discovered Front Door URL. |
+| `-AiAgentWebAppName` | No | Used with `-ConfigureAiAgent`; otherwise auto-detects a `Microsoft.Web/sites` name containing `-aiagent-`. |
+| `-GrantNotificationMailbox` | No (default false) | Switch; runs `Grant-NotificationMailboxSend.ps1` from its expected relative path. Requires `-NotificationSenderMailbox`. |
+| `-NotificationSenderMailbox` | No | Primary SMTP address; required with `-GrantNotificationMailbox`. |
+| `-NonInteractive` | No (default false) | Disables subscription/resource selection prompts; provide `-SubscriptionId` and explicit names where discovery could be ambiguous. |
+| `-LogFolder` | No | Defaults to a `logs` folder next to the script. |
+
+## Access and execution flow
+
+The operator needs access to list/read the subscription and managed resource group resources. Redirect updates run against Microsoft Graph in the app tenant and require permission to update the specified app registration (for example, be its owner or hold an appropriate app-management role). Certificate import needs permission to read the bootstrap certificate secret and import a certificate into the product Key Vault, such as **Key Vault Secrets User** on the bootstrap vault and **Key Vault Certificates Officer** on the product vault. With `-ConfigureAiAgent`, the operator also needs permission to update the Web App's app settings. In cross-tenant mode these Entra permissions are needed in `-AppTenantId`, while Azure resource and Key Vault access is in `-CustomerTenantId`.
+
+The script selects the subscription, verifies the managed resource group, reads deployment mode and daemon client ID tags from the bootstrap vault when available, and discovers the Front Door URL if redirects or AI configuration need it. It then performs the SPA/callback updates, optional certificate import, optional AI settings update and optional mailbox grant, followed by a summary. `-SkipFrontendRedirect` and `-SkipSpoCertificate` skip only their corresponding actions; each action can also be rerun safely.
 
 ## Scenario 1 — Standard
 
@@ -130,6 +148,6 @@ Run these commands in Cloud Shell (**PowerShell**).
 
 The grant can take **30 minutes to 2 hours** to take effect, because Exchange Online caches application permissions. The script is safe to run again: an existing scope or assignment is reused.
 
-> **Note:** `Proventeq365PostDeployment.ps1` also has a `-GrantNotificationMailbox` switch that runs the same grant. It expects the grant script in a fixed folder layout relative to itself, which an upload to the Cloud Shell home folder does not provide, so run the grant script directly as shown above.
+> **Note:** `-GrantNotificationMailbox` invokes `Grant-NotificationMailboxSend.ps1` with `-AppId` and `-SenderMailbox`; it uses `-PlatformDaemonClientId` when available, otherwise `-MainAppClientId`. The helper must be at a fixed path relative to the post-deployment script. It is not included in this repository, so the wrapper cannot be verified from these files; use the standalone steps above unless Proventeq has supplied the helper and its required folder layout.
 
 Next: [Next Steps](./11-next-steps.md).

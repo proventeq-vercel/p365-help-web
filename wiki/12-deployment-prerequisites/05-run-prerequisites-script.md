@@ -1,15 +1,17 @@
 ---
 title: "Run the Prerequisites Script"
-description: "Run Proventeq365Prerequisites.ps1 in Azure Cloud Shell to create the Entra ID app registration, grant admin consent, and create the Bootstrap Key Vault before deploying Proventeq365 from Azure Marketplace."
+description: "Run Proventeq365Prerequisites.ps1 in Azure Cloud Shell to configure SaaS or Hosted app registrations, validate App Service quota, and create the Bootstrap Key Vault before deployment."
 ---
 
 # Run the Prerequisites Script
 
-**What this does:** `Proventeq365Prerequisites.ps1` prepares everything the Marketplace deployment needs. It creates the [Entra ID app registration](./04-entra-app-registration.md) with its permissions, admin consent, client secret and SharePoint certificate, and a bootstrap resource group containing a **Bootstrap Key Vault**. The Marketplace deployment reads everything from that vault, so no secrets are shared with Proventeq.
+**What this does:** `Proventeq365Prerequisites.ps1` prepares what the Marketplace deployment needs. It configures the app registration(s) for the required deployment and permission modes, optionally grants admin consent, validates the App Service plan quota, and creates or reuses the bootstrap resource group and **Bootstrap Key Vault** containing deployment secrets and tags. The Marketplace deployment reads values from that vault, so no secrets are shared with Proventeq.
 
 Run this script **before** you deploy Proventeq365 from Azure Marketplace. Your Proventeq contact provides the container registry (ACR) username and password.
 
 > **Before you start:** confirm the person running the script has the access listed in [Required Access](./03-azure-prerequisites.md#required-access), and that you have the values listed in [Information to Collect](./03-azure-prerequisites.md#information-to-collect).
+
+The prerequisites script requires Azure CLI (`az`) 2.53 or later. PowerShell 7 or later is recommended; Azure Cloud Shell PowerShell is supported. If running locally, sign in with `az login` before starting.
 
 ## Download the Scripts
 
@@ -79,21 +81,88 @@ To sign in, use a web browser to open the page https://login.microsoft.com/devic
 
 ### Parameters
 
-| Parameter | Required | Value |
+| Parameter | Required | Default, allowed values and behavior |
 | --- | --- | --- |
-| `-CustomerTenantId` | Yes | Your tenant ID |
-| `-ApplicationName` | Yes | Name of the app registration, e.g. `Proventeq365` |
-| `-Location` | Yes | Azure region, e.g. `uksouth` |
-| `-PermissionMode` | Yes | `ReadWrite` (full functionality) or `ReadOnly` (reporting only) — see [Deployment Mode](./02-microsoft-365-prerequisites.md#deployment-mode) |
-| `-AcrUsername` | Yes | ACR username from Proventeq |
-| `-AcrPassword` | Yes | Requested as hidden input (see above) |
-| `-ResourceGroupName` | Recommended | Bootstrap resource group name |
-| `-KeyVaultName` | Recommended | Bootstrap Key Vault name (globally unique, max 24 characters) |
-| `-GrantAdminConsent` | Recommended | Grants admin consent automatically (Global Administrator or Privileged Role Administrator only) |
-| `-SubscriptionId` | Optional | Skips the subscription selection prompt |
-| `-PlatformAdminObjectId` | Optional | Entra object ID of the Proventeq365 platform administrator. Defaults to the person running the script. |
-| `-ConfigureAiAgent` | Optional | Also creates the AI agent (Copilot) app registration |
-| `-ForceNewCert` | Optional | Creates a new client secret and SharePoint certificate (rotation) |
+| `-CustomerTenantId` | Yes | Tenant containing the Azure subscription, resource group and Bootstrap Key Vault. |
+| `-AppTenantId` | No | Defaults to `-CustomerTenantId`; use for the Microsoft 365 / app tenant in a cross-tenant deployment. |
+| `-SubscriptionId` | No | If omitted, uses the only visible subscription or prompts when several are visible; with `-NonInteractive`, multiple subscriptions cause an error. |
+| `-ApplicationName` | Yes | App name; 1–63 characters, starts with a letter or number, then letters, numbers, spaces, `.`, `_` or `-`. |
+| `-ResourceGroupName` | No | Defaults to `rg-proventeq365-<normalized-application-name>`. Use a normal resource group, not a managed resource group. |
+| `-Location` | Yes | Azure region for the bootstrap resource group, Key Vault and App Service quota probe. |
+| `-PermissionMode` | Yes | `ReadOnly` or `ReadWrite`; selects the permission profile. |
+| `-AcrUsername` | Yes | Pull username supplied by Proventeq. |
+| `-AcrPassword` | Yes | `[securestring]`; use the hidden `Read-Host` prompt shown above. |
+| `-PlatformAdminObjectId` | No | Defaults to the signed-in user in the app tenant. |
+| `-DeploymentMode` | Yes | `SaaS` or `Hosted`; no default. See [Deployment Mode](./02-microsoft-365-prerequisites.md#deployment-mode). |
+| `-SwitchMode` | No (default false) | Allows converting an existing Bootstrap Key Vault tagged with the other deployment mode. Without it, a mismatch stops the run; an existing vault with no mode tag is treated as `Hosted`. |
+| `-ConfigureAiAgent` | No (default false) | Creates/configures the AI agent app and secret. Hosted-only; the script rejects this switch with `SaaS`. |
+| `-GrantAdminConsent` | No (default false) | Grants consent to the required app(s). Requires Global Administrator or Privileged Role Administrator in the app tenant. |
+| `-MultiTenant` / `-SingleTenant` | No (each defaults false) | Backward-compatible selectors for `SaaS` / `Hosted`. Supply at most one, and it must agree with `-DeploymentMode`; normally omit both. |
+| `-KeyVaultName` | No | Defaults to a deterministic `kv-p365boot-...` name derived from application and subscription. Explicit names must meet Azure Key Vault naming rules: 3–24 letters, numbers or hyphens, starting with a letter and ending with a letter or number; names are globally unique. |
+| `-ForceNewCert` | No (default false) | Rotates the client secret and SharePoint certificate; also rotates the AI agent secret when `-ConfigureAiAgent` is used. |
+| `-RemoveBootstrapKeyVault` | No (default false) | Deletes and purges the Bootstrap Key Vault after setup; leaves the resource group. Do not use for a deployment that will consume this vault. |
+| `-NonInteractive` | No (default false) | Prevents subscription selection prompts; provide `-SubscriptionId` if more than one subscription is visible. |
+| `-DeployFoundry` | No (default false) | Sets the `deployFoundry` tag to true and registers `Microsoft.CognitiveServices` (also registered with `-ConfigureAiAgent`); it does not itself run the Marketplace deployment. |
+| `-StaticWebAppRegion` | No | Defaults to `westeurope`; validates the Static Web App region and stores it in the `staticWebAppRegion` tag. |
+| `-LogFolder` | No | Defaults to a `logs` folder next to the script. |
+| `-AppServicePlanSku` | No | Defaults to `B3`. Allowed: `B1`, `B2`, `B3`, `S1`, `S2`, `S3`, `P0v3`, `P1v3`, `P2v3`, `P3v3`, `P0v4`, `P1v4`, `P2v4`, `P3v4`. |
+| `-AppServicePlanCapacity` | No | Defaults to `1`; must be an integer of at least 1. |
+| `-FailOnAppServicePlanQuota` | No | Defaults to true. Use `-FailOnAppServicePlanQuota:$false` only to continue after a failed/unknown quota probe; deployment can still fail. |
+| `-CreateDeployUser` | No (default false) | Creates or reuses the optional deployment user; skipped for cross-tenant deployments. |
+| `-DeployUserName` | No | Defaults to `proventeq365-deploy`; 1–64 letters, numbers, `_` or `-`, starting with a letter or number. |
+| `-DeployUserDisplayName` | No | Defaults to `Proventeq365 Deployment User`; must not be empty. |
+
+### Deployment mode examples
+
+`-DeploymentMode` is mandatory on every prerequisites-script command. Use exactly one of these values:
+
+**Hosted (single-tenant):**
+
+```powershell
+./Proventeq365Prerequisites.ps1 -CustomerTenantId <TENANT-ID> -ApplicationName "Proventeq365" -Location <REGION> -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername <ACR-USERNAME> -AcrPassword (Read-Host -AsSecureString 'ACR password')
+```
+
+**SaaS (multi-tenant):**
+
+```powershell
+./Proventeq365Prerequisites.ps1 -CustomerTenantId <TENANT-ID> -ApplicationName "Proventeq365" -Location <REGION> -PermissionMode ReadWrite -DeploymentMode SaaS -AcrUsername <ACR-USERNAME> -AcrPassword (Read-Host -AsSecureString 'ACR password')
+```
+
+The SaaS mode creates a separate platform daemon app. `-ConfigureAiAgent` is currently Hosted-only.
+
+### App Service quota check
+
+Before creating the Bootstrap Key Vault, the script validates a Linux `Microsoft.Web/serverfarms` plan using `-AppServicePlanSku` and `-AppServicePlanCapacity` in `-Location`. It checks whether Azure Resource Manager accepts that SKU and capacity against the **App Service SKU quota** and the regional **Total Regional VMs quota**. The default probe is **B3**, capacity **1**. It validates; it does not create a plan or reserve quota. On success, the log confirms the SKU and capacity were validated, and the summary reports **Available**.
+
+| Result | Meaning | Next step |
+| --- | --- | --- |
+| **NoQuota** | The selected App Service SKU quota is exhausted. | In **Azure portal → Quotas → App Service**, request an increase for that SKU, or choose a validated SKU and use the same SKU in the Marketplace deployment. |
+| **NoRegionalQuota** | The regional **Total Regional VMs quota** is exhausted; other SKUs in that region will also fail. | Do not request the regional total directly. Request a small increase to the selected SKU limit and wait for the regional total to rise. If it does not, open **Service and subscription limits (quotas) → Function or Web App (Windows and Linux)** support. |
+| **NotAvailable** | The SKU is not available for the subscription or region. | Choose a supported SKU or region and ensure the Marketplace plan uses it. |
+| **BlockedByPolicy** | Azure Policy or a subscription restriction denied validation. | Ask the subscription administrator to resolve the reported restriction. |
+| **Error** | Validation failed for another reason; quota is unknown. | Resolve the reported CLI, authentication or validation error before relying on the check. |
+
+For **NoQuota** and **NotAvailable**, the script also probes the other allowed SKUs and prints their results. It does not test alternatives for **NoRegionalQuota**, because they share the exhausted regional quota. The script prints advice but never changes the SKU or region automatically.
+
+With the default `-FailOnAppServicePlanQuota` behavior, any result other than **Available** causes the script to stop with an error stating that the **App Service Plan quota check failed** for the selected SKU and region. Credentials and tags have already been saved in the Bootstrap Key Vault, but the Marketplace identity grants and optional deploy-user setup have not run; the final summary is not reached. Setting `-FailOnAppServicePlanQuota:$false` logs a warning and continues. The Marketplace deployment may still fail when it creates the plan. Even a successful check does not reserve quota, so deployment-time validation may still fail.
+
+### Optional deployment user
+
+Use `-CreateDeployUser` only when you want the prerequisites script to create/reuse a dedicated same-tenant deployment identity. The default UPN is `proventeq365-deploy@<initial-tenant>.onmicrosoft.com`; customize its local name with `-DeployUserName` and display name with `-DeployUserDisplayName`. The script generates a password, stores it as a secret in the Bootstrap Key Vault (it never prints the password), tags the vault with the UPN, and ensures the user has **Owner** on the bootstrap resource group. It does not change app or service-principal owner lists. In cross-tenant mode this option is skipped.
+
+The person running the script needs **User Administrator** (or a suitable higher directory role) and Microsoft Graph user-write permissions to create the account. They also need Azure permissions that allow role assignments at the resource-group and Key Vault scopes (normally subscription **Owner**, or **Contributor** plus **User Access Administrator**). This is a privileged identity: an RG Owner can grant itself Key Vault data access and reach deployment credentials. Enforce MFA and Conditional Access, and treat the generated identity accordingly. If an existing user is reused but its vault password secret is missing, the script does not reset its password; it reports that a manual reset and vault update are needed.
+
+Example using the default deploy-user name and display name:
+
+```powershell
+./Proventeq365Prerequisites.ps1 -CustomerTenantId <TENANT-ID> -ApplicationName "Proventeq365" -Location <REGION> -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername <ACR-USERNAME> -AcrPassword (Read-Host -AsSecureString 'ACR password') -CreateDeployUser
+```
+
+### Run order and output
+
+The script signs in to the app tenant and checks directory roles, then resolves the subscription and Bootstrap Key Vault and checks existing secrets before creating or rotating credentials. It configures the app registration(s), API permissions and optional consent in the app tenant. In the subscription tenant it registers required resource providers, creates/reuses the bootstrap resource group, validates the Static Web App region and App Service plan quota, creates/reuses the Bootstrap Key Vault, writes secrets and tags, grants Key Vault access to the Marketplace identities, and finally handles the optional deploy user. The SaaS flow includes the separate platform daemon app; Hosted uses one app.
+
+When the run completes, the final summary prints a per-step status table plus tenant IDs, subscription, resource group, Bootstrap Key Vault resource ID, app and daemon IDs, deployment and permission modes, audience/scope, secret name, Foundry and Static Web App settings, App Service quota details and deploy-user status. Use the printed Bootstrap Key Vault resource ID in the Marketplace picker and later for `-BootstrapKeyVaultId`.
 
 ### Scenario A — Standard (Read-write, with admin consent)
 
@@ -102,25 +171,25 @@ Use this for most deployments.
 **Command:**
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId <TENANT-ID> -ResourceGroupName <BOOTSTRAP-RG-NAME> -KeyVaultName <BOOTSTRAP-KV-NAME> -ApplicationName "Proventeq365" -Location <REGION> -PermissionMode ReadWrite -AcrUsername <ACR-USERNAME> -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
+./Proventeq365Prerequisites.ps1 -CustomerTenantId <TENANT-ID> -ResourceGroupName <BOOTSTRAP-RG-NAME> -KeyVaultName <BOOTSTRAP-KV-NAME> -ApplicationName "Proventeq365" -Location <REGION> -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername <ACR-USERNAME> -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
 ```
 
 **Sample:**
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
+./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
 ```
 
 ### Scenario B — Read-only permissions
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadOnly -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
+./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadOnly -DeploymentMode Hosted -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
 ```
 
 ### Scenario C — With the AI agent (Copilot)
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -ConfigureAiAgent
+./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -ConfigureAiAgent
 ```
 
 This also creates a second app registration named `Proventeq365 AI Agent`. If you use this scenario, also select **Deploy Copilot Agent** in the [Marketplace deployment](./06-deploy-from-azure-marketplace.md) and pass `-ConfigureAiAgent` to the [post-deployment script](./07-run-post-deployment-script.md).
@@ -128,7 +197,7 @@ This also creates a second app registration named `Proventeq365 AI Agent`. If yo
 ### Scenario D — Use a specific subscription (no selection prompt)
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -SubscriptionId 9a8b7c6d-1e2f-4a3b-8c9d-0e1f2a3b4c5d -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
+./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -SubscriptionId 9a8b7c6d-1e2f-4a3b-8c9d-0e1f2a3b4c5d -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent
 ```
 
 ### Scenario E — Without admin consent
@@ -136,7 +205,7 @@ This also creates a second app registration named `Proventeq365 AI Agent`. If yo
 Use this when the person running the script is not a Global Administrator or Privileged Role Administrator. Run the script without `-GrantAdminConsent`. To create the app, you need at least **Application Administrator** or **Cloud Application Administrator**.
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password')
+./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password')
 ```
 
 Then a Global Administrator grants consent using the **App (client) ID** from the script summary — see [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent).
@@ -146,10 +215,10 @@ Then a Global Administrator grants consent using the **App (client) ID** from th
 ### Scenario F — Rotate the client secret and SharePoint certificate
 
 ```powershell
-./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -ForceNewCert
+./Proventeq365Prerequisites.ps1 -CustomerTenantId 3f6c1a2b-8d4e-4c7a-9b21-5e0f7d9a1c34 -ResourceGroupName rg-contoso-p365 -KeyVaultName kv-p365boot-contoso01 -ApplicationName "Proventeq365" -Location uksouth -PermissionMode ReadWrite -DeploymentMode Hosted -AcrUsername p365-contoso-pull -AcrPassword (Read-Host -AsSecureString 'ACR password') -GrantAdminConsent -ForceNewCert
 ```
 
-> **It is safe to run the script again.** It reuses the existing app, resource group and Key Vault. A new secret and certificate are created **only** when you pass `-ForceNewCert`. Use the **same** `-ApplicationName`, `-ResourceGroupName` and `-KeyVaultName` every time. After a rotation, run the [post-deployment script](./07-run-post-deployment-script.md) again to import the new certificate.
+> **It is safe to run the script again.** It reuses the existing app, resource group and Key Vault. Missing secrets are created; pass `-ForceNewCert` to rotate existing client, certificate and (when enabled) AI-agent secrets. Use the **same** `-ApplicationName`, `-ResourceGroupName` and `-KeyVaultName` every time. After a certificate rotation, run the [post-deployment script](./07-run-post-deployment-script.md) again to import it.
 
 ## Script Output — Copy These Values
 

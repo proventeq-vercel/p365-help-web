@@ -6,7 +6,7 @@
 .DESCRIPTION
     Idempotent. Safe to re-run. Given the deployed (managed) resource group, this script:
       1. Discovers the Front Door profile in that resource group and builds the live frontend URL.
-      2. Updates the main app registration's SPA redirect URI to that URL (or -CustomUrl if supplied).
+    2. Updates the sign-in app's SPA redirect URI and the daemon app's consent callback.
       3. Imports the SPO app-only certificate from the bootstrap Key Vault into the product Key Vault
          deployed in that resource group (skipped if -BootstrapKeyVaultId is not supplied).
       4. Optionally (-ConfigureAiAgent) updates the AI agent Web App's Gov360 base URL / UI link.
@@ -44,9 +44,10 @@ param(
     [Parameter(Mandatory)]
     [string] $MainAppClientId,
 
-    # Custom domain already mapped to the deployment. When supplied, this is used instead of the
-    # Front Door hostname for the SPA redirect URI / AI agent Gov360 URLs.
-    [string] $CustomUrl,
+    [string] $PlatformDaemonClientId,
+
+    [ValidateSet('Hosted', 'SaaS')]
+    [string] $DeploymentMode = 'Hosted',
 
     # Resource ID of the bootstrap Key Vault (from the prerequisite script). Required for step 3.
     [string] $BootstrapKeyVaultId,
@@ -143,6 +144,27 @@ function Write-JsonFile {
     [System.IO.File]::WriteAllText($Path, $Json, (New-Object System.Text.UTF8Encoding($false)))
 }
 
+function Set-AppRedirectUri {
+    param([string] $ClientId, [ValidateSet('spa', 'web')][string] $AppSurface, [string] $RedirectUri)
+    $appUri = "https://graph.microsoft.com/v1.0/applications(appId='$ClientId')?`$select=$AppSurface"
+    $application = Invoke-Az @('rest', '--url', $appUri, '--only-show-errors')
+    $redirectUris = @()
+    if ($application.$AppSurface -and $application.$AppSurface.redirectUris) {
+        $redirectUris = @($application.$AppSurface.redirectUris)
+    }
+    if ($redirectUris -notcontains $RedirectUri) { $redirectUris += $RedirectUri }
+
+    $body = @{ $AppSurface = @{ redirectUris = @($redirectUris) } }
+    $tmp = (New-TemporaryFile).FullName
+    try {
+        Write-JsonFile -Path $tmp -Json ($body | ConvertTo-Json -Depth 10)
+        & az rest --method PATCH --uri "https://graph.microsoft.com/v1.0/applications(appId='$ClientId')" `
+            --headers 'Content-Type=application/json' --body "@$tmp" --only-show-errors | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to update $AppSurface.redirectUris on app '$ClientId'." }
+    }
+    finally { Remove-Item $tmp -ErrorAction SilentlyContinue }
+}
+
 function Get-Slug {
     param([string] $Value)
     $s = $Value.ToLowerInvariant() -replace '[^a-z0-9]', '-' -replace '-+', '-'
@@ -191,31 +213,60 @@ else {
 Invoke-Az @('account', 'set', '--subscription', $SubscriptionId) | Out-Null
 Write-Log -Level SUCCESS -Message "Using subscription $SubscriptionId."
 
+if ($BootstrapKeyVaultId) {
+    $bootstrapParts = $BootstrapKeyVaultId -split '/'
+    if ([string]::IsNullOrWhiteSpace($PlatformDaemonClientId)) {
+        $PlatformDaemonClientId = Invoke-AzTsv @('keyvault', 'show', '--name', $bootstrapParts[-1], '--subscription', $bootstrapParts[2],
+            '--query', 'tags.platformDaemonClientId', '-o', 'tsv', '--only-show-errors') -AllowFailure
+        if ($PlatformDaemonClientId -eq 'None') { $PlatformDaemonClientId = '' }
+    }
+    $vaultDeploymentMode = Invoke-AzTsv @('keyvault', 'show', '--name', $bootstrapParts[-1], '--subscription', $bootstrapParts[2],
+        '--query', 'tags.deploymentMode', '-o', 'tsv', '--only-show-errors') -AllowFailure
+    if ($vaultDeploymentMode -in @('Hosted', 'SaaS')) { $DeploymentMode = $vaultDeploymentMode }
+}
+
 Write-Log -Message "Checking resource group '$ResourceGroupName'..."
 $rgExists = (Invoke-AzTsv @('group', 'exists', '-n', $ResourceGroupName, '--subscription', $SubscriptionId)) -eq 'true'
 if (-not $rgExists) { throw "Resource group '$ResourceGroupName' not found in subscription $SubscriptionId." }
 
-# ---- Build the frontend URL (Front Door hostname, or -CustomUrl) ----------------------------------
-$frontendUrl = $CustomUrl
-if (-not $frontendUrl) {
+# Post-deployment always uses the deployed Front Door endpoint as the initial public URL.
+# Custom domains are configured separately and their Entra/App Configuration URLs must be updated when enabled.
+$frontendUrl = ''
+
+if (-not $SkipFrontendRedirect -or $ConfigureAiAgent) {
     Write-Log -Message 'Discovering the Front Door profile...'
+
     $fd = if ($FrontDoorProfileName) {
-        Invoke-Az @('resource', 'show', '-g', $ResourceGroupName, '--resource-type', 'Microsoft.Cdn/profiles',
-            '-n', $FrontDoorProfileName, '--subscription', $SubscriptionId, '--only-show-errors')
+        Invoke-Az @(
+            'resource', 'show',
+            '-g', $ResourceGroupName,
+            '--resource-type', 'Microsoft.Cdn/profiles',
+            '-n', $FrontDoorProfileName,
+            '--subscription', $SubscriptionId,
+            '--only-show-errors'
+        )
     }
     else {
         Get-SingleResource -ResourceType 'Microsoft.Cdn/profiles' -Label 'Front Door profile'
     }
-    if (-not $fd) { throw "No Front Door (Microsoft.Cdn/profiles) resource found in '$ResourceGroupName'. Pass -CustomUrl or -FrontDoorProfileName." }
+
+    if (-not $fd) {
+        throw "No Front Door (Microsoft.Cdn/profiles) resource found in '$ResourceGroupName'. Pass -FrontDoorProfileName if auto-detection cannot identify it."
+    }
 
     Write-Log -Message 'Checking Azure CLI cdn extension...'
+
     $cdnExtension = & az extension show --name cdn --query name -o tsv 2>$null
+
     if (-not $cdnExtension) {
         Write-Log -Message 'Azure CLI cdn extension is not installed. Installing...'
+
         & az extension add --name cdn --yes --only-show-errors
+
         if ($LASTEXITCODE -ne 0) {
             throw 'Failed to install Azure CLI cdn extension.'
         }
+
         Write-Log -Level SUCCESS -Message 'Azure CLI cdn extension installed.'
     }
     else {
@@ -223,15 +274,25 @@ if (-not $frontendUrl) {
     }
 
     Write-Log -Message "Reading endpoints for Front Door profile '$($fd.name)'..."
-    $endpoints = @(Invoke-Az @('afd', 'endpoint', 'list', '--profile-name', $fd.name, '-g', $ResourceGroupName,
-            '--subscription', $SubscriptionId, '--only-show-errors'))
-    if ($endpoints.Count -eq 0) { throw "Front Door profile '$($fd.name)' has no endpoints." }
+
+    $endpoints = @(Invoke-Az @(
+        'afd', 'endpoint', 'list',
+        '--profile-name', $fd.name,
+        '-g', $ResourceGroupName,
+        '--subscription', $SubscriptionId,
+        '--only-show-errors'
+    ))
+
+    if ($endpoints.Count -eq 0) {
+        throw "Front Door profile '$($fd.name)' has no endpoints."
+    }
+
     $frontendUrl = "https://$($endpoints[0].hostName)"
+
     Write-Log -Level SUCCESS -Message "Discovered Front Door hostname: $frontendUrl (profile '$($fd.name)')."
 }
 else {
-    $frontendUrl = if ($frontendUrl -match '^https?://') { $frontendUrl } else { "https://$frontendUrl" }
-    Write-Log -Message "Using supplied custom URL: $frontendUrl"
+    Write-Log -Message 'Frontend URL discovery skipped because redirects and AI URL updates are disabled.'
 }
 
 # ---- Step 1: SPA redirect URI on the main app registration ----------------------------------------
@@ -240,16 +301,21 @@ if ($SkipFrontendRedirect) {
 }
 else {
     Connect-AzTenant -TenantId $AppTenantId -Label 'app'
-    Write-Log -Message "Patching spa.redirectUris on app '$MainAppClientId'..."
-    $tmp = (New-TemporaryFile).FullName
-    try {
-        Write-JsonFile -Path $tmp -Json (@{ spa = @{ redirectUris = @($frontendUrl) } } | ConvertTo-Json -Depth 10)
-        & az rest --method PATCH --uri "https://graph.microsoft.com/v1.0/applications(appId='$MainAppClientId')" `
-            --headers 'Content-Type=application/json' --body "@$tmp" --only-show-errors | Out-Null
-        if ($LASTEXITCODE -ne 0) { throw "Failed to update spa.redirectUris on app '$MainAppClientId'." }
+    Write-Log -Message "Ensuring SPA redirect URI on app '$MainAppClientId'..."
+    $spaRedirectUri = "$($frontendUrl.TrimEnd('/'))/"
+    Set-AppRedirectUri -ClientId $MainAppClientId -AppSurface 'spa' -RedirectUri $spaRedirectUri
+    Write-Log -Level SUCCESS -Message "Ensured SPA redirect URI $spaRedirectUri."
+    if ($DeploymentMode -eq 'SaaS' -and $PlatformDaemonClientId) {
+        $consentRedirectUri = "$($frontendUrl.TrimEnd('/'))/api/onboarding/callback"
+        Set-AppRedirectUri -ClientId $PlatformDaemonClientId -AppSurface 'web' -RedirectUri $consentRedirectUri
+        Write-Log -Level SUCCESS -Message "Ensured daemon consent redirect URI $consentRedirectUri."
     }
-    finally { Remove-Item $tmp -ErrorAction SilentlyContinue }
-    Write-Log -Level SUCCESS -Message "Set SPA redirect URI to $frontendUrl."
+    elseif ($DeploymentMode -eq 'SaaS') {
+        Write-Log -Level WARN -Message 'No platform daemon app ID supplied or found in bootstrap vault; skipped daemon consent redirect update.'
+    }
+    else {
+        Write-Log -Message 'Hosted mode uses a single tenant app; skipped the SaaS daemon consent redirect.'
+    }
     Connect-AzTenant -TenantId $CustomerTenantId -Label 'infra'
 }
 
@@ -272,11 +338,12 @@ else {
     }
     if (-not $productKv) { throw "No Key Vault found in '$ResourceGroupName'. Pass -ProductKeyVaultName." }
 
-    # Same naming the prerequisite script uses: spo-certificate-<app-tenant-name-slug>, falling back to
-    # the unscoped name for bootstrap vaults created before this convention existed.
+    # Prefer the certificate secret name explicitly recorded by the prerequisite script.
+    $taggedCertName = Invoke-AzTsv @('keyvault', 'show', '--name', $bootName, '--subscription', $bootSub,
+        '--query', 'tags.platformDaemonCertificateName', '-o', 'tsv', '--only-show-errors') -AllowFailure
     $bootTenantName = Invoke-AzTsv @('keyvault', 'show', '--name', $bootName, '--subscription', $bootSub,
         '--query', 'tags.tenantName', '-o', 'tsv', '--only-show-errors') -AllowFailure
-    $spoCertName = if ($bootTenantName -and $bootTenantName -ne 'None') { "$(Get-Slug $bootTenantName)" } else { 'spo-certificate' }
+    $spoCertName = if ($taggedCertName -and $taggedCertName -ne 'None') { $taggedCertName } elseif ($bootTenantName -and $bootTenantName -ne 'None') { "$(Get-Slug $bootTenantName)" } else { 'spo-certificate' }
 
     $b64 = Invoke-AzTsv @('keyvault', 'secret', 'show', '--vault-name', $bootName, '--name', $spoCertName,
         '--subscription', $bootSub, '--query', 'value', '-o', 'tsv', '--only-show-errors')
@@ -319,15 +386,16 @@ else {
     if (-not $NotificationSenderMailbox) { throw '-GrantNotificationMailbox requires -NotificationSenderMailbox.' }
     $grantScript = Join-Path $PSScriptRoot '..\..\Utilities\Scripts\PowerShell\Grant-NotificationMailboxSend.ps1'
     if (-not (Test-Path $grantScript)) { throw "Grant-NotificationMailboxSend.ps1 not found at '$grantScript'." }
-    Write-Log -Message "Running Grant-NotificationMailboxSend.ps1 for mailbox '$NotificationSenderMailbox' (Exchange Online — may prompt for its own sign-in)..."
-    & $grantScript -AppId $MainAppClientId -SenderMailbox $NotificationSenderMailbox
+    $notificationAppId = if ($PlatformDaemonClientId) { $PlatformDaemonClientId } else { $MainAppClientId }
+    Write-Log -Message "Granting mailbox access to app '$notificationAppId' for '$NotificationSenderMailbox' (Exchange Online — may prompt for its own sign-in)..."
+    & $grantScript -AppId $notificationAppId -SenderMailbox $NotificationSenderMailbox
     Write-Log -Level SUCCESS -Message 'Notification mailbox grant complete.'
 }
 
 Write-Host ''
 Write-Host '================ SUMMARY ================' -ForegroundColor Green
 Write-Host ("Resource group       : {0}" -f $ResourceGroupName)
-Write-Host ("Frontend URL         : {0}" -f $frontendUrl)
+Write-Host ("Frontend URL         : {0}" -f $(if ($frontendUrl) { $frontendUrl } else { '(not needed)' }))
 Write-Host ("SPA redirect updated : {0}" -f (-not $SkipFrontendRedirect))
 Write-Host ("SPO cert imported    : {0}" -f ($BootstrapKeyVaultId -and -not $SkipSpoCertificate))
 Write-Host ("AI agent configured  : {0}" -f [bool]$ConfigureAiAgent)
