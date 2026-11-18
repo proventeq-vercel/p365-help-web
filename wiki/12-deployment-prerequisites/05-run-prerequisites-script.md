@@ -132,17 +132,19 @@ The SaaS mode creates a separate platform daemon app. `-ConfigureAiAgent` is cur
 
 ### App Service quota check
 
-Before creating the Bootstrap Key Vault, the script validates a Linux `Microsoft.Web/serverfarms` plan using `-AppServicePlanSku` and `-AppServicePlanCapacity` in `-Location`. It checks whether Azure Resource Manager accepts that SKU and capacity against the App Service SKU limit and the regional **Total Regional VMs** limit. The default probe is `B3`, capacity `1`. It validates; it does not create a plan or reserve quota. A success log says the SKU/capacity was validated, and the summary reports `Available`.
+Before creating the Bootstrap Key Vault, the script validates a Linux `Microsoft.Web/serverfarms` plan using `-AppServicePlanSku` and `-AppServicePlanCapacity` in `-Location`. It checks whether Azure Resource Manager accepts that SKU and capacity against the **App Service SKU quota** and the regional **Total Regional VMs quota**. The default probe is **B3**, capacity **1**. It validates; it does not create a plan or reserve quota. On success, the log confirms the SKU and capacity were validated, and the summary reports **Available**.
 
-For `NoQuota` or `NotAvailable`, the script tests the other allowed SKUs; the table can contain `Available`, `NoQuota`, `NoRegionalQuota`, `NotAvailable`, `BlockedByPolicy` or `Error`. For `NoRegionalQuota`, it does not test alternatives because all SKUs use the same exhausted regional pool. It prints advice and does not change the SKU or region. For `NoQuota`, request an increase to that SKU in **Azure portal → Quotas → App Service**, or select a validated SKU and make the Marketplace plan selection match it. For `NoRegionalQuota`, do not request the regional total directly: request a small increase to the selected SKU limit and wait for the regional total to increase; if it does not, open a **Service and subscription limits (quotas) → Function or Web App (Windows and Linux)** support request. For `NotAvailable`, choose a supported SKU/region; for `BlockedByPolicy`, ask the subscription administrator to resolve the restriction. Resolve `Error` before relying on the check because quota is unknown.
+| Result | Meaning | Next step |
+| --- | --- | --- |
+| **NoQuota** | The selected App Service SKU quota is exhausted. | In **Azure portal → Quotas → App Service**, request an increase for that SKU, or choose a validated SKU and use the same SKU in the Marketplace deployment. |
+| **NoRegionalQuota** | The regional **Total Regional VMs quota** is exhausted; other SKUs in that region will also fail. | Do not request the regional total directly. Request a small increase to the selected SKU limit and wait for the regional total to rise. If it does not, open **Service and subscription limits (quotas) → Function or Web App (Windows and Linux)** support. |
+| **NotAvailable** | The SKU is not available for the subscription or region. | Choose a supported SKU or region and ensure the Marketplace plan uses it. |
+| **BlockedByPolicy** | Azure Policy or a subscription restriction denied validation. | Ask the subscription administrator to resolve the reported restriction. |
+| **Error** | Validation failed for another reason; quota is unknown. | Resolve the reported CLI, authentication or validation error before relying on the check. |
 
-With the default `-FailOnAppServicePlanQuota` behavior, a non-`Available` result ends with an error in this form:
+For **NoQuota** and **NotAvailable**, the script also probes the other allowed SKUs and prints their results. It does not test alternatives for **NoRegionalQuota**, because they share the exhausted regional quota. The script prints advice but never changes the SKU or region automatically.
 
-```text
-App Service Plan quota check failed for '<SKU>' in '<REGION>' (<RESULT>). Credentials and tags were saved in '<KEY-VAULT>'; cleanup was not run.
-```
-
-Credentials and tags are saved before this error, but the Appliance Resource Provider grants and optional deploy-user setup have not run. The check table and log contain the quota result and recommended action; the script's final summary is not reached when it stops here. Setting `-FailOnAppServicePlanQuota:$false` logs a warning and continues to the final summary; the Marketplace deployment may then fail when it creates the plan. Even a successful probe is not a quota reservation and deployment-time validation may still fail.
+With the default `-FailOnAppServicePlanQuota` behavior, any result other than **Available** causes the script to stop with an error stating that the **App Service Plan quota check failed** for the selected SKU and region. Credentials and tags have already been saved in the Bootstrap Key Vault, but the Marketplace identity grants and optional deploy-user setup have not run; the final summary is not reached. Setting `-FailOnAppServicePlanQuota:$false` logs a warning and continues. The Marketplace deployment may still fail when it creates the plan. Even a successful check does not reserve quota, so deployment-time validation may still fail.
 
 ### Optional deployment user
 

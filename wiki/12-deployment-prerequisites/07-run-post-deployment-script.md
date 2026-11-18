@@ -12,8 +12,7 @@ description: "Run Proventeq365PostDeployment.ps1 in Azure Cloud Shell after the 
 1. Verifies the subscription and managed resource group, then discovers the Front Door endpoint when redirect or AI configuration needs its URL. It installs the Azure CLI `cdn` extension if needed and uses the first endpoint returned.
 2. Unless skipped, adds the URL as the main app's SPA redirect URI. In SaaS mode it also adds `/api/onboarding/callback` to the daemon app's web redirect URI when the daemon client ID is available.
 3. Unless skipped, imports the SharePoint certificate from the Bootstrap Key Vault into the product Key Vault. This step is skipped with a warning when no bootstrap ID is supplied.
-4. Optionally sets `Gov360__BaseUrl` and `Gov360__UILink` on the AI agent Web App.
-5. Optionally runs the Exchange Online notification mailbox grant script.
+4. If the AI agent was deployed, points the AI agent at the Proventeq365 URL.
 
 Run it in the same Cloud Shell session as the prerequisites script, or upload it again if the session has ended (see [Open Azure Cloud Shell](./05-run-prerequisites-script.md#open-azure-cloud-shell-and-upload-the-scripts)). If you have not downloaded it yet: [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1).
 

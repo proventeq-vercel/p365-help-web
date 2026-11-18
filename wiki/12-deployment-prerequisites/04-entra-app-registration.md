@@ -138,16 +138,78 @@ In `Hosted`, the single app receives the selected Graph application permissions,
 
 ### SaaS mode permissions
 
-The SaaS sign-in app always receives these Microsoft Graph **delegated** permissions, for either permission mode: `openid`, `profile`, `offline_access`, `User.Read`.
+The SaaS sign-in app receives the same Microsoft Graph delegated permissions in either permission mode. The separate platform daemon receives the Graph and SharePoint application permissions for the selected profile.
 
-The separate platform daemon receives the selected **application** permissions. Its SharePoint permissions are the same as the corresponding Hosted profile above.
+#### Sign-in app: Microsoft Graph (4 permissions)
 
-| Permission mode | Microsoft Graph application permissions on the daemon |
-| --- | --- |
-| ReadOnly | `AuditLog.Read.All`, `AuditLogsQuery-SharePoint.Read.All`, `ChannelMessage.Read.All`, `Chat.Read.All`, `Directory.Read.All`, `Group.Read.All`, `Mail.Read`, `Organization.Read.All`, `Reports.Read.All`, `SensitivityLabels.Read.All`, `Sites.FullControl.All`, `Sites.Read.All`, `User.Read.All` |
-| ReadWrite | `AuditLog.Read.All`, `AuditLogsQuery-SharePoint.Read.All`, `ChannelMessage.Read.All`, `Chat.Read.All`, `Directory.Read.All`, `Group.Read.All`, `Group.ReadWrite.All`, `InformationProtectionPolicy.Read.All`, `Mail.Read`, `Mail.ReadBasic.All`, `Organization.Read.All`, `RecordsManagement.Read.All`, `RecordsManagement.ReadWrite.All`, `Reports.Read.All`, `SensitivityLabels.Read.All`, `Sites.Archive.All`, `Sites.FullControl.All`, `Sites.Manage.All`, `Sites.Read.All`, `Sites.ReadWrite.All`, `Team.ReadBasic.All`, `User.Read.All`, `User.ReadBasic.All`, `User.ReadWrite.All` |
+| API / Permission | Type | Description | Admin Consent |
+| --- | --- | --- | --- |
+| offline_access | Delegated | Maintain access for token refresh. | No |
+| openid | Delegated | Sign users in. | No |
+| profile | Delegated | Read the signed-in user's basic profile. | No |
+| User.Read | Delegated | Sign in and read the user's profile. | No |
 
-| Permission mode | SharePoint application permissions on the daemon |
-| --- | --- |
-| ReadOnly | `Sites.Read.All`, `User.Read.All` |
-| ReadWrite | `Sites.FullControl.All`, `User.ReadWrite.All` |
+#### Platform daemon: Read-only mode
+
+##### Microsoft Graph (13 application permissions)
+
+| API / Permission | Type | Description | Admin Consent |
+| --- | --- | --- | --- |
+| AuditLog.Read.All | Application | Read audit log data. | Yes |
+| AuditLogsQuery-SharePoint.Read.All | Application | Query SharePoint audit logs. | Yes |
+| ChannelMessage.Read.All | Application | Read Teams channel messages. | Yes |
+| Chat.Read.All | Application | Read Teams chats. | Yes |
+| Directory.Read.All | Application | Read directory data and roles. | Yes |
+| Group.Read.All | Application | Read groups. | Yes |
+| Mail.Read | Application | Read mail in all mailboxes. | Yes |
+| Organization.Read.All | Application | Read organization and subscription information. | Yes |
+| Reports.Read.All | Application | Read usage reports. | Yes |
+| SensitivityLabels.Read.All | Application | Read sensitivity labels. | Yes |
+| Sites.FullControl.All | Application | Required for tenant-wide SharePoint site enumeration and site permissions through Microsoft Graph. | Yes |
+| Sites.Read.All | Application | Read items in all site collections. | Yes |
+| User.Read.All | Application | Read users' full profiles. | Yes |
+
+##### SharePoint (2 application permissions)
+
+| API / Permission | Type | Description | Admin Consent |
+| --- | --- | --- | --- |
+| Sites.Read.All | Application | Read items in all site collections. | Yes |
+| User.Read.All | Application | Read user profiles. | Yes |
+
+#### Platform daemon: Read-write mode
+
+##### Microsoft Graph (24 application permissions)
+
+| API / Permission | Type | Description | Admin Consent |
+| --- | --- | --- | --- |
+| AuditLog.Read.All | Application | Read audit log data. | Yes |
+| AuditLogsQuery-SharePoint.Read.All | Application | Query SharePoint audit logs. | Yes |
+| ChannelMessage.Read.All | Application | Read Teams channel messages. | Yes |
+| Chat.Read.All | Application | Read Teams chats. | Yes |
+| Directory.Read.All | Application | Read directory data and roles. | Yes |
+| Group.Read.All | Application | Read groups. | Yes |
+| Group.ReadWrite.All | Application | Read and write groups. | Yes |
+| InformationProtectionPolicy.Read.All | Application | Read published labels and label policies. | Yes |
+| Mail.Read | Application | Read mail in all mailboxes. | Yes |
+| Mail.ReadBasic.All | Application | Read basic mail properties in all mailboxes. | Yes |
+| Organization.Read.All | Application | Read organization and subscription information. | Yes |
+| RecordsManagement.Read.All | Application | Read Records Management configuration and labels. | Yes |
+| RecordsManagement.ReadWrite.All | Application | Read and write Records Management configuration. | Yes |
+| Reports.Read.All | Application | Read usage reports. | Yes |
+| SensitivityLabels.Read.All | Application | Read sensitivity labels. | Yes |
+| Sites.Archive.All | Application | Archive or reactivate site collections. | Yes |
+| Sites.FullControl.All | Application | Required for tenant-wide SharePoint site enumeration and site permissions through Microsoft Graph. | Yes |
+| Sites.Manage.All | Application | Create, edit and delete items and lists in all sites. | Yes |
+| Sites.Read.All | Application | Read items in all site collections. | Yes |
+| Sites.ReadWrite.All | Application | Read and write items in all site collections. | Yes |
+| Team.ReadBasic.All | Application | Read basic information about teams. | Yes |
+| User.Read.All | Application | Read users' full profiles. | Yes |
+| User.ReadBasic.All | Application | Read users' basic profiles. | Yes |
+| User.ReadWrite.All | Application | Read and write users' full profiles. | Yes |
+
+##### SharePoint (2 application permissions)
+
+| API / Permission | Type | Description | Admin Consent |
+| --- | --- | --- | --- |
+| Sites.FullControl.All | Application | Have full control of all site collections. | Yes |
+| User.ReadWrite.All | Application | Read and write user profiles. | Yes |
