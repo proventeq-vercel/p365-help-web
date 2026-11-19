@@ -212,6 +212,7 @@ $script:StatusRows = [System.Collections.Generic.List[object]]::new()
 
 if (-not (Test-Path $LogFolder)) { New-Item -ItemType Directory -Path $LogFolder -Force | Out-Null }
 $script:LogFile = Join-Path $LogFolder ("prereq-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
+$script:TxtLogFile = [System.IO.Path]::ChangeExtension($script:LogFile, '.txt')
 
 function Write-Log {
     param(
@@ -225,6 +226,7 @@ function Write-Log {
     $stepTag = if ($Step) { " [$Step]" } else { '' }
     $line = "$ts [$Level]$stepTag $Message"
     Add-Content -Path $script:LogFile -Value $line
+    Add-Content -Path $script:TxtLogFile -Value $line
     $colour = switch ($Level) {
         'ERROR' { 'Red' } 'WARN' { 'Yellow' } 'SUCCESS' { 'Green' } 'DEBUG' { 'DarkGray' } default { 'Gray' }
     }
@@ -802,6 +804,7 @@ $PermissionProfiles = Get-ProventeqPermissionSets
 # ==================================================================================================
 Write-Log -Level INFO -Message '=== Proventeq365 prerequisite provisioner ==='
 Write-Log -Level INFO -Message "Log file: $script:LogFile"
+Write-Log -Level INFO -Message "Text log file: $script:TxtLogFile"
 Write-Log -Level INFO -Message "ApplicationName='$ApplicationName'  DeploymentMode=$DeploymentMode  PermissionMode=$PermissionMode  ConfigureAiAgent=$([bool]$ConfigureAiAgent)  CrossTenant=$($script:IsCrossTenant)"
 if ($script:IsCrossTenant) {
     Write-Log -Level WARN -Message "Cross-tenant mode: apps -> $AppTenantId, infra (RG/KV) -> $CustomerTenantId. You will sign in twice."
@@ -1414,5 +1417,6 @@ Write-Host ("Deploy user secret: {0}" -f $deployUser.SecretName)
 Write-Host ''
 Write-Host 'Give the Bootstrap Key Vault resource ID above to the deployment (Marketplace UI picker or the' -ForegroundColor Cyan
 Write-Host 'bootstrapKeyVaultId parameter for the pipeline).' -ForegroundColor Cyan
-Write-Host ("Log file: {0}" -f $script:LogFile)
+Write-Host ("Log file:      {0}" -f $script:LogFile)
+Write-Host ("Text log file: {0}" -f $script:TxtLogFile)
 Write-Log -Level SUCCESS -Message 'Done.'

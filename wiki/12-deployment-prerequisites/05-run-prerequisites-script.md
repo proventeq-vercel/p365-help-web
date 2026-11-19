@@ -35,7 +35,7 @@ You upload both files to Azure Cloud Shell in the next step.
 
    ![The Cloud Shell icon in the Azure portal toolbar](images/cloud-shell-icon.png)
 
-2. If this is your first time, choose **PowerShell**. When asked about storage, choose **No storage account required**, select your subscription, then select **Apply**.
+2. If this is your first time, choose **PowerShell**. To keep scripts and logs between Cloud Shell sessions, select or create the required storage account and file share when prompted. This stores your Cloud Shell `$HOME` files in Azure Files; storage charges apply. Choose **No storage account required** only for a temporary session, and download any files you need before it ends.
 3. If the toolbar shows **Switch to PowerShell**, select it. When you are already in PowerShell, the toolbar shows **Switch to Bash** and the prompt starts with `PS /home/<your-name>>`.
 
 ### Step 3 — Upload both scripts
@@ -56,7 +56,32 @@ ls ./Proventeq365*.ps1
 
 You should see both script names listed.
 
-> **The Cloud Shell session is temporary.** Files and logs are lost when the session ends. If you close Cloud Shell or it times out, upload the scripts again. To keep the logs, download them from the `logs` folder with **Manage files** → **Download** before closing (for example, `logs/prereq-20261014-101500.log`).
+## Download and Keep the Script Logs
+
+The prerequisites script writes each log entry to both a timestamped `.log` file and a matching `.txt` file under the `logs` folder next to the script. Both files are updated as the script runs; there is no end-of-run copy step. The script prints both full paths when it starts and repeats them in the success summary. If a runtime error stops the script, use the paths printed at startup. The `.txt` file contains entries sent through the script's logging function; an unexpected PowerShell error may appear only in the console unless the script explicitly logs it.
+
+### Download a copy to your computer
+
+1. In the script output, find **Text log file** and copy its full path. It looks like `/home/<your-name>/logs/prereq-20261119-093548.txt`. Download the `.txt` file; it contains the same logged entries as the `.log` file and is convenient to open on your computer.
+2. In the Cloud Shell toolbar, select **Manage files** → **Download**.
+
+   ![In the Cloud Shell toolbar, open Manage files and select Download](images/cloud-shell-download-menu.png)
+
+3. Paste the full path into **Enter the fully qualified file path**, then select **Download**. For example, enter `/home/shubham/logs/prereq-20261119-093548.txt` using the exact username and timestamp printed by your run.
+
+   ![Cloud Shell Download a file dialog with the full TXT log path entered](images/cloud-shell-download-dialog.png)
+
+4. The browser downloads the TXT file to your computer (usually its Downloads folder).
+
+Cloud Shell's **Download** command only downloads files persisted in the Cloud Shell file share. Configure Cloud Shell storage when prompted; a temporary session without persistent storage may not have downloadable files. The download is user initiated; the script cannot save directly into your computer's folders. Because entries are written to both files as they occur, the TXT file remains available if a runtime error stops the script, but it contains only entries logged before that error. Parameter-binding errors that prevent the script body from starting cannot be captured.
+
+If you want the logs written directly to your computer without downloading them from a browser, run the script locally instead. The script supports local PowerShell 7 or later and Azure CLI (`az`) 2.53 or later; sign in first with `az login`. By default, both log files are written to the `logs` folder beside the local script. Keep that folder private because logs contain tenant, subscription and resource details.
+
+### Keep logs for later Cloud Shell sessions
+
+Cloud Shell sessions themselves are temporary, but files in `$HOME` persist when Cloud Shell is connected to its Azure Files-backed storage. The instructions above upload the script to `$HOME`, and its default `logs` folder is beside that script, so both log files remain available after closing and reopening Cloud Shell when persistent storage is enabled. If you previously chose **No storage account required**, reset Cloud Shell user settings and configure an existing or new storage account before relying on persistence. See [Persist files in Azure Cloud Shell](https://learn.microsoft.com/azure/cloud-shell/persisting-shell-storage).
+
+Cloud Shell storage is convenient for later access from Cloud Shell, but it is not a separate organizational log archive. Files remain available across sessions while the backing storage account and file share are retained. For longer-term retention or shared access, logs can be uploaded to an organization-managed Azure Storage blob container. The current prerequisites script does not upload logs to Blob Storage; that enhancement would need a configured storage account/container, an agreed retention policy, and appropriate upload permissions (for example, **Storage Blob Data Contributor** scoped to the container). Treat the logs as operational records and restrict access accordingly.
 
 ## Signing In When Prompted (Device Code)
 
