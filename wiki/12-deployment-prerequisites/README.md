@@ -26,7 +26,7 @@ This guide is intended for:
 ## Scope and assumptions
 
 - Proventeq365 is deployed into **your** Azure subscription and Microsoft 365 tenant, as an Azure **managed application**.
-- This guide assumes the app registration and the Azure resources are in the **same Microsoft Entra tenant**, so you sign in once with one account. If your Azure subscription is in a different tenant from your Microsoft 365 tenant, see [Cross-Tenant Deployment](./09-cross-tenant-deployment.md).
+- This guide assumes the app registration and the Azure resources are in the **same Microsoft Entra tenant**, so you sign in once with one account. If your Azure subscription is in a different tenant from your Microsoft 365 tenant, see [Cross-Tenant Deployment](./10-cross-tenant-deployment.md).
 - Container images for the Proventeq365 services are pulled from a **Proventeq-managed Azure Container Registry**, using a pull-only username and password that Proventeq provides. This is an outbound dependency on a Proventeq-owned endpoint and is by design. See [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity).
 - All resources are deployed into your chosen region, with one exception: the **Azure Static Web App** that hosts the user interface. Azure Static Web Apps is available in a limited set of Azure regions, so the interface may be hosted in a different region from the rest of the deployment. It holds static application files only and no customer content is stored there. The exact region is confirmed with Proventeq during deployment planning.
 - **Important:** The client secret and certificate never leave your tenant — the prerequisites script writes them straight into your Bootstrap Key Vault. Never send passwords, client secrets, or certificates by email.
@@ -50,8 +50,9 @@ This guide is intended for:
 4. [Entra ID App Registration](./04-entra-app-registration.md) — What the script creates in Entra ID, admin consent, and the API permissions for each deployment mode.
 5. [Run the Prerequisites Script](./05-run-prerequisites-script.md) — Stage 1, before the Marketplace deployment.
 6. [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md) — Stage 2.
-7. [Run the Post-Deployment Script](./07-run-post-deployment-script.md) — Stage 3, after the Marketplace deployment, including the optional notification mailbox.
-8. [Custom Domain and DNS](./08-custom-domain-and-dns.md) — Only if a custom domain is required.
-9. [Cross-Tenant Deployment](./09-cross-tenant-deployment.md) — Only if the Azure subscription is in a different tenant from Microsoft 365.
-10. [Troubleshooting](./10-troubleshooting.md) — Messages you can ignore and fixes for common errors.
-11. [Next Steps](./11-next-steps.md) — What to share with Proventeq once the deployment is complete.
+7. [Run the Post-Deployment Script](./07-run-post-deployment-script.md) — Stage 3, after the Marketplace deployment.
+8. [Notification Email](./08-notification-email.md) — Only if a Hosted deployment should send email notifications, including a Proventeq-run deployment.
+9. [Custom Domain and DNS](./09-custom-domain-and-dns.md) — Only if a custom domain is required.
+10. [Cross-Tenant Deployment](./10-cross-tenant-deployment.md) — Only if the Azure subscription is in a different tenant from Microsoft 365.
+11. [Troubleshooting](./11-troubleshooting.md) — Messages you can ignore and fixes for common errors.
+12. [Next Steps](./12-next-steps.md) — What to share with Proventeq once the deployment is complete.
