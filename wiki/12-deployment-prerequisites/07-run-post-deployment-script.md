@@ -38,7 +38,7 @@ The script requires Azure CLI (`az`) 2.53 or later. PowerShell 7 or later is rec
 | `-SkipSpoCertificate` | No (default false) | Switch; skips certificate import. |
 | `-ConfigureAiAgent` | No (default false) | Switch; updates the AI agent Web App settings using the discovered Front Door URL. |
 | `-AiAgentWebAppName` | No | Used with `-ConfigureAiAgent`; otherwise auto-detects a `Microsoft.Web/sites` name containing `-aiagent-`. |
-| `-GrantNotificationMailbox` | No (default false) | Switch; runs `Grant-NotificationMailboxSend.ps1` from its expected relative path. Requires `-NotificationSenderMailbox`. |
+| `-GrantNotificationMailbox` | No (default false) | Switch; runs `Grant-NotificationMailboxSend.ps1`, which must be in the same folder as the post-deployment script. Requires `-NotificationSenderMailbox`. See [Notification Email](#notification-email-optional). |
 | `-NotificationSenderMailbox` | No | Primary SMTP address; required with `-GrantNotificationMailbox`. |
 | `-NonInteractive` | No (default false) | Disables subscription/resource selection prompts; provide `-SubscriptionId` and explicit names where discovery could be ambiguous. |
 | `-LogFolder` | No | Defaults to a `logs` folder next to the script. |
@@ -102,52 +102,10 @@ Use this to set the redirect URI again without re-importing the certificate:
 
 > **The post-deployment script is safe to run again.** Each run overwrites the same values.
 
-## Notification Mailbox (optional)
+## Notification Email (optional)
 
-> **Applies only if** Proventeq365 should send email notifications.
+To let Proventeq365 send email notifications from a mailbox in your tenant, follow [Notification Email](./08-notification-email.md). It applies to a Proventeq-run deployment too, because only your Exchange administrator can grant access to your mailbox.
 
-Proventeq365 sends notification emails from **one** mailbox in your tenant. Instead of an organisation-wide `Mail.Send` permission in Entra ID, access is granted with **Exchange Online RBAC for Applications**: a management scope containing only that mailbox, and the *Application Mail.Send* role assigned to the Proventeq365 app over that scope. The app can then send from that mailbox and no other.
+> **Note:** `-GrantNotificationMailbox` does only the grant (step 4 of [Notification Email](./08-notification-email.md#steps)), and the mailbox address still has to reach your deployment. It runs [Grant-NotificationMailboxSend.ps1](/postdeploy/Grant-NotificationMailboxSend.ps1) from the folder of the post-deployment script, so upload both to Cloud Shell, and run `Connect-MgGraph -Scopes Application.Read.All` and `Connect-ExchangeOnline` in the Microsoft 365 tenant first. Running the grant script on its own, as described on that page, works just as well.
 
-> **Important:** Do **not** also add `Mail.Send` as an application permission on the app registration. Exchange Online combines the two grants, so an Entra ID grant would let the app send as every mailbox in your tenant.
-
-### What you need
-
-- The **Exchange Online Organization Management** role group.
-- Admin consent already granted to the app registration (see [Grant Admin Consent](./04-entra-app-registration.md#grant-admin-consent)).
-- The grant script `Grant-NotificationMailboxSend.ps1`, provided by Proventeq. Upload it to Cloud Shell in the same way as the other two scripts.
-
-### Steps
-
-Run these commands in Cloud Shell (**PowerShell**).
-
-1. Sign in to Exchange Online:
-
-   ```powershell
-   Connect-ExchangeOnline
-   ```
-
-2. If the sender mailbox does not exist yet, create it as a **shared mailbox**. A shared mailbox needs no licence up to 50 GB.
-
-   ```powershell
-   New-Mailbox -Shared -Name "Proventeq365" -PrimarySmtpAddress proventeq365@contoso.com
-   ```
-
-3. Look up the object ID of the Proventeq365 app's service principal, using the **App (client) ID** from the prerequisites script summary:
-
-   ```powershell
-   $spId = az ad sp show --id <APP-CLIENT-ID> --query id -o tsv
-   ```
-
-4. Grant the app permission to send from that mailbox:
-
-   ```powershell
-   ./Grant-NotificationMailboxSend.ps1 -AppId <APP-CLIENT-ID> -SenderMailbox proventeq365@contoso.com -ServicePrincipalObjectId $spId
-   ```
-
-5. Tell your Proventeq contact the sender mailbox address, so it can be configured as the notification sender for your tenant.
-
-The grant can take **30 minutes to 2 hours** to take effect, because Exchange Online caches application permissions. The script is safe to run again: an existing scope or assignment is reused.
-
-> **Note:** `-GrantNotificationMailbox` invokes `Grant-NotificationMailboxSend.ps1` with `-AppId` and `-SenderMailbox`; it uses `-PlatformDaemonClientId` when available, otherwise `-MainAppClientId`. The helper must be at a fixed path relative to the post-deployment script. It is not included in this repository, so the wrapper cannot be verified from these files; use the standalone steps above unless Proventeq has supplied the helper and its required folder layout.
-
-Next: [Next Steps](./11-next-steps.md).
+Next: [Notification Email](./08-notification-email.md), or [Next Steps](./12-next-steps.md).

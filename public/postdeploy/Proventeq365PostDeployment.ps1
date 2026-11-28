@@ -295,7 +295,7 @@ else {
     Write-Log -Message 'Frontend URL discovery skipped because redirects and AI URL updates are disabled.'
 }
 
-# ---- Step 1: SPA redirect URI on the main app registration ----------------------------------------
+# ---- Step 2: SPA redirect URI on the main app registration ----------------------------------------
 if ($SkipFrontendRedirect) {
     Write-Log -Message 'Skipped SPA redirect URI update (-SkipFrontendRedirect).'
 }
@@ -319,7 +319,7 @@ else {
     Connect-AzTenant -TenantId $CustomerTenantId -Label 'infra'
 }
 
-# ---- Step 2: import the SPO certificate from the bootstrap KV into the product KV -----------------
+# ---- Step 3: import the SPO certificate from the bootstrap KV into the product KV -----------------
 if ($SkipSpoCertificate) {
     Write-Log -Message 'Skipped SPO certificate import (-SkipSpoCertificate).'
 }
@@ -359,7 +359,7 @@ else {
     Write-Log -Level SUCCESS -Message "Imported '$spoCertName' into product Key Vault '$($productKv.name)'."
 }
 
-# ---- Step 3: AI agent Gov360 base URL / UI link (optional) ----------------------------------------
+# ---- Step 4: AI agent Gov360 base URL / UI link (optional) ----------------------------------------
 if (-not $ConfigureAiAgent) {
     Write-Log -Message 'Skipped AI agent configuration (no -ConfigureAiAgent).'
 }
@@ -378,14 +378,19 @@ else {
     Write-Log -Level SUCCESS -Message "Set Gov360__BaseUrl / Gov360__UILink on '$($aiApp.name)' to $frontendUrl."
 }
 
-# ---- Step 4: notification mailbox Exchange Online RBAC grant (optional) ---------------------------
+# ---- Step 5: notification mailbox Exchange Online RBAC grant (optional) ---------------------------
 if (-not $GrantNotificationMailbox) {
     Write-Log -Message 'Skipped notification mailbox grant (no -GrantNotificationMailbox).'
 }
 else {
     if (-not $NotificationSenderMailbox) { throw '-GrantNotificationMailbox requires -NotificationSenderMailbox.' }
-    $grantScript = Join-Path $PSScriptRoot '..\..\Utilities\Scripts\PowerShell\Grant-NotificationMailboxSend.ps1'
-    if (-not (Test-Path $grantScript)) { throw "Grant-NotificationMailboxSend.ps1 not found at '$grantScript'." }
+    # A repository clone keeps the grant script under Utilities; in Cloud Shell both scripts are uploaded to one folder.
+    $grantScriptPaths = @(
+        (Join-Path $PSScriptRoot '..\..\Utilities\Scripts\PowerShell\Grant-NotificationMailboxSend.ps1'),
+        (Join-Path $PSScriptRoot 'Grant-NotificationMailboxSend.ps1')
+    )
+    $grantScript = $grantScriptPaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+    if (-not $grantScript) { throw "Grant-NotificationMailboxSend.ps1 not found at '$($grantScriptPaths -join "' or '")'." }
     $notificationAppId = if ($PlatformDaemonClientId) { $PlatformDaemonClientId } else { $MainAppClientId }
     Write-Log -Message "Granting mailbox access to app '$notificationAppId' for '$NotificationSenderMailbox' (Exchange Online — may prompt for its own sign-in)..."
     & $grantScript -AppId $notificationAppId -SenderMailbox $NotificationSenderMailbox

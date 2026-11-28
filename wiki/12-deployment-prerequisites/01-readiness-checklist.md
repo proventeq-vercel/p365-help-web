@@ -21,7 +21,7 @@ Work through this checklist in order and confirm status with your Proventeq cont
 | 8 | Script runner can register Azure resource providers, or they have been pre-registered (see [Register Azure Resource Providers](./03-azure-prerequisites.md#register-azure-resource-providers)) | | |
 | 9 | Quota for services other than App Service confirmed; App Service SKU, capacity and region selected for the script preflight (see [Confirm Subscription Quota](./03-azure-prerequisites.md#confirm-subscription-quota)) | | |
 | 10 | Outbound connectivity allowed — only if egress is restricted (see [Outbound Connectivity](./03-azure-prerequisites.md#outbound-connectivity)) | | |
-| 11 | Custom domain name and DNS ownership confirmed — only if a custom domain is required (see [Custom Domain and DNS](./08-custom-domain-and-dns.md)) | | |
+| 11 | Custom domain name and DNS ownership confirmed — only if a custom domain is required (see [Custom Domain and DNS](./09-custom-domain-and-dns.md)) | | |
 
 ## Deployment
 
@@ -33,6 +33,6 @@ Work through this checklist in order and confirm status with your Proventeq cont
 | 15 | Proventeq365 deployed from Azure Marketplace with the Bootstrap Key Vault selected (see [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md)) — N/A for a Proventeq-run deployment | | |
 | 16 | **Managed resource group** name (`mrg-...`) noted (see [Find the Managed Resource Group](./06-deploy-from-azure-marketplace.md#find-the-managed-resource-group)) — N/A for a Proventeq-run deployment | | |
 | 17 | Post-deployment script run (see [Run the Post-Deployment Script](./07-run-post-deployment-script.md)) — N/A for a Proventeq-run deployment | | |
-| 18 | Notification mailbox granted — only if Proventeq365 should send email notifications (see [Notification Mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional)) | | |
+| 18 | Notification mailbox granted, and its address entered in the Marketplace wizard or sent to Proventeq — only if Proventeq365 should send email notifications; also applies to a Proventeq-run deployment (see [Notification Email](./08-notification-email.md)) | | |
 | 19 | Script logs downloaded from Cloud Shell (optional) | | |
 | 20 | Bootstrap resource group **kept** — do not delete it | | |

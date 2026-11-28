@@ -15,12 +15,12 @@ Once the [post-deployment script](./07-run-post-deployment-script.md) has comple
 
 Provide your Proventeq contact with:
 
-- The **Directory (tenant) ID** — and, for a [cross-tenant deployment](./09-cross-tenant-deployment.md), both tenant IDs.
+- The **Directory (tenant) ID** — and, for a [cross-tenant deployment](./10-cross-tenant-deployment.md), both tenant IDs.
 - The **App (client) ID** from the prerequisites script summary.
 - The name of the **managed application** and its **managed resource group** (`mrg-...`).
 - The **Frontend URL** from the post-deployment script summary.
 - The **deployment mode** you used (`SaaS` or `Hosted`), the **permission mode** (`ReadOnly` or `ReadWrite`), and whether the **AI agent** was deployed.
-- The **notification sender mailbox** address, if you granted one (see [Notification Mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional)).
+- The **notification sender mailbox** address, if you granted one (see [Notification Email](./08-notification-email.md)).
 
 None of these values is secret. The client secret, the SharePoint certificate and the container registry password stay in your Key Vaults and are never shared.
 

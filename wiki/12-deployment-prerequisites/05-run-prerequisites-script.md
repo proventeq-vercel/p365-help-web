@@ -15,12 +15,13 @@ The prerequisites script requires Azure CLI (`az`) 2.53 or later. PowerShell 7 o
 
 ## Download the Scripts
 
-Download both deployment scripts to your machine:
+Download the deployment scripts to your machine:
 
 - [Proventeq365Prerequisites.ps1](/prerequisites/Proventeq365Prerequisites.ps1) — run before the Marketplace deployment.
 - [Proventeq365PostDeployment.ps1](/postdeploy/Proventeq365PostDeployment.ps1) — run after the Marketplace deployment.
+- [Grant-NotificationMailboxSend.ps1](/postdeploy/Grant-NotificationMailboxSend.ps1) — optional, only if Proventeq365 should send email; see [Notification Email](./08-notification-email.md).
 
-You upload both files to Azure Cloud Shell in the next step.
+You upload them to Azure Cloud Shell in the next step.
 
 ## Open Azure Cloud Shell and Upload the Scripts
 
@@ -38,11 +39,11 @@ You upload both files to Azure Cloud Shell in the next step.
 2. If this is your first time, choose **PowerShell**. To keep scripts and logs between Cloud Shell sessions, select or create the required storage account and file share when prompted. This stores your Cloud Shell `$HOME` files in Azure Files; storage charges apply. Choose **No storage account required** only for a temporary session, and download any files you need before it ends.
 3. If the toolbar shows **Switch to PowerShell**, select it. When you are already in PowerShell, the toolbar shows **Switch to Bash** and the prompt starts with `PS /home/<your-name>>`.
 
-### Step 3 — Upload both scripts
+### Step 3 — Upload the scripts
 
 1. In the Cloud Shell toolbar, select **Manage files** → **Upload**.
 2. Select the downloaded `Proventeq365Prerequisites.ps1` and upload it.
-3. Repeat for `Proventeq365PostDeployment.ps1`.
+3. Repeat for `Proventeq365PostDeployment.ps1`, and for `Grant-NotificationMailboxSend.ps1` if you downloaded it.
 
 ![Manage files menu in the Cloud Shell toolbar, with Upload highlighted](images/cloud-shell-upload.png)
 

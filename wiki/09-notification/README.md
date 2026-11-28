@@ -31,3 +31,12 @@ You may see notifications for:
 - **Provisioning Events** — Workspace or resource setup activities.
 - **Policy Execution** — Results of governance or compliance actions.
 - **Permission Changes** — Updates to access or sharing settings.
+
+## Email Notifications
+
+Notifications about failures, approvals and changes to your workspace access can also be sent to your mailbox. To choose which ones, open the **Notifications** screen, select the **Preferences** tab, and tick or clear **Email** for each **Notification Type**. **Push notifications** controls whether the same type appears in the app as it happens.
+
+Email is sent only when your Proventeq365 deployment has a sender mailbox:
+
+- **Proventeq365 SaaS service:** emails come from Proventeq's mailbox, `notifications.proventeq365@proventeq.com`. There is nothing to set up.
+- **Hosted deployment:** your administrators set up a mailbox in your own tenant. See [Notification Email](../12-deployment-prerequisites/08-notification-email.md).

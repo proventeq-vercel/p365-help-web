@@ -22,6 +22,7 @@ description: "Deploy Proventeq365 from Azure Marketplace using the Bootstrap Key
    - **SQL Administrator** — choose whether the administrator is a user or an Entra group, and enter its **object ID** and **display name**.
    - **OCR Enrichment** — select to extract text from scanned documents and PDFs so they appear in search results.
    - **Public API** — select to allow integrations and automation through the Proventeq365 API.
+   - **Notification Email** — optional. In **Sender mailbox**, enter the address of the mailbox Proventeq365 sends email from, for example `notifications@contoso.com`. Set the mailbox up first, as described in [Notification Email](./08-notification-email.md). Leave the field empty to deploy without email; you can ask Proventeq to turn it on later.
 5. Select **Review + create** → **Create**.
 
 ## Find the Managed Resource Group

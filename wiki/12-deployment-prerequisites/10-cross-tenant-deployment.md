@@ -60,4 +60,4 @@ Add `-AppTenantId` here too, because the redirect URI is updated on the app regi
 ./Proventeq365PostDeployment.ps1 -CustomerTenantId <SUBSCRIPTION-TENANT-ID> -AppTenantId <M365-TENANT-ID> -ResourceGroupName <MANAGED-RG-NAME> -MainAppClientId <APP-CLIENT-ID> -BootstrapKeyVaultId "<BOOTSTRAP-KEY-VAULT-RESOURCE-ID>"
 ```
 
-The post-deployment script uses the Bootstrap Key Vault's `deploymentMode` tag when `-BootstrapKeyVaultId` is supplied; its own default is `Hosted`. The [notification mailbox](./07-run-post-deployment-script.md#notification-mailbox-optional) grant, if required, is run in the **Microsoft 365 tenant**.
+The post-deployment script uses the Bootstrap Key Vault's `deploymentMode` tag when `-BootstrapKeyVaultId` is supplied; its own default is `Hosted`. The [notification email](./08-notification-email.md) mailbox and its grant, if required, are in the **Microsoft 365 tenant**.
