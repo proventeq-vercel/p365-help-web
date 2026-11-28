@@ -38,7 +38,7 @@ The script requires Azure CLI (`az`) 2.53 or later. PowerShell 7 or later is rec
 | `-SkipSpoCertificate` | No (default false) | Switch; skips certificate import. |
 | `-ConfigureAiAgent` | No (default false) | Switch; updates the AI agent Web App settings using the discovered Front Door URL. |
 | `-AiAgentWebAppName` | No | Used with `-ConfigureAiAgent`; otherwise auto-detects a `Microsoft.Web/sites` name containing `-aiagent-`. |
-| `-GrantNotificationMailbox` | No (default false) | Switch; runs `Grant-NotificationMailboxSend.ps1` from its expected relative path. Requires `-NotificationSenderMailbox`. In Cloud Shell, use the steps in [Notification Email](./08-notification-email.md) instead. |
+| `-GrantNotificationMailbox` | No (default false) | Switch; runs `Grant-NotificationMailboxSend.ps1`, which must be in the same folder as the post-deployment script. Requires `-NotificationSenderMailbox`. See [Notification Email](#notification-email-optional). |
 | `-NotificationSenderMailbox` | No | Primary SMTP address; required with `-GrantNotificationMailbox`. |
 | `-NonInteractive` | No (default false) | Disables subscription/resource selection prompts; provide `-SubscriptionId` and explicit names where discovery could be ambiguous. |
 | `-LogFolder` | No | Defaults to a `logs` folder next to the script. |
@@ -106,6 +106,6 @@ Use this to set the redirect URI again without re-importing the certificate:
 
 To let Proventeq365 send email notifications from a mailbox in your tenant, follow [Notification Email](./08-notification-email.md). It applies to a Proventeq-run deployment too, because only your Exchange administrator can grant access to your mailbox.
 
-> **Note:** `-GrantNotificationMailbox` runs `Grant-NotificationMailboxSend.ps1` from `../../Utilities/Scripts/PowerShell/` relative to the post-deployment script, which is where it sits in Proventeq's source repository. In Cloud Shell, run the grant script on its own as described in [Notification Email](./08-notification-email.md#steps).
+> **Note:** `-GrantNotificationMailbox` does only the grant (step 4 of [Notification Email](./08-notification-email.md#steps)), and the mailbox address still has to reach your deployment. It runs [Grant-NotificationMailboxSend.ps1](/postdeploy/Grant-NotificationMailboxSend.ps1) from the folder of the post-deployment script, so upload both to Cloud Shell, and run `Connect-MgGraph -Scopes Application.Read.All` and `Connect-ExchangeOnline` in the Microsoft 365 tenant first. Running the grant script on its own, as described on that page, works just as well.
 
 Next: [Notification Email](./08-notification-email.md), or [Next Steps](./12-next-steps.md).

@@ -1,6 +1,6 @@
 ---
 title: "Notification Email"
-description: "Let a Hosted Proventeq365 deployment send notification emails from one mailbox in your tenant: create the mailbox, allow the app to send from it, and ask Proventeq to turn email on."
+description: "Let a Hosted Proventeq365 deployment send notification emails from one mailbox in your tenant: create the mailbox, allow the app to send from it, and give the address to your deployment."
 ---
 
 # Notification Email
@@ -34,12 +34,15 @@ Each user chooses which notification types also arrive by email: open the **Noti
 
 ## Who Does What
 
-| Step | Who |
+Your Exchange administrator creates the sender mailbox and allows the Proventeq365 app to send from it. How the mailbox address then reaches your deployment depends on who deploys:
+
+| Deployment | How email is turned on |
 | --- | --- |
-| 1. Create the sender mailbox | Your Exchange administrator |
-| 2. Allow the Proventeq365 app to send from it | Your Exchange administrator |
-| 3. Send the mailbox address to Proventeq | You |
-| 4. Turn email on for your deployment | Proventeq |
+| You deploy from Azure Marketplace yourself | Set up the mailbox before the deployment, then enter its address in the **Sender mailbox** field of the Marketplace wizard (**Configuration** step, **Notification Email** section). Email starts as soon as the grant takes effect; Proventeq has nothing to do. |
+| You have already deployed, without a sender mailbox | Send the mailbox address to your Proventeq contact. Proventeq turns email on for your deployment. |
+| Proventeq deploys Proventeq365 for you | Send the mailbox address to your Proventeq contact, before or after the deployment. Proventeq turns email on for your deployment. |
+
+You can set up the mailbox as soon as the [prerequisites script](./05-run-prerequisites-script.md) has run and admin consent is granted: the grant needs only the app's service principal, not the deployment.
 
 ## What You Need
 
@@ -80,19 +83,23 @@ Run these commands in Cloud Shell (**PowerShell**). Replace `proventeq365@contos
 
    The script ends with a check. **InScope** must be **True** for the mailbox.
 
-5. Send the mailbox address to your Proventeq contact. Proventeq turns email on for your deployment and confirms when it is done. The address is not a secret.
+5. Give the mailbox address to your deployment:
+   - If you are about to deploy from Azure Marketplace yourself, enter it in the wizard's **Sender mailbox** field (see [Deploy from Azure Marketplace](./06-deploy-from-azure-marketplace.md)).
+   - Otherwise, send it to your Proventeq contact. Proventeq turns email on for your deployment and confirms when it is done.
+
+   The address is not a secret.
 
 The script is safe to run again: an existing scope or role assignment is reused, and each run repeats the check at the end.
 
 ## Check That It Works
 
 1. Wait until the grant has taken effect. This can take **30 minutes to 2 hours**, because Exchange Online caches application permissions.
-2. After Proventeq confirms that email is on, add a test user to a workspace. That user receives an email from the sender mailbox within a few minutes.
+2. Once the deployment has the address (from the wizard, or after Proventeq confirms that email is on), add a test user to a workspace. That user receives an email from the sender mailbox within a few minutes.
 3. If no email arrives, check the user's junk email folder, then use message trace in the Exchange admin center to search for messages sent from the sender mailbox.
 
 ## Change or Stop Email
 
-- **Use a different mailbox:** repeat steps 2 to 5 with the new address. Then, in Exchange Online, remove the role assignment and the management scope named `Proventeq365 sender - <old address>`.
+- **Use a different mailbox:** repeat steps 2 to 4 with the new address, and send it to your Proventeq contact. Then, in Exchange Online, remove the role assignment and the management scope named `Proventeq365 sender - <old address>`.
 - **Stop email:** ask your Proventeq contact to turn email off, then remove the role assignment and the management scope as above.
 
 Next: [Custom Domain and DNS](./09-custom-domain-and-dns.md), only if a custom domain is required, or [Next Steps](./12-next-steps.md).
